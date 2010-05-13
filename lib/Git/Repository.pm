@@ -3,7 +3,70 @@ package Git::Repository;
 use warnings;
 use strict;
 
+use Carp;
+use File::Spec;
+use Cwd qw( cwd abs_path );
+
+use Git::Repository::Command;
+
 our $VERSION = '0.01';
+
+# a few simple accessors
+for my $attr (qw( repo_path wc_path wc_subdir )) {
+    no strict 'refs';
+    *$attr = sub { $_[0]{$attr} };
+}
+
+#
+# constructor-related methods
+#
+
+sub new {
+}
+
+#
+# command-related methods
+#
+
+# return a Git::Repository::Command object
+sub command {
+    return Git::Repository::Command->new(@_);
+}
+
+# run a command, returns the output
+# die with errput if any
+sub run {
+    my ( $self, @args ) = @_;
+    my ( $option, @cmd ) = ( {}, grep { !ref } @args );
+    ($option) = grep { ref eq 'HASH' } @args;
+
+    # FIXME other refs are ignored
+
+    # run the command
+    my $command = Git::Repository::Command->new( $self, @cmd );
+
+    # optional input
+    if ( exists $option->{stdin} ) {
+        print { $command->{stdin} } $option->{stdin};
+    }
+
+    # get output / errput
+    my ( $stdout, $stderr ) = @{$command}{qw(stdout stderr)};
+    chomp( my @output = <$stdout> );
+    chomp( my @errput = <$stderr> );
+
+    # done with it
+    $command->close;
+
+    # something's wrong
+    croak join "\n", @errput if @errput;
+
+    # return the output
+    return wantarray ? @output : join "\n", @output;
+}
+
+# run a command, return the first line of output
+sub run_oneline { return ( shift->run(@_) )[0]; }
 
 1;
 
