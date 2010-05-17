@@ -22,6 +22,40 @@ for my $attr (qw( repo_path wc_path wc_subdir )) {
 #
 
 sub new {
+    my ( $class, %arg ) = @_;
+
+    # setup default options
+    my ( $repo_path, $wc_path ) = @arg{qw( repository working_copy )};
+
+    croak "'repository' or 'working_copy' argument required"
+        if !defined $repo_path && !defined $wc_path;
+
+    # create the object
+    my $self = bless {}, $class;
+
+    if ( defined $repo_path ) {
+        croak "directory not found: $repo_path"
+            if !-d $repo_path;
+        $self->{repo_path} = abs_path($repo_path);
+    }
+
+    if ( defined $wc_path ) {
+        croak "directory not found: $wc_path"
+            if !-d $wc_path;
+        $self->{wc_path} = abs_path($wc_path);
+        $self->{repo_path}
+            = abs_path( $self->run_oneline(qw( rev-parse --git-dir )) )
+            if !defined $self->{repo_path};
+    }
+
+    # sanity check
+    my $gitdir
+        = eval { abs_path( $self->run_oneline(qw( rev-parse --git-dir )) ) }
+        || '';
+    croak "fatal: Not a git repository: $repo_path"
+        if $self->{repo_path} ne $gitdir;
+
+    return $self;
 }
 
 #
