@@ -1,9 +1,16 @@
-#!perl -T
+use strict;
+use warnings;
+use Test::More;
+use File::Find;
 
-use Test::More tests => 1;
+my @modules;
+find( sub { push @modules, $File::Find::name if /\.pm$/ }, 'blib/lib' );
 
-BEGIN {
-	use_ok( 'Git::Repository' );
-}
+plan tests => scalar @modules;
 
-diag( "Testing Git::Repository $Git::Repository::VERSION, Perl $], $^X" );
+use_ok($_)
+    for reverse sort map { s!/!::!g; s/\.pm$//; s/^blib::lib:://; $_ }
+    @modules;
+
+diag("Tested Git::Repository $Git::Repository::VERSION, Perl $], $^X" );
+
