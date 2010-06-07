@@ -42,6 +42,10 @@ sub new {
         chdir $dest or croak "Can't chdir to $dest: $!";
     }
 
+    # update the environment (no block to preserve local)
+    local @ENV{ keys %{ $o->{env} } } = values %{ $o->{env} }
+        if exists $o->{env};
+
     # start the command
     my ( $in, $out, $err );
     $err = Symbol::gensym;
