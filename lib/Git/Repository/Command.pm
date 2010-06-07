@@ -5,15 +5,25 @@ use warnings;
 use Carp;
 use Cwd qw( cwd );
 use IPC::Open3 qw( open3 );
+use Scalar::Util qw( blessed );
 
 # TODO - actually find the git binary
 
 sub new {
-    my ( $class, $r, @cmd ) = @_;
+    my ( $class, @cmd ) = @_;
 
-    # FIXME - check if $r is a Git::Repository object
+    # split the args
+    my ($r, $o);
+    @cmd = grep {
+     !( ref eq 'HASH'                            ? $o ||= $_
+      : blessed $_ && $_->isa('Git::Repository') ? $r ||= $_
+      :                                          0 )
+    } @cmd;
+
+    # get some useful paths
     my ( $repo_path, $wc_path, $wc_subdir )
-        = ( $r->repo_path, $r->wc_path, $r->wc_subdir );
+        = ( $r->repo_path, $r->wc_path, $r->wc_subdir )
+        if $r;
 
     # setup %ENV (no blocks to preserve local)
     local $ENV{GIT_DIR} = $repo_path
@@ -24,7 +34,8 @@ sub new {
     # chdir to the expected directory
     my $orig = cwd;
     my $dest
-        = defined $wc_subdir && length $wc_subdir ? $wc_subdir
+        = $o                 && defined $o->{cwd} ? $o->{cwd}
+        : defined $wc_subdir && length $wc_subdir ? $wc_subdir
         : defined $wc_path   && length $wc_path   ? $wc_path
         :                                           undef;
     if ( defined $dest ) {
