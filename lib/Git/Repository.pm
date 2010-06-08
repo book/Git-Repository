@@ -74,22 +74,12 @@ sub new {
     return $self;
 }
 
-sub init {
-    my ( $class, $dir, @args ) = @_;
-
-    # sanity check
-    croak "directory not found: $dir" if !-d $dir;
-
-    # run the actual init command
-    my $temp = bless { wc_path => $dir }, $class;
-    $temp->run( 'init', @args );
-
-    # create a proper Git::Repository object
-    return $class->new(
-        $temp->run_oneline(qw( rev-parse --is-bare-repository)) eq 'true'
-        ? ( repository => $dir )
-        : ( working_copy => $dir )
-    );
+sub create {
+    my ($class, @args) = @_;
+    my @output = $class->run( @args );
+    return $class->new( repository => $1 )
+        if $output[0] =~ /^Initialized empty Git repository in (.*)/;
+    return;
 }
 
 #
