@@ -79,10 +79,10 @@ sub close {
     # and wait for the child
     waitpid $self->{pid}, 0;
 
-    # we're done
-    $self->{finished} = 1;
+    # check $?
+    @{$self}{qw( exit signal core )} = ( $? >> 8, $? & 127, $? & 128 );
 
-    # TODO check $?
+    return $self;
 }
 
 1;
