@@ -40,7 +40,7 @@ ok( !eval { Git::Repository->new( repository => $dir ) },
 );
 like(
     $@,
-    qr/^fatal: Not a git repository: $dir /,    # error from Git::Repository
+    qr/^fatal: Not a git repository/,    # error from git itself
     '... expected error message'
 );
 
@@ -50,7 +50,7 @@ ok( !eval { Git::Repository->new( working_copy => $dir ) },
 );
 like(
     $@,
-    qr/^fatal: Not a git repository /,          # error from git itself
+    qr/^fatal: Not a git repository/,    # error from git itself
     '... expected error message'
 );
 
