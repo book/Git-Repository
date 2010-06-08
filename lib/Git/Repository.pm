@@ -104,19 +104,11 @@ sub command {
 # run a command, returns the output
 # die with errput if any
 sub run {
-    my ( $self, @args ) = @_;
-    my ( $option, @cmd ) = ( {}, grep { !ref } @args );
-    ($option) = grep { ref eq 'HASH' } @args;
+    my ( $self, @cmd ) = @_;
 
-    # FIXME other refs are ignored
-
-    # run the command
-    my $command = Git::Repository::Command->new( $self, @cmd );
-
-    # optional input
-    if ( exists $option->{stdin} ) {
-        print { $command->{stdin} } $option->{stdin};
-    }
+    # run the command (pass the instance if called as an instance method)
+    my $command
+        = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
     # get output / errput
     my ( $stdout, $stderr ) = @{$command}{qw(stdout stderr)};
