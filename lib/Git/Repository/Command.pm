@@ -53,6 +53,9 @@ sub new {
 
     # FIXME - check open3 error conditions
 
+    # some input was provided
+    print {$in} $o->{input} if exists $o->{input};
+
     # chdir back to origin
     if ( defined $dest ) {
         chdir $orig or croak "Can't chdir back to $orig: $!";
