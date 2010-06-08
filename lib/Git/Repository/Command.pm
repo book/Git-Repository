@@ -21,8 +21,7 @@ sub new {
     } @cmd;
 
     # get some useful paths
-    my ( $repo_path, $wc_path, $wc_subdir )
-        = ( $r->repo_path, $r->wc_path, $r->wc_subdir )
+    my ( $repo_path, $wc_path ) = ( $r->repo_path, $r->wc_path)
         if $r;
 
     # setup %ENV (no blocks to preserve local)
@@ -35,7 +34,6 @@ sub new {
     my $orig = cwd;
     my $dest
         = $o                 && defined $o->{cwd} ? $o->{cwd}
-        : defined $wc_subdir && length $wc_subdir ? $wc_subdir
         : defined $wc_path   && length $wc_path   ? $wc_path
         :                                           undef;
     if ( defined $dest ) {

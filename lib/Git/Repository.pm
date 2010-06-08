@@ -12,7 +12,7 @@ use Git::Repository::Command;
 our $VERSION = '0.01';
 
 # a few simple accessors
-for my $attr (qw( repo_path wc_path wc_subdir )) {
+for my $attr (qw( repo_path wc_path )) {
     no strict 'refs';
     *$attr = sub { $_[0]{$attr} };
 }
