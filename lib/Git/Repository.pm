@@ -119,7 +119,11 @@ sub run {
     $command->close;
 
     # something's wrong
-    croak join "\n", @errput if @errput;
+    if (@errput) {
+        my $errput = join "\n", @errput;
+        if   ( $command->{exit} == 128 ) { croak $errput; }
+        else                             { carp $errput; }
+    }
 
     # return the output
     return wantarray ? @output : join "\n", @output;
