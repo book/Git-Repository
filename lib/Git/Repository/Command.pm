@@ -7,7 +7,15 @@ use Cwd qw( cwd );
 use IPC::Open3 qw( open3 );
 use Scalar::Util qw( blessed );
 
-# TODO - actually find the git binary
+# CAN I HAS GIT?
+sub _has_git {
+    my ($binary) = @_;
+    my ( $in, $out );
+    my $err = Symbol::gensym;
+    my $pid = eval { open3( $in, $out, $err, $binary, '--version' ); };
+    waitpid $pid, 0;
+    return !!<$out>;
+}
 
 sub new {
     my ( $class, @cmd ) = @_;
