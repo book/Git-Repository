@@ -65,7 +65,7 @@ sub new {
     # start the command
     my ( $in, $out, $err );
     $err = Symbol::gensym;
-    my $pid = open3( $in, $out, $err, 'git', @cmd );
+    my $pid = open3( $in, $out, $err, $git, @cmd );
 
     # FIXME - check open3 error conditions
 
