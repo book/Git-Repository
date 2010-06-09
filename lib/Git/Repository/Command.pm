@@ -17,6 +17,8 @@ sub _has_git {
     return !!<$out>;
 }
 
+my %binary;    # cache calls to _has_git
+
 sub new {
     my ( $class, @cmd ) = @_;
 
@@ -27,6 +29,14 @@ sub new {
       : blessed $_ && $_->isa('Git::Repository') ? $r ||= $_
       :                                          0 )
     } @cmd;
+
+    # get and check the git command
+    my $git = defined $o->{git} ? $o->{git} : 'git';
+    $binary{$git} = _has_git($git)
+        if !exists $binary{$git};
+
+    croak "git binary '$git' not available or broken"
+        if !$binary{$git};
 
     # get some useful paths
     my ( $repo_path, $wc_path ) = ( $r->repo_path, $r->wc_path)
