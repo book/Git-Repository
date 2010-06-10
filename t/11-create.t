@@ -20,6 +20,7 @@ my $tmp = tempdir( CLEANUP => 1 );
 
 # some dirname generating routine
 my $i;
+
 sub next_dir {
     my $dir = File::Spec->catdir( $tmp, ++$i );
     mkpath $dir if @_;
@@ -31,15 +32,31 @@ $dir = next_dir;
 
 # PASS - non-existent directory
 BEGIN { $tests += 4 }
+my $gitdir = File::Spec->catdir( $dir, '.git' );
 ok( $r = eval { $r = Git::Repository->create( init => $dir ); },
     "create( init => $i )" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
-is( $r->repo_path,
-    File::Spec->catdir( $dir, '.git' ),
-    '... correct repo_path'
-);
-is( $r->wc_path, $dir, '... correct wc_path' );
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,    '... correct wc_path' );
+
+# PASS - new() on a normal repository
+BEGIN { $tests += 4 }
+ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
+    "new( repository => $i )" );
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,    '... correct wc_path' );
+
+# PASS - new() on a normal repository
+BEGIN { $tests += 4 }
+ok( $r = eval { Git::Repository->new( working_copy => $dir ); },
+    "new( repository => $i )" );
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,    '... correct wc_path' );
 
 # FAIL - command doesn't initialize a git repository
 BEGIN { $tests += 2 }
@@ -86,6 +103,15 @@ BEGIN { $tests += 4 }
 $dir = next_dir;
 ok( $r = eval { Git::Repository->create( qw( init --bare ), $dir ); },
     "create( clone => @{[ $i - 1 ]} => $i )" );
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+is( $r->repo_path, $dir,  '... correct repo_path' );
+is( $r->wc_path,   undef, '... correct wc_path' );
+
+# PASS - new() on a bare repository
+BEGIN { $tests += 4 }
+ok( $r = eval { Git::Repository->new( repository => $dir ); },
+    "new( repository => $i )" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $dir,  '... correct repo_path' );
