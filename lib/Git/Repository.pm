@@ -46,19 +46,11 @@ sub new {
         $self->{repo_path} = abs_path( $self->run(qw( rev-parse --git-dir )) )
             if !defined $self->{repo_path};
     }
-    elsif ( $self->run(qw( rev-parse --is-bare-repository )) eq 'false' ) {
 
-        # we have a repo_path, try to find the wc_path
-        my $updir
-            = File::Spec->catdir( $self->{repo_path}, File::Spec->updir );
-        if ($self->run( qw( rev-parse --is-inside-work-tree ),
-                { cwd => $updir } ) eq 'true'
-            )
-        {
-            my $cdup = $self->run(qw(rev-parse --show-cdup));
-            $self->{wc_path} = abs_path(
-                File::Spec->catdir( $updir, length $cdup ? $cdup : () ) );
-        }
+    # this is a non-bare repository, the work tree is just above the gitdir
+    elsif ( $self->run(qw( rev-parse --is-bare-repository )) eq 'false' ) {
+        $self->{wc_path} = abs_path(
+            File::Spec->catdir( $self->{repo_path}, File::Spec->updir ) );
     }
 
     # sanity check
