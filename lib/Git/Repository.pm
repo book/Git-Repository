@@ -42,9 +42,13 @@ sub new {
     if ( defined $wc_path ) {
         croak "directory not found: $wc_path"
             if !-d $wc_path;
-        $self->{wc_path}   = abs_path($wc_path);
-        $self->{repo_path} = abs_path( $self->run(qw( rev-parse --git-dir )) )
-            if !defined $self->{repo_path};
+        $self->{wc_path} = abs_path($wc_path);
+        if ( !defined $self->{repo_path} ) {
+            $self->{repo_path} = $self->run(qw( rev-parse --git-dir ));
+            $self->{repo_path}
+                = File::Spec->catdir( $self->{wc_path}, $self->{repo_path} )
+                if !File::Spec->file_name_is_absolute( $self->{repo_path} );
+        }
     }
 
     # this is a non-bare repository, the work tree is just above the gitdir
