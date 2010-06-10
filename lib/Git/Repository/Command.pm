@@ -111,3 +111,49 @@ sub close {
 
 1;
 
+__END__
+
+=head1 NAME
+
+Git::Repository::Command - Command objects for running git
+
+=head1 SYNOPSIS
+
+    use Git::Repository::Command;
+
+    # invoke an external git command, and return an object
+    $cmd = Git::Repository::Command->(@cmd);
+
+    # a Git::Repository object can provide more context
+    $cmd = Git::Repository::Command->( $r, @cmd );
+
+    # options can be passed as a hashref
+    $cmd = Git::Repository::Command->( $r, @cmd, \%option );
+
+    # $cmd is basically a hash
+    $cmd->{stdin};     # filehandle to the process' stdin (write)
+    $cmd->{stdout};    # filehandle to the process' stdout (read)
+    $cmd->{stderr};    # filehandle to the process' stdout (read)
+    $cmd->{pid};       # pid of the child process
+
+    # done!
+    $cmd->close();
+
+=head1 DESCRIPTION
+
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK), C<< <book at cpan.org> >>
+
+=head1 COPYRIGHT
+
+Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
+
