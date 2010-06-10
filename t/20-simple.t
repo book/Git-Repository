@@ -62,3 +62,18 @@ $r->run( commit => '-m', $message );
 my @log = $r->run( log => '--pretty=format:%s' );
 is_deeply( \@log, [$message], 'git commit ; git log' );
 
+# use commit-tree with input option
+BEGIN { $tests += 4 }
+my $parent = $r->run( log => '--pretty=format:%H' );
+like( $parent, qr/^[a-f0-9]{40}$/, 'parent commit id' );
+my $tree = $r->run( log => '--pretty=format:%T' );
+like( $parent, qr/^[a-f0-9]{40}$/, 'parent tree id' );
+my $commit = $r->run(
+    'commit-tree' => $tree,
+    '-p',
+    $parent,
+    { input => "$message $tree" },
+);
+like( $commit, qr/^[a-f0-9]{40}$/, 'new commit id' );
+cmp_ok( $commit, 'ne', $parent, 'new commit id is different from parent id' );
+
