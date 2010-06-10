@@ -75,7 +75,10 @@ sub new {
     croak $@ if !defined $pid;
 
     # some input was provided
-    print {$in} $o->{input} if exists $o->{input};
+    if ( exists $o->{input} ) {
+        print {$in} $o->{input};
+        $in->close;
+    }
 
     # chdir back to origin
     if ( defined $dest ) {
@@ -95,10 +98,10 @@ sub close {
     my ($self) = @_;
 
     # close all pipes
-    my ($in, $out, $err) = @{$self}{qw( stdin stdout stderr )};
-    close $in  or carp "error closing stdin: $!";
-    close $out or carp "error closoutg stdout: $!";
-    close $err or carp "error closerrg stderr: $!";
+    my ( $in, $out, $err ) = @{$self}{qw( stdin stdout stderr )};
+    $in->opened  and $in->close  || carp "error closing stdin: $!";
+    $out->opened and $out->close || carp "error closing stdout: $!";
+    $err->opened and $err->close || carp "error closing stderr: $!";
 
     # and wait for the child
     waitpid $self->{pid}, 0;
