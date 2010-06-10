@@ -7,6 +7,9 @@ use File::Path;
 use Cwd qw( abs_path );
 use Git::Repository;
 
+plan skip_all => 'Default git binary not found in PATH'
+    if !Git::Repository::Command::_has_git('git');
+
 plan tests => my $tests;
 
 # clean up the environment

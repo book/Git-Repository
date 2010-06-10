@@ -6,6 +6,9 @@ use File::Spec;
 use File::Path;
 use Git::Repository;
 
+plan skip_all => 'Default git binary not found in PATH'
+    if !Git::Repository::Command::_has_git('git');
+
 plan tests => 12;
 
 # a place to put a git repository
