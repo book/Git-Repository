@@ -42,23 +42,20 @@ sub new {
     if ( defined $wc_path ) {
         croak "directory not found: $wc_path"
             if !-d $wc_path;
-        $self->{wc_path} = abs_path($wc_path);
-        $self->{repo_path}
-            = abs_path( $self->run_oneline(qw( rev-parse --git-dir )) )
+        $self->{wc_path}   = abs_path($wc_path);
+        $self->{repo_path} = abs_path( $self->run(qw( rev-parse --git-dir )) )
             if !defined $self->{repo_path};
     }
-    elsif (
-        $self->run_oneline(qw( rev-parse --is-bare-repository )) eq 'false' )
-    {
+    elsif ( $self->run(qw( rev-parse --is-bare-repository )) eq 'false' ) {
 
         # we have a repo_path, try to find the wc_path
         my $updir
             = File::Spec->catdir( $self->{repo_path}, File::Spec->updir );
-        if ($self->run_oneline( qw( rev-parse --is-inside-work-tree ),
+        if ($self->run( qw( rev-parse --is-inside-work-tree ),
                 { cwd => $updir } ) eq 'true'
             )
         {
-            my $cdup = $self->run_oneline(qw(rev-parse --show-cdup));
+            my $cdup = $self->run(qw(rev-parse --show-cdup));
             $self->{wc_path} = abs_path(
                 File::Spec->catdir( $updir, length $cdup ? $cdup : () ) );
         }
@@ -66,8 +63,7 @@ sub new {
 
     # sanity check
     my $gitdir
-        = eval { abs_path( $self->run_oneline(qw( rev-parse --git-dir )) ) }
-        || '';
+        = eval { abs_path( $self->run(qw( rev-parse --git-dir )) ) } || '';
     croak "fatal: Not a git repository: $repo_path"
         if $self->{repo_path} ne $gitdir;
 
@@ -118,9 +114,6 @@ sub run {
     # return the output
     return wantarray ? @output : join "\n", @output;
 }
-
-# run a command, return the first line of output
-sub run_oneline { return ( run(@_) )[0]; }
 
 1;
 
