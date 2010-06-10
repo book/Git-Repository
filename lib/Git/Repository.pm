@@ -120,7 +120,7 @@ sub run {
 }
 
 # run a command, return the first line of output
-sub run_oneline { return ( shift->run(@_) )[0]; }
+sub run_oneline { return ( run(@_) )[0]; }
 
 1;
 
