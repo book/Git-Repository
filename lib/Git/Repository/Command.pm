@@ -112,6 +112,11 @@ sub close {
     return $self;
 }
 
+sub DESTROY {
+    my ($self) = @_;
+    $self->close if !exists $self->{exit};
+}
+
 1;
 
 __END__
