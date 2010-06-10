@@ -58,6 +58,10 @@ sub new {
         chdir $dest or croak "Can't chdir to $dest: $!";
     }
 
+    # turn us into a dumb terminal
+    local $ENV{TERM};
+    delete $ENV{TERM};
+
     # update the environment (no block to preserve local)
     local @ENV{ keys %{ $o->{env} } } = values %{ $o->{env} }
         if exists $o->{env};
