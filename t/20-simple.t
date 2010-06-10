@@ -44,15 +44,17 @@ like(
 
 # with git commit it's not fatal
 BEGIN { $tests += 3 }
-ok( my $cmd = $r->command('commit'), 'git commit' );
-isa_ok( $cmd, 'Git::Repository::Command' );
-my $error = $cmd->{stderr}->getline;
-$cmd->close;
-like(
-    $error,
-    qr/^error: Terminal is dumb, but EDITOR unset/,
-    'Git complains about lack of smarts and editor'
-);
+{
+    ok( my $cmd = $r->command('commit'), 'git commit' );
+    isa_ok( $cmd, 'Git::Repository::Command' );
+    my $error = $cmd->{stderr}->getline;
+    $cmd->close;
+    like(
+        $error,
+        qr/^error: Terminal is dumb, but EDITOR unset/,
+        'Git complains about lack of smarts and editor'
+    );
+}
 
 # commit again
 BEGIN { $tests += 1 }
@@ -76,4 +78,20 @@ my $commit = $r->run(
 );
 like( $commit, qr/^[a-f0-9]{40}$/, 'new commit id' );
 cmp_ok( $commit, 'ne', $parent, 'new commit id is different from parent id' );
+$r->run( reset => $commit );
+
+# process "long" output
+BEGIN { $tests += 2 }
+{
+    my $lines;
+    my $cmd = $r->command( log => '--pretty=oneline', '--all' );
+    isa_ok( $cmd, 'Git::Repository::Command' );
+    my $log = $cmd->{stdout};
+    while (<$log>) {
+        $lines++;
+    }
+    is( $lines, 2, 'git log' );
+
+    # no call to close, we count on DESTROY
+}
 
