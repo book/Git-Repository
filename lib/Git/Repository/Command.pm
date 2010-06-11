@@ -19,6 +19,7 @@ sub _has_git {
     my $path_sep = $Config::Config{path_sep} || ';';
     return
         if !grep {-x} File::Spec->file_name_is_absolute($binary)
+            || ( File::Spec->splitpath($binary) )[1]
         ? $binary
         : map { File::Spec->catfile( $_, $binary ) }
             split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
