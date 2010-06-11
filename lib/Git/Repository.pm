@@ -80,6 +80,7 @@ sub create {
 
 # return a Git::Repository::Command object
 sub command {
+    shift @_ if !ref $_[0];    # remove class name if called as class method
     return Git::Repository::Command->new(@_);
 }
 
