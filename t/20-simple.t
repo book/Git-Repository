@@ -126,5 +126,7 @@ BEGIN { $tests += 2 }
     my $line = $cmd->{stdout}->getline();
     chomp $line;
     is( $line, $commit, 'git log -1' );
+    $cmd->{stdout}->close;
+    $cmd->{stderr}->close;
 }
 
