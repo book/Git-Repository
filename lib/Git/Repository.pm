@@ -224,6 +224,55 @@ Returns the repository path.
 
 Returns the working copy path.
 
+=head1 HOW-TO
+
+=head2 Create a new repository
+
+    my $r = Git::Repository->create( init => $dir );
+
+=head2 Clone a repository
+
+    my $r = Git::Repository->create( clone => $url => $dir );
+
+=head2 Run a simple command
+
+    $r->run( add => '.' );
+    $r->run( commit => '-m', 'my commit message' );
+
+=head2 Process normal and error output
+
+The C<run()> command doesn't capture stderr: it only warns (or dies)
+if something was printed on it. To be able to actually capture error
+output, C<command()> must be used.
+
+    my $cmd = $r->command( @cmd );
+    my @errput = $cmd->{stderr}->getlines();
+    $cmd->close;
+
+C<run()> also captures all output at once, which can lead to unecessary
+memory consumption when capturing the output of some really verbose
+commands.
+
+    my $cmd = $r->command( log => '--pretty=oneline', '--all' );
+    my $log = $cmd->{stdout};
+    while (<$log>) {
+        ...;
+    }
+    $cmd->close;
+
+Of course, as soon as one starts reading and writing to an external
+process' communication handles, a risk of blocking exists.
+I<Caveat emptor>.
+
+=head2 Provide input on standard input
+
+Use the C<input> option:
+
+    my $commit = $r->run( 'commit-tree', $tree, '-p', $parent,
+        { input => $message } );
+
+See L<Git::Repository::Command> for other available options.
+
 =head1 AUTHOR
 
 Philippe Bruhat (BooK), C<< <book at cpan.org> >>
