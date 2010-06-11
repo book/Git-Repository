@@ -130,3 +130,15 @@ BEGIN { $tests += 2 }
     $cmd->{stderr}->close;
 }
 
+# FAIL - run a command in a non-existent directory
+BEGIN { $tests += 2 }
+ok( !eval {
+        $r->run(
+            log => '-1',
+            { cwd => File::Spec->catdir( $dir, 'not-there' ) }
+        );
+    },
+    'Fail with option { cwd => non-existent dir }'
+);
+like( $@, qr/^Can't chdir to $dir/, '... expected error message' );
+
