@@ -18,10 +18,16 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $dir = tempdir( CLEANUP => 1 );
 
 # PASS - non-existent directory
-BEGIN { $tests += 1 }
+BEGIN { $tests += 2 }
 my $r = Git::Repository->create( init => $dir );
 isa_ok( $r, 'Git::Repository' );
 
+my $gitdir = $r->run( qw( rev-parse --git-dir ) );
+$gitdir = File::Spec->catfile( $dir, $gitdir )
+    if ! File::Spec->file_name_is_absolute( $gitdir );
+is( $gitdir, $r->repo_path, 'git-dir' );
+
+# add file to the index
 my $file = File::Spec->catfile( $r->wc_path, 'readme.txt' );
 open my $fh, '>', $file or die "Can't open $file: $!";
 print {$fh} << 'TXT';
@@ -29,7 +35,6 @@ Some readme text
 for our example
 TXT
 
-# add file to the index
 $r->run( add => 'readme.txt' );
 
 # unset all editors
@@ -93,5 +98,33 @@ BEGIN { $tests += 2 }
     is( $lines, 2, 'git log' );
 
     # no call to close, we count on DESTROY
+}
+
+# use command as a class method, with cwd option
+BEGIN { $tests += 2 }
+{
+    my $cmd = Git::Repository->command(
+        { cwd => $dir },
+        log => '-1',
+        '--pretty=format:%H'
+    );
+    isa_ok( $cmd, 'Git::Repository::Command' );
+    my $line = $cmd->{stdout}->getline();
+    chomp $line;
+    is( $line, $commit, 'git log -1' );
+}
+
+# use command as a class method, with env option
+BEGIN { $tests += 2 }
+{
+    my $cmd = Git::Repository->command(
+        { env => { GIT_DIR => $gitdir } },
+        log => '-1',
+        '--pretty=format:%H'
+    );
+    isa_ok( $cmd, 'Git::Repository::Command' );
+    my $line = $cmd->{stdout}->getline();
+    chomp $line;
+    is( $line, $commit, 'git log -1' );
 }
 
