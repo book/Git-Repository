@@ -165,8 +165,68 @@ Git::Repository::Command - Command objects for running git
     # done!
     $cmd->close();
 
+    # exit information
+    $cmd->{exit};      # exit status
+    $cmd->{signal};    # signal
+    $cmd->{core};      # core dumped? (boolean)
+
 =head1 DESCRIPTION
 
+C<Git::Repository::Command> is a class that actually launches a B<git>
+commands, allowing to interact with it through its C<STDIN>, C<STDOUT>
+and C<STDERR>.
+
+This module is meant to be invoked through C<Git::Repository>.
+
+=head1 METHODS
+
+C<Git::Repository::Command> supports the following methods:
+
+=head2 new( @cmd )
+
+Runs a B<git> command with the parameters in C<@cmd>.
+
+If C<@cmd> contains a C<Git::Repository> object, it is used to provide
+context to the B<git> command.
+
+If C<@cmd> contains a hash reference, it is taken as an I<option> hash.
+The recognized keys are:
+
+=over 4
+
+=item C<git>
+
+The actual git command to run. Can be an absolute path, 
+
+=item cwd
+
+The I<current working directory> in which the git command will be run.
+
+=item C<env>
+
+=item C<input>
+
+A string that is send to the git command standard input, which is then closed.
+
+
+=back
+
+The hash returned by C<new()> has the following keys:
+
+    $cmd->{stdin};     # filehandle to the process' stdin (write)
+    $cmd->{stdout};    # filehandle to the process' stdout (read)
+    $cmd->{stderr};    # filehandle to the process' stdout (read)
+    $cmd->{pid};       # pid of the child process
+
+=head2 close()
+
+Close all pipes to the child process, and collects exit status, etc.
+
+This adds the following keys to the hash:
+
+    $cmd->{exit};      # exit status
+    $cmd->{signal};    # signal
+    $cmd->{core};      # core dumped? (boolean)
 
 =head1 AUTHOR
 
