@@ -6,15 +6,37 @@ use Carp;
 use Cwd qw( cwd );
 use IPC::Open3 qw( open3 );
 use Scalar::Util qw( blessed );
+use File::Spec;
+use IO::Handle;
+use Config;
 
 # CAN I HAS GIT?
 sub _has_git {
     my ($binary) = @_;
+
+    # absolute: must exist and be an executable file
+    if ( File::Spec->file_name_is_absolute($binary) ) {
+        return if !-x $binary;
+    }
+
+    # relative: must be in PATH
+    else {
+        my $path_sep = $Config::Config{path_sep} || ';';
+        return
+            if !grep {-x}
+                map { File::Spec->catfile( $_, $binary ) }
+                split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
+    }
+
+    # try to run it
     my ( $in, $out );
     my $err = Symbol::gensym;
     my $pid = eval { open3( $in, $out, $err, $binary, '--version' ); };
     waitpid $pid, 0;
-    return !!<$out>;
+    my $version = <$out>;
+
+    # does it really look like git?
+    return $version =~ /^git version \d/;
 }
 
 my %binary;    # cache calls to _has_git
