@@ -67,8 +67,8 @@ sub new {
 }
 
 sub create {
-    my ($class, @args) = @_;
-    my @output = $class->run( @args );
+    my ( $class, @args ) = @_;
+    my @output = $class->run(@args);
     return $class->new( repository => $1 )
         if $output[0] =~ /^Initialized empty Git repository in (.*)/;
     return;
