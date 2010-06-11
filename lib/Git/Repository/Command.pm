@@ -14,19 +14,14 @@ use Config;
 sub _has_git {
     my ($binary) = @_;
 
-    # absolute: must exist and be an executable file
-    if ( File::Spec->file_name_is_absolute($binary) ) {
-        return if !-x $binary;
-    }
-
-    # relative: must be in PATH
-    else {
-        my $path_sep = $Config::Config{path_sep} || ';';
-        return
-            if !grep {-x}
-                map { File::Spec->catfile( $_, $binary ) }
-                split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
-    }
+    # compute a list of candidate files (if relative, look in PATH)
+    # if we can't find any, we're done
+    my $path_sep = $Config::Config{path_sep} || ';';
+    return
+        if !grep {-x} File::Spec->file_name_is_absolute($binary)
+        ? $binary
+        : map { File::Spec->catfile( $_, $binary ) }
+            split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
 
     # try to run it
     my ( $in, $out );
