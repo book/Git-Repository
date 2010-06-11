@@ -118,27 +118,33 @@ __END__
 
 =head1 NAME
 
-Git::Repository - Perl wrapper around git
+Git::Repository - Perl interface to Git repositories
 
 =head1 SYNOPSIS
 
     use Git::Repository;
 
-    my $r = Git::Repository->new();
-    # new object from a working copy
-    my $r = Git::Repository->new( working_copy => $wc_path );
+    # start from an existing repository
+    $r = Git::Repository->new( repository => $gitdir );
 
-    # new object from a repository
-    my $r = Git::Repository->new( repository => $repo_path );
+    # start from an existing working copy
+    $r = Git::Repository->new( working_copy => $dir );
 
-    # new object from both
-    my $r = Git::Repository->new(
-        repository   => $repo_path,
-        working_copy => $wc_path
-    );
+    # or init our own repository
+    $r = Git::Repository->create( init => $dir, ... );
 
-    # run a command
-    my $output = $r->command( @cmd );
+    # or clone from a URL
+    $r = Git::Repository->create( clone => $url, ... );
+
+    # run commands
+    # - get the full output (no errput)
+    $output = $r->run(@cmd);
+
+    # - get the full output as a list of lines (no errput)
+    @output = $r->run(@cmd);
+
+    # - obtain a Git::Repository::Command object
+    $cmd = $r->command(@cmd);
 
 =head1 DESCRIPTION
 
