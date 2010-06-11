@@ -68,9 +68,9 @@ sub new {
     # chdir to the expected directory
     my $orig = cwd;
     my $dest
-        = $o                 && defined $o->{cwd} ? $o->{cwd}
-        : defined $wc_path   && length $wc_path   ? $wc_path
-        :                                           undef;
+        = defined $o->{cwd}                   ? $o->{cwd}
+        : defined $wc_path && length $wc_path ? $wc_path
+        :                                       undef;
     if ( defined $dest ) {
         chdir $dest or croak "Can't chdir to $dest: $!";
     }
