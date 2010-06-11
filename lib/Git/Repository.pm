@@ -148,6 +148,82 @@ Git::Repository - Perl interface to Git repositories
 
 =head1 DESCRIPTION
 
+C<Git::Repository> is a Perl interface to Git, allowing scripted
+interactions with one or more repositories. It's a low-level interface,
+allowing to call B<any> Git command, either I<porcelain> or I<plumbing>,
+including bidirectional commands such as C<git commit-tree>.
+
+Since it is a low-level interface, it doesn't provide any fancy way to
+call Git commands. It is up to the programmer to setup any environment
+variables (except C<GIT_DIR> and C<GIT_WORK_TREE>) that the underlying
+Git command may need and use.
+
+A C<Git::Repository> object simply provides context to the git commands
+being run. Is it possible to call the  C<command()>and C<run()> methods
+agains the class itself, and the context (typically I<current working
+directory>) will be obtained from the options and environment.
+
+=head1 METHODS
+
+C<Git::Repository> supports the following methods:
+
+=head2 new( %args )
+
+Create a new C<Git::Repository> object, based on an existing Git repository.
+
+Parameters are:
+
+=over 4
+
+=item repository => $gitdir
+
+The location of the git repository (F<.git> directory or equivalent).
+
+=item working_copy => $dir
+
+The location of the git working copy (for a non-bare repository).
+
+=back
+
+At least one of the two parameters is required. Usually, one is enough,
+as C<Git::Repository> can work out where the other directory (if any) is.
+
+=head2 create( @cmd )
+
+Runs a repository initializing command (like C<init> or C<clone>) and
+returns a C<Git::Repository> object pointing to it. C<@cmd> can contain
+a hashref with options (see L<Git::Repository::Command>.
+
+This method runs the command and parses the first line as
+C<Initialized empty Git repository in $dir> to find the repository path.
+
+=head2 command( @cmd )
+
+Runs the git sub-command and options, and returns a C<Git::Repository::Command>
+object pointing to the sub-process running the command.
+
+As described in the L<Git::Repository::Command> documentation, C<@cmd>
+can also hold a hashref containing options for the command.
+
+=head2 run( @cmd )
+
+Runs the command and returns the output as a string in scalar context,
+and as a list of lines in list context. Also accepts a hashref of options.
+
+Lines are automatically C<chomp>ed.
+
+If the git command printed anything on stderr, it will be printed as
+warnings. If the git sub-process exited with status C<128> (fatal error),
+C<run()> will C<die()>.
+
+=head2 repo_path()
+
+Returns the repository path.
+
+=head2 wc_path()
+
+Returns the working copy path.
+
 =head1 AUTHOR
 
 Philippe Bruhat (BooK), C<< <book at cpan.org> >>
