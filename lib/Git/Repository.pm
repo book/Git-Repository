@@ -273,6 +273,43 @@ Use the C<input> option:
 
 See L<Git::Repository::Command> for other available options.
 
+=head1 OTHER PERL GIT WRAPPERS
+
+A number of Perl git wrappers already exist. Why create a new one?
+
+I have a lot of ideas of nice things to do with Git as a tool to
+manipulate blobs, trees, and tags, that may or may not reprensent
+version history of a project. A lot of those commands can output
+huge amounts of data, which I need to be able to process in chunks.
+Some of these commands also expect to receive input.
+
+=head2 Git.pm
+
+Git.pm is not on CPAN. It is usually packaged with Git, and installed with
+the system Perl libraries. Not being on CPAN makes it harder to install
+in any Perl. It makes it harder for a CPAN library to depend on it.
+
+It doesn't allow calling C<git init> or C<git clone>.
+
+The C<command_bidi_pipe> function especially has problems:
+L<http://kerneltrap.org/mailarchive/git/2008/10/24/3789584>
+
+
+=head2 Git::Class
+
+Depends on Moose, which seems an unnecessary dependency for a simple
+wrapper around Git.
+
+Although it supports C<git init> and C<git clone>, it is mostly aimed at
+porcelain commands, and provides no way to control bidirectional commands
+(such as C<git commit-tree>).
+
+
+=head2 Git::Wrapper
+
+Doesn't support streams or bidirectional commands.
+
+
 =head1 AUTHOR
 
 Philippe Bruhat (BooK), C<< <book at cpan.org> >>
