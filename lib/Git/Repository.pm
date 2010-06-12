@@ -271,6 +271,19 @@ Use the C<input> option:
     my $commit = $r->run( 'commit-tree', $tree, '-p', $parent,
         { input => $message } );
 
+=head2 Change the environment of a command
+
+Use the C<env> option:
+
+    $r->run(
+        'commit', '-m', 'log message',
+        {   env => {
+                GIT_COMMITTER_NAME  => 'Git::Repository',
+                GIT_COMMITTER_EMAIL => 'book@cpan.org',
+            },
+        },
+    );
+
 See L<Git::Repository::Command> for other available options.
 
 =head1 OTHER PERL GIT WRAPPERS

@@ -196,7 +196,7 @@ The recognized keys are:
 
 =item C<git>
 
-The actual git command to run. Can be an absolute path, 
+The actual git binary to run. By default, it is just C<git>.
 
 =item cwd
 
@@ -204,10 +204,11 @@ The I<current working directory> in which the git command will be run.
 
 =item C<env>
 
+A hashref containing key / values to add to the git command environment.
+
 =item C<input>
 
 A string that is send to the git command standard input, which is then closed.
-
 
 =back
 
