@@ -1,9 +1,16 @@
 Build.PL
 Changes
-MANIFEST
-Makefile.PL
-README
 lib/Git/Repository.pm
+lib/Git/Repository/Command.pm
+Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
+META.yml
+README
 t/00-load.t
+t/05-try_git.t
+t/10-new_fail.t
+t/11-create.t
+t/20-simple.t
 t/pod-coverage.t
 t/pod.t
