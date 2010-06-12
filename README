@@ -1,15 +1,15 @@
 Git-Repository
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+Git::Repository is a Perl interface to Git, allowing scripted
+interactions with one or more repositories. It's a low-level interface,
+allowing to call any Git command, either porcelain or plumbing,
+including bidirectional commands such as git commit-tree.
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+Since it is a low-level interface, it doesn't provide any fancy way to
+call Git commands. It is up to the programmer to setup any environment
+variables (except GIT_DIR and GIT_WORK_TREE) that the underlying
+Git command may need and use.
+
 
 
 INSTALLATION
