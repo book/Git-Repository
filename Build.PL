@@ -11,7 +11,6 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     add_to_cleanup      => [ 'Git-Repository-*' ],
-    create_makefile_pl => 'traditional',
     meta_merge => {
         resources => {
             repository => 'http://github.com/book/Git-Repository',
