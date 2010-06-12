@@ -11,6 +11,11 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
     },
+    META_MERGE => {
+        resources => {
+            repository => 'http://github.com/book/Git-Repository',
+        },
+    },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Git-Repository-*' },
 );

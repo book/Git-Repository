@@ -12,6 +12,11 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup      => [ 'Git-Repository-*' ],
     create_makefile_pl => 'traditional',
+    meta_merge => {
+        resources => {
+            repository => 'http://github.com/book/Git-Repository',
+        },
+    },
 );
 
 $builder->create_build_script();
