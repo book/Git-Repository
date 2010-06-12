@@ -1,5 +1,8 @@
 Revision history for Git-Repository
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
+1.00 Sat Jun 12 11:50:06 CEST 2010
+        [YET ANOTHER GIT WRAPPER]
+        - Git::Repository provides context and a simple run() method
+        - Git::Repository::Command is the actual workhorse
+        - 94% test coverage
 

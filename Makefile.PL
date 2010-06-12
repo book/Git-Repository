@@ -18,4 +18,5 @@ WriteMakefile(
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Git-Repository-*' },
+    LICENSE             => 'perl',
 );

@@ -16,6 +16,7 @@ my $builder = Module::Build->new(
             repository => 'http://github.com/book/Git-Repository',
         },
     },
+    license => 'perl',
 );
 
 $builder->create_build_script();
