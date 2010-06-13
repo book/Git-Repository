@@ -43,14 +43,20 @@ TXT
 $r->run( add => 'readme.txt' );
 
 # unset all editors
-BEGIN { $tests += 2 }
 delete @ENV{qw( EDITOR VISUAL )};
-ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
-like(
-    $@,
-    qr/^fatal: Terminal is dumb, but EDITOR unset /,
-    'Git complains about lack of smarts and editor'
-);
+
+SKIP: {
+    BEGIN { $tests += 2 }
+    skip "these tests require git > 1.6.6, but we only have $version", 2
+        if !git_minimum_version('1.6.6');
+
+    ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
+    like(
+        $@,
+        qr/^fatal: Terminal is dumb, but EDITOR unset /,
+        'Git complains about lack of smarts and editor'
+    );
+}
 
 # with git commit it's not fatal
 BEGIN { $tests += 3 }
