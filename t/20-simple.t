@@ -19,11 +19,13 @@ my $home = cwd;
 my $dir = tempdir( CLEANUP => 1 );
 
 # PASS - non-existent directory
-BEGIN { $tests += 2 }
+BEGIN { $tests += 3 }
 chdir $dir;
 my $r = Git::Repository->create( 'init' );
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
+
+is( $r->wc_path, $dir, 'work tree' );
 
 my $gitdir = $r->run( qw( rev-parse --git-dir ) );
 $gitdir = File::Spec->catfile( $dir, $gitdir )
@@ -31,7 +33,7 @@ $gitdir = File::Spec->catfile( $dir, $gitdir )
 is( $gitdir, $r->repo_path, 'git-dir' );
 
 # add file to the index
-my $file = File::Spec->catfile( $r->wc_path, 'readme.txt' );
+my $file = File::Spec->catfile( $dir, 'readme.txt' );
 open my $fh, '>', $file or die "Can't open $file: $!";
 print {$fh} << 'TXT';
 Some readme text
