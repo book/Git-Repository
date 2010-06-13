@@ -10,7 +10,7 @@ use Git::Repository;
 plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
 
-plan tests => my $tests;
+plan tests => my $tests + my $extra;
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
@@ -93,15 +93,6 @@ is( $r, undef,
     "create( clone => @{[ $i - 1 ]} => $i ) did not create a repository" );
 like( $@, qr/^fatal: /, 'fatal error from git' );
 
-# FAIL - init a dir that is a file
-BEGIN { $tests += 3 }
-$dir = next_dir;
-{ open my $fh, '>', $dir; }    # creates an empty file
-ok( !( $r = eval { $r = Git::Repository->create( init => $dir ); } ),
-    "create( init => $i ) FAILED" );
-is( $r, undef, "create( init => $i ) did not create a repository" );
-like( $@, qr/^fatal: /, 'fatal error from git' );
-
 # PASS - init a bare repository
 BEGIN { $tests += 4 }
 $dir = next_dir;
@@ -123,4 +114,27 @@ diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $dir,  '... correct repo_path' );
 is( $r->wc_path,   undef, '... correct wc_path' );
+
+# these tests requires git version > 1.6.5
+SKIP: {
+    my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
+    my @ver = split /\./, $version;
+    my @min = ( 1, 6, 5 );
+    skip "these tests require git > 1.6.5, but we only have $version", $extra
+        if !(   $ver[0] > $min[0]
+                || ($ver[0] == $min[0]
+                    && ( $ver[1] > $min[1]
+                        || ( $ver[1] == $min[1] && $ver[2] >= $min[2] ) )
+                )
+        );
+
+    # FAIL - init a dir that is a file
+    BEGIN { $extra += 3 }
+    $dir = next_dir;
+    { open my $fh, '>', $dir; }    # creates an empty file
+    ok( !( $r = eval { $r = Git::Repository->create( init => $dir ); } ),
+        "create( init => $i ) FAILED" );
+    is( $r, undef, "create( init => $i ) did not create a repository" );
+    like( $@, qr/^fatal: /, 'fatal error from git' );
+}
 
