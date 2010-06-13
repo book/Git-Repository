@@ -6,9 +6,14 @@ use File::Spec;
 use File::Path;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
+use t::Util;
 
 plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
+
+my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
+plan skip_all => "these tests require git > 1.6.5, but we only have $version"
+    if !git_minimum_version('1.6.0');
 
 plan tests => my $tests + my $extra;
 
@@ -117,16 +122,8 @@ is( $r->wc_path,   undef, '... correct wc_path' );
 
 # these tests requires git version > 1.6.5
 SKIP: {
-    my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
-    my @ver = split /\./, $version;
-    my @min = ( 1, 6, 5 );
     skip "these tests require git > 1.6.5, but we only have $version", $extra
-        if !(   $ver[0] > $min[0]
-                || ($ver[0] == $min[0]
-                    && ( $ver[1] > $min[1]
-                        || ( $ver[1] == $min[1] && $ver[2] >= $min[2] ) )
-                )
-        );
+        if !git_minimum_version( '1.6.5' );
 
     # FAIL - init a dir that is a file
     BEGIN { $extra += 3 }
