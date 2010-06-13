@@ -104,8 +104,11 @@ sub run {
     # something's wrong
     if (@errput) {
         my $errput = join "\n", @errput;
-        if   ( $command->{exit} == 128 ) { croak $errput; }
-        else                             { carp $errput; }
+        my $exit = $command->{exit};
+
+        # exit codes: 128 => fatal, 129 => usage
+        if   ( $exit == 128 || $exit == 129 ) { croak $errput; }
+        else                                  { carp $errput; }
     }
 
     # return the output
