@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 use File::Temp qw( tempdir );
 use File::Spec;
-use Cwd qw( abs_path );
+use Cwd qw( cwd abs_path );
 use Git::Repository;
 
 plan skip_all => 'Default git binary not found in PATH'
@@ -13,14 +13,17 @@ plan tests => my $tests;
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+my $home = cwd;
 
 # a place to put a git repository
 my $dir = tempdir( CLEANUP => 1 );
 
 # PASS - non-existent directory
 BEGIN { $tests += 2 }
-my $r = Git::Repository->create( init => $dir );
+chdir $dir;
+my $r = Git::Repository->create( 'init' );
 isa_ok( $r, 'Git::Repository' );
+chdir $home;
 
 my $gitdir = $r->run( qw( rev-parse --git-dir ) );
 $gitdir = File::Spec->catfile( $dir, $gitdir )

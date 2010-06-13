@@ -4,7 +4,7 @@ use Test::More;
 use File::Temp qw( tempdir );
 use File::Spec;
 use File::Path;
-use Cwd qw( abs_path );
+use Cwd qw( cwd abs_path );
 use Git::Repository;
 
 plan skip_all => 'Default git binary not found in PATH'
@@ -14,6 +14,7 @@ plan tests => my $tests;
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+my $home = cwd();
 
 # a place to put a git repository
 my $tmp = tempdir( CLEANUP => 1 );
@@ -33,12 +34,15 @@ $dir = next_dir;
 # PASS - non-existent directory
 BEGIN { $tests += 4 }
 my $gitdir = File::Spec->catdir( $dir, '.git' );
-ok( $r = eval { $r = Git::Repository->create( init => $dir ); },
-    "create( init => $i )" );
+mkpath $dir;
+chdir $dir;
+ok( $r = eval { $r = Git::Repository->create( 'init' ); },
+    "create( init ) => $i" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
+chdir $home;
 
 # PASS - new() on a normal repository
 BEGIN { $tests += 4 }
@@ -101,12 +105,15 @@ like( $@, qr/^fatal: /, 'fatal error from git' );
 # PASS - init a bare repository
 BEGIN { $tests += 4 }
 $dir = next_dir;
-ok( $r = eval { Git::Repository->create( qw( init --bare ), $dir ); },
-    "create( clone => @{[ $i - 1 ]} => $i )" );
+mkpath $dir;
+chdir $dir;
+ok( $r = eval { Git::Repository->create( qw( init --bare ) ); },
+    "create( clone => @{[ $i - 1 ]} ) => $i" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $dir,  '... correct repo_path' );
 is( $r->wc_path,   undef, '... correct wc_path' );
+chdir $home;
 
 # PASS - new() on a bare repository
 BEGIN { $tests += 4 }
