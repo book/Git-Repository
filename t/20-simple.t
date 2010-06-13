@@ -61,7 +61,7 @@ BEGIN { $tests += 3 }
     $cmd->close;
     like(
         $error,
-        qr/^error: Terminal is dumb, but EDITOR unset/,
+        qr/^error: Terminal is dumb/,
         'Git complains about lack of smarts and editor'
     );
 }
