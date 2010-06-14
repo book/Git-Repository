@@ -1,5 +1,11 @@
 Revision history for Git-Repository
 
+1.01 Mon Jun 14 08:17:38 CEST 2010
+        [ENHANCEMENTS]
+        - consider git failing with a usage message as a fatal error
+        [TESTS]
+        - don't bother testing too much if git is older than v1.6.0
+
 1.00 Sat Jun 12 11:50:06 CEST 2010
         [YET ANOTHER GIT WRAPPER]
         - Git::Repository provides context and a simple run() method
