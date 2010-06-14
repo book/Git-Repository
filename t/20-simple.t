@@ -37,6 +37,11 @@ $gitdir = File::Spec->catfile( $dir, $gitdir )
     if ! File::Spec->file_name_is_absolute( $gitdir );
 is( $gitdir, $r->repo_path, 'git-dir' );
 
+# check usage exit code
+BEGIN { $tests += 2 }
+ok( ! eval { $r->run( qw( commit --bonk ) ); }, "FAIL with usage text" );
+like( $@, qr/^usage: git commit/m, '... expected usage message' );
+
 # add file to the index
 my $file = File::Spec->catfile( $dir, 'readme.txt' );
 open my $fh, '>', $file or die "Can't open $file: $!";
