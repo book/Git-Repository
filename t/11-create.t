@@ -67,6 +67,17 @@ isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
 
+# PASS - new() on a subdir of the working copy
+BEGIN { $tests += 4 }
+my $subdir = File::Spec->catdir( $dir, 'sub' );
+mkpath $subdir;
+ok( $r = eval { Git::Repository->new( working_copy => $subdir ); },
+    "new( repository => $i/sub )" );
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,    '... correct wc_path' );
+
 # FAIL - command doesn't initialize a git repository
 BEGIN { $tests += 2 }
 ok( !( $r = eval { Git::Repository->create('--version'); } ),
