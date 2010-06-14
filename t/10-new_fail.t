@@ -48,14 +48,19 @@ like(
 );
 
 # FAIL - working copy is not a git working copy
-ok( !eval { Git::Repository->new( working_copy => $dir ) },
-    'working_copy directory is not a git working copy'
-);
-like(
-    $@,
-    qr/^fatal: Not a git repository/,    # error from git itself
-    '... expected error message'
-);
+SKIP: {
+    my $tmp = File::Spec->tmpdir();
+    skip "$tmp is already a working copy for some git repository", 2
+        if eval { Git::Repository->new( working_copy => $tmp ) };
+    ok( !eval { Git::Repository->new( working_copy => $dir ) },
+        'working_copy directory is not a git working copy'
+    );
+    like(
+        $@,
+        qr/^fatal: Not a git repository/,    # error from git itself
+        '... expected error message'
+    );
+}
 
 # FAIL - working copy is not a git working copy
 mkpath($gitdir);
