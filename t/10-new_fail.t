@@ -71,7 +71,7 @@ ok( !eval {
 );
 like(
     $@,
-    qr/^fatal: Not a git repository: $gitdir /,   # error from Git::Repository
+    qr/^fatal: Not a git repository/,   # error from git itself
     '... expected error message'
 );
 
