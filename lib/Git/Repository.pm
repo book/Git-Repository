@@ -12,7 +12,7 @@ use Git::Repository::Command;
 our $VERSION = '1.01';
 
 # a few simple accessors
-for my $attr (qw( repo_path wc_path )) {
+for my $attr (qw( repo_path wc_path wc_subdir )) {
     no strict 'refs';
     *$attr = sub { $_[0]{$attr} };
 }
@@ -235,6 +235,13 @@ Returns the repository path.
 =head2 wc_path()
 
 Returns the working copy path.
+Used as current working directory by C<Git::Repository::Command>.
+
+=head2 wc_subdir()
+
+Return the (relative) subdirectory path of the working copy.
+If defined, will be used as current working directory by
+C<Git::Repository::Command>, instead of C<wc_path>.
 
 =head1 HOW-TO
 
