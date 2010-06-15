@@ -1,5 +1,14 @@
 Revision history for Git-Repository
 
+1.02 Wed Jun 16 01:27:17 CEST 2010
+        [ENHANCEMENTS]
+        - sensible defaults for Git::Repository->new() without parameters
+        - correctly setup Git::Repository if working_copy points to a
+          subdirectory of the actual work tree
+        - wc_subdir() points to the given subdirectory
+        [TESTS]
+        - skip tests that fail if /tmp is a git repository
+
 1.01 Mon Jun 14 08:17:38 CEST 2010
         [ENHANCEMENTS]
         - consider git failing with a usage message as a fatal error
