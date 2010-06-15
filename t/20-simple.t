@@ -21,7 +21,7 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $home = cwd;
 
 # a place to put a git repository
-my $dir = tempdir( CLEANUP => 1 );
+my $dir = abs_path( tempdir( CLEANUP => 1 ) );
 
 # PASS - non-existent directory
 BEGIN { $tests += 3 }

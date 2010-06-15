@@ -22,7 +22,7 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $home = cwd();
 
 # a place to put a git repository
-my $tmp = tempdir( CLEANUP => 1 );
+my $tmp = abs_path( tempdir( CLEANUP => 1 ) );
 
 # some dirname generating routine
 my $i;

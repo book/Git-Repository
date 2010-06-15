@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Cwd qw( abs_path );
 use File::Temp qw( tempdir );
 use File::Spec;
 use File::Path;
@@ -12,7 +13,7 @@ plan skip_all => 'Default git binary not found in PATH'
 plan tests => 10;
 
 # a place to put a git repository
-my $dir = tempdir( CLEANUP => 1 );
+my $dir = abs_path( tempdir( CLEANUP => 1 ) );
 my $missing = File::Spec->catdir( $dir, 'missing' );
 my $gitdir  = File::Spec->catdir( $dir, '.git' );
 
