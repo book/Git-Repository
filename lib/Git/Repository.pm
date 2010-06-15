@@ -48,15 +48,6 @@ sub new {
                 = File::Spec->catdir( $self->{wc_path}, $self->{repo_path} )
                 if !File::Spec->file_name_is_absolute( $self->{repo_path} );
         }
-
-        # ensure wc_path is the top-level directory of the working copy
-        my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
-            { cwd => $self->{wc_path} } );
-        if ( $cdup ) {
-            $self->{wc_subdir} = $self->{wc_path};
-            $self->{wc_path}
-                = abs_path( File::Spec->catdir( $self->{wc_path}, $cdup ) );
-        }
     }
 
     # this is a non-bare repository, the work tree is just above the gitdir
@@ -70,6 +61,17 @@ sub new {
         = eval { abs_path( $self->run(qw( rev-parse --git-dir )) ) } || '';
     croak "fatal: Not a git repository: $repo_path"
         if $self->{repo_path} ne $gitdir;
+
+    # ensure wc_path is the top-level directory of the working copy
+    if ( defined $self->{wc_path} ) {
+        my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
+            { cwd => $self->{wc_path} } );
+        if ($cdup) {
+            $self->{wc_subdir} = $self->{wc_path};
+            $self->{wc_path}
+                = abs_path( File::Spec->catdir( $self->{wc_path}, $cdup ) );
+        }
+    }
 
     return $self;
 }
