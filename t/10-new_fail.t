@@ -9,7 +9,7 @@ use Git::Repository;
 plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
 
-plan tests => 12;
+plan tests => 10;
 
 # a place to put a git repository
 my $dir = tempdir( CLEANUP => 1 );
@@ -18,14 +18,6 @@ my $gitdir  = File::Spec->catdir( $dir, '.git' );
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
-
-# FAIL - no paramaters
-ok( !eval { Git::Repository->new() }, 'No arguments' );
-like(
-    $@,
-    qr/^'repository' or 'working_copy' argument required /,
-    '... expected error message'
-);
 
 # FAIL - missing repository directory
 ok( !eval { Git::Repository->new( repository => $missing ) },

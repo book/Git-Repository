@@ -26,8 +26,7 @@ sub new {
 
     # setup default options
     my ( $repo_path, $wc_path ) = @arg{qw( repository working_copy )};
-
-    croak "'repository' or 'working_copy' argument required"
+    $wc_path = cwd()
         if !defined $repo_path && !defined $wc_path;
 
     # create the object
