@@ -5,13 +5,13 @@ use Git::Repository;
 use Cwd qw( cwd );
 use File::Spec;
 
-my @not_git = map ( {
+my @not_git = ( map ( {
         (   $_,
             File::Spec->catfile( cwd(),             $_ ),
             File::Spec->catfile( File::Spec->updir, $_ )
         )
     } 'this-command-unlikely-to-even-exist-or-be-git' ),
-    $^X;
+    $^X );
 
 plan tests => 3 * @not_git;
 
