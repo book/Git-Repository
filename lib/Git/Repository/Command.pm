@@ -56,16 +56,26 @@ sub new {
     croak "git binary '$git' not available or broken"
         if !$binary{$git};
 
-    # get some useful paths
-    my ( $repo_path, $wc_path, $wc_subdir )
-        = ( $r->repo_path, $r->wc_path, $r->wc_subdir )
-        if $r;
+    # keep changes to the environment local
+    local %ENV = %ENV;
 
-    # setup %ENV (no blocks to preserve local)
-    local $ENV{GIT_DIR} = $repo_path
-        if defined $repo_path;
-    local $ENV{GIT_WORK_TREE} = $wc_path
-        if defined $repo_path && defined $wc_path;
+    # possibly useful paths
+    my ( $repo_path, $wc_path, $wc_subdir );
+
+    # a Git::Repository object will give more context
+    if ($r) {
+
+        # get some useful paths
+        ( $repo_path, $wc_path, $wc_subdir )
+            = ( $r->repo_path, $r->wc_path, $r->wc_subdir );
+
+        # setup our %ENV
+        delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+        $ENV{GIT_DIR} = $repo_path
+            if defined $repo_path;
+        $ENV{GIT_WORK_TREE} = $wc_path
+            if defined $repo_path && defined $wc_path;
+    }
 
     # chdir to the expected directory
     my $orig = cwd;
@@ -79,11 +89,10 @@ sub new {
     }
 
     # turn us into a dumb terminal
-    local $ENV{TERM};
     delete $ENV{TERM};
 
-    # update the environment (no block to preserve local)
-    local @ENV{ keys %{ $o->{env} } } = values %{ $o->{env} }
+    # update the environment
+    @ENV{ keys %{ $o->{env} } } = values %{ $o->{env} }
         if exists $o->{env};
 
     # start the command

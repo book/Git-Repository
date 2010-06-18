@@ -168,13 +168,18 @@ including bidirectional commands such as C<git commit-tree>.
 
 Since it is a low-level interface, it doesn't provide any fancy way to
 call Git commands. It is up to the programmer to setup any environment
-variables (except C<GIT_DIR> and C<GIT_WORK_TREE>) that the underlying
-Git command may need and use.
+variables that the underlying Git command may need and use.
 
 A C<Git::Repository> object simply provides context to the git commands
 being run. Is it possible to call the  C<command()>and C<run()> methods
 agains the class itself, and the context (typically I<current working
 directory>) will be obtained from the options and environment.
+
+The C<GIT_DIR> and C<GIT_WORK_TREE> environment variables are special:
+if the command is run in the context of a C<Git::Repository> object, they
+will be overriden by the object's C<repo_path> and C<wc_path> attributes,
+respectively. It is however still possible to override them if necessary,
+using the C<env> option.
 
 =head1 METHODS
 
