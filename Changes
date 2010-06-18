@@ -1,5 +1,16 @@
 Revision history for Git-Repository
 
+1.03 Sat Jun 19 00:27:28 CEST 2010
+        [ENHANCEMENTS]
+        - fix module to work with Perl 5.6.x
+        - support GIT_DIR & GIT_WORK_TREE environment variables, when
+          run without a Git::Repository object, and even allow an
+          override when there is one, for those who know what they're
+          doing
+        [TESTS]
+        - fix the case where /tmp is a symlink to some other place
+        - fix abs_path dying on Win32 with a path to a non-existent file
+
 1.02 Wed Jun 16 01:27:17 CEST 2010
         [ENHANCEMENTS]
         - sensible defaults for Git::Repository->new() without parameters
