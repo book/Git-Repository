@@ -2,6 +2,8 @@ package Git::Repository::Command;
 
 use strict;
 use warnings;
+use 5.006;
+
 use Carp;
 use Cwd qw( cwd );
 use IPC::Open3 qw( open3 );

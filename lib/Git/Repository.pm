@@ -2,6 +2,7 @@ package Git::Repository;
 
 use warnings;
 use strict;
+use 5.006;
 
 use Carp;
 use File::Spec;
