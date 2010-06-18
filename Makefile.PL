@@ -10,6 +10,11 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
+        'List::Util' => 0,
+        'File::Spec' => 0,
+        'File::Path' => 0,
+        'IPC::Open3' => 0,
+        'Cwd' => 0,
     },
     META_MERGE => {
         resources => {

@@ -7,6 +7,13 @@ my $builder = Module::Build->new(
     license             => 'perl',
     dist_author         => 'Philippe Bruhat (BooK) <book@cpan.org>',
     dist_version_from   => 'lib/Git/Repository.pm',
+    requires => {
+        'List::Util' => 0,
+        'File::Spec' => 0,
+        'File::Path' => 0,
+        'IPC::Open3' => 0,
+        'Cwd' => 0,
+    },
     build_requires => {
         'Test::More' => 0,
     },
