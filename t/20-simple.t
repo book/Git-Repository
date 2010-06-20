@@ -179,3 +179,14 @@ chdir $home;
 
 is( $r->wc_path, $dir, 'work tree' );
 is( $r->repo_path, $gitdir, 'git dir' );
+
+# PASS - try with a no dir
+BEGIN { $tests += 3 }
+chdir $dir;
+$r = Git::Repository->new();
+isa_ok( $r, 'Git::Repository' );
+chdir $home;
+
+is( $r->wc_path, $dir, 'work tree' );
+is( $r->repo_path, $gitdir, 'git dir' );
+
