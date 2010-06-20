@@ -169,3 +169,13 @@ $ENV{GIT_DIR} = $gitdir;
 
 my $got = Git::Repository->run( log => '-1', '--pretty=format:%H' );
 is( $got, $commit, 'git log -1' );
+
+# PASS - try with a relative dir
+BEGIN { $tests += 3 }
+chdir $dir;
+$r = Git::Repository->new( working_copy => '.' );
+isa_ok( $r, 'Git::Repository' );
+chdir $home;
+
+is( $r->wc_path, $dir, 'work tree' );
+is( $r->repo_path, $gitdir, 'git dir' );
