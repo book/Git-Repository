@@ -168,10 +168,20 @@ SKIP: {
     like( $@, qr/^fatal: /, 'fatal error from git' );
 
     # PASS - create() on an existing repository
-    BEGIN { $extra += 2 }
-    {
-        my $dir = next_dir;
-        ok( Git::Repository->create( init => $dir ) );
-        ok( Git::Repository->create( init => $dir ) );
-    }
+    BEGIN { $extra += 8 }
+    $dir = next_dir;
+    $gitdir = File::Spec->catdir( $dir, '.git' );
+    ok( $r = eval { Git::Repository->create( init => $dir ) },
+        "create( init => $i ) " );
+    diag $@ if $@;
+    isa_ok( $r, 'Git::Repository' );
+    is( $r->repo_path, $gitdir, '... correct repo_path' );
+    is( $r->wc_path,   $dir,    '... correct wc_path' );
+
+    ok( $r = eval { Git::Repository->create( init => $dir ) },
+        "create( init => $i ) again" );
+    diag $@ if $@;
+    isa_ok( $r, 'Git::Repository' );
+    is( $r->repo_path, $gitdir, '... correct repo_path' );
+    is( $r->wc_path,   $dir,    '... correct wc_path' );
 }
