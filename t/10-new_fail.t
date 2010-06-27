@@ -23,12 +23,12 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 # FAIL - missing repository directory
 ok( !eval { Git::Repository->new( repository => $missing ) },
     'Missing repository directory' );
-like( $@, qr/^directory not found: $missing /, '... expected error message' );
+like( $@, qr/^directory not found: \Q$missing /, '... expected error message' );
 
 # FAIL - missing working copy directory
 ok( !eval { Git::Repository->new( working_copy => $missing ) },
     'Missing working_copy directory' );
-like( $@, qr/^directory not found: $missing /, '... expected error message' );
+like( $@, qr/^directory not found: \Q$missing /, '... expected error message' );
 
 # FAIL - repository is not a git repository
 ok( !eval { Git::Repository->new( repository => $dir ) },
