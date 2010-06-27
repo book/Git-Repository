@@ -10,7 +10,7 @@ use Cwd qw( cwd abs_path );
 
 use Git::Repository::Command;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 # a few simple accessors
 for my $attr (qw( repo_path wc_path wc_subdir )) {
