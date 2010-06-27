@@ -168,3 +168,10 @@ SKIP: {
     like( $@, qr/^fatal: /, 'fatal error from git' );
 }
 
+# PASS - create() on an existing repository
+BEGIN { $tests += 2 }
+{
+    my $dir = next_dir;
+    ok( Git::Repository->create( init => $dir ) );
+    ok( Git::Repository->create( init => $dir ) );
+}
