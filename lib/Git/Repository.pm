@@ -81,8 +81,7 @@ sub create {
     my ( $class, @args ) = @_;
     my @output = $class->run(@args);
     return $class->new( repository => $1 )
-        if $output[0] =~ /^Initialized empty Git repository in (.*)/ ||
-           $output[0] =~ /^Reinitialized existing Git repository in (.*)/;
+        if $output[0] =~ /(?:Reinitialized existing|Initialized empty) Git repository in (.*)/;
     return;
 }
 
