@@ -29,6 +29,8 @@ my @true = (
     [ '1.7.1.rc2',            'version_gt', '1.7.1.rc1' ],
     [ '1.7.2.rc0.1.g078e',    'version_gt', '1.7.2.rc0' ],
     [ '1.7.2.rc0.10.g1ba5c',  'version_gt', '1.7.2.rc0.1.g078e' ],
+    [ '1.7.1.1',              'version_gt', '1.7.1.1.gc8c07' ],
+    [ '1.7.1.1',              'version_gt', '1.7.1.1.g5f35a' ],
 );
 my @false = (
     [ '1.7.0.4',   'version_eq', '1.7.2.rc0.13.gc9eaaa' ],
