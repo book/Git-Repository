@@ -22,12 +22,21 @@ for ( 0 .. $#version ) {
 # more complex comparisons
 my @true = (
     [ '1.7.2.rc0.13.gc9eaaa', 'version_eq', '1.7.2.rc0.13.gc9eaaa' ],
+    [ '1.7.1',                'version_gt', '1.7.1.rc0' ],
+    [ '1.7.1.rc1',            'version_gt', '1.7.1.rc0' ],
+    [ '1.3.2',                'version_gt', '0.99' ],
+    [ '1.7.2.rc0.13.gc9eaaa', 'version_gt', '1.7.0.4' ],
+    [ '1.7.1.rc2',            'version_gt', '1.7.1.rc1' ],
+    [ '1.7.2.rc0.1.g078e',    'version_gt', '1.7.2.rc0' ],
+    [ '1.7.2.rc0.10.g1ba5c',  'version_gt', '1.7.2.rc0.1.g078e' ],
 );
 my @false = (
     [ '1.7.0.4',   'version_eq', '1.7.2.rc0.13.gc9eaaa' ],
+    [ '1.7.1.rc1', 'version_eq', '1.7.1.rc2' ],
 );
 
-plan tests => 1 + 2 * @lesser + 2 * @greater + @true + @false;
+plan tests => 1 + 2 * @lesser + 2 * @greater + @true + @false +
+    grep { $_->[1] eq 'version_gt' } @true;
 
 my $r = 'Git::Repository';
 
@@ -54,7 +63,8 @@ for (@true) {
     ok( $r->$meth($v), "$dev $meth $v" );
 }
 
-for (@false) {
+for ( @false, map { [ reverse @$_ ] } grep { $_->[1] eq 'version_gt' } @true )
+{
     ( $dev, my $meth, my $v ) = @$_;
     ok( !$r->$meth($v), "$dev not $meth $v" );
 }

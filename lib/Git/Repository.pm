@@ -7,6 +7,7 @@ use 5.006;
 use Carp;
 use File::Spec;
 use Cwd qw( cwd abs_path );
+use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
 
@@ -142,8 +143,15 @@ sub version_gt {
     my ( $r, $v2 ) = @_;
     my @v2 = split /\./, $v2;
     my @v1 = split /\./, ( $r->run('--version') =~ /git version (.*)/g )[0];
-    ( $v1[$_] || 0 ) > ( $v2[$_] || 0 ) and return 1 for 0 .. $#v1;
-    return;
+
+    # skip to the first difference
+    shift @v1, shift @v2 while @v1 && @v2 && $v1[0] eq $v2[0];
+    ( my $v1, $v2 ) = ( $v1[0] || 0, $v2[0] || 0 );
+
+    # rcX is less than any number
+    return looks_like_number($v1)
+             ? looks_like_number($v2) ? $v1 > $v2 : 1
+             : looks_like_number($v2) ? ''        : $v1 gt $v2;
 }
 
 1;
