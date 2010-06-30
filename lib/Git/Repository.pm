@@ -126,6 +126,26 @@ sub run {
     return wantarray ? @output : join "\n", @output;
 }
 
+#
+# version comparison methods
+#
+sub version_eq {
+    my ( $r, $v2 ) = @_;
+    my @v2 = split /\./, $v2;
+    my @v1 = split /\./, ( $r->run('--version') =~ /git version (.*)/g )[0];
+    return if @v1 != @v2;
+    $v1[$_] ne $v2[$_] and return for 0 .. $#v1;
+    return 1;
+}
+
+sub version_gt {
+    my ( $r, $v2 ) = @_;
+    my @v2 = split /\./, $v2;
+    my @v1 = split /\./, ( $r->run('--version') =~ /git version (.*)/g )[0];
+    ( $v1[$_] || 0 ) > ( $v2[$_] || 0 ) and return 1 for 0 .. $#v1;
+    return;
+}
+
 1;
 
 __END__
