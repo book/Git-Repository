@@ -5,14 +5,13 @@ use File::Temp qw( tempdir );
 use File::Spec;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
-use t::Util;
 
 plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
 
-my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
+my $version = Git::Repository->version;
 plan skip_all => "these tests require git > 1.6.0, but we only have $version"
-    if !git_minimum_version('1.6.0');
+    if Git::Repository->version_lt('1.6.0');
 
 plan tests => my $tests;
 
@@ -58,7 +57,7 @@ delete @ENV{qw( EDITOR VISUAL )};
 SKIP: {
     BEGIN { $tests += 2 }
     skip "these tests require git > 1.6.6, but we only have $version", 2
-        if !git_minimum_version('1.6.6');
+        if Git::Repository->version_lt('1.6.6');
 
     ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
     like(

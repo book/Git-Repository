@@ -15,4 +15,3 @@ t/11-create.t
 t/20-simple.t
 t/pod-coverage.t
 t/pod.t
-t/Util.pm
