@@ -130,29 +130,37 @@ sub run {
 #
 # version comparison methods
 #
-sub version_eq {
-    my ( $r, $v2 ) = @_;
+sub version {
+    return ( $_[0]->run('--version') =~ /git version (.*)/g )[0];
+}
+
+sub _version_eq {
+    my ( $v1, $v2 ) = @_;
+    my @v1 = split /\./, $v1;
     my @v2 = split /\./, $v2;
-    my @v1 = split /\./, ( $r->run('--version') =~ /git version (.*)/g )[0];
-    return if @v1 != @v2;
-    $v1[$_] ne $v2[$_] and return for 0 .. $#v1;
+
+    return '' if @v1 != @v2;
+    $v1[$_] ne $v2[$_] and return '' for 0 .. $#v1;
     return 1;
 }
 
-sub version_gt {
-    my ( $r, $v2 ) = @_;
+sub _version_gt {
+    my ( $v1, $v2 ) = @_;
+    my @v1 = split /\./, $v1;
     my @v2 = split /\./, $v2;
-    my @v1 = split /\./, ( $r->run('--version') =~ /git version (.*)/g )[0];
 
     # skip to the first difference
     shift @v1, shift @v2 while @v1 && @v2 && $v1[0] eq $v2[0];
-    ( my $v1, $v2 ) = ( $v1[0] || 0, $v2[0] || 0 );
+    ( $v1, $v2 ) = ( $v1[0] || 0, $v2[0] || 0 );
 
     # rcX is less than any number
     return looks_like_number($v1)
              ? looks_like_number($v2) ? $v1 > $v2 : 1
              : looks_like_number($v2) ? ''        : $v1 gt $v2;
 }
+
+sub version_eq { return _version_eq( $_[0]->version, $_[1] ); }
+sub version_gt { return _version_gt( $_[0]->version, $_[1] ); }
 
 1;
 
