@@ -37,7 +37,7 @@ my @false = (
     [ '1.7.1.rc1', 'version_eq', '1.7.1.rc2' ],
 );
 
-plan tests => 1 + 2 * @lesser + 2 * @greater + @true + @false +
+plan tests => 4 + 6 * @lesser + 6 * @greater + @true + @false +
     grep { $_->[1] eq 'version_gt' } @true;
 
 my $r = 'Git::Repository';
@@ -46,9 +46,25 @@ my $r = 'Git::Repository';
 ok( $r->version_eq($version), "$version version_eq $version" );
 ok( !$r->version_eq($_), "$version not version_eq $_" ) for @greater, @lesser;
 
+# version_ne
+ok( $r->version_ne($_), "$version version_ne $_" ) for @greater, @lesser;
+ok( !$r->version_ne($version), "$version not version_ne $version" );
+
 # version_gt
 ok( $r->version_gt($_),  "$version version_gt $_" )     for @lesser;
 ok( !$r->version_gt($_), "$version not version_gt $_" ) for @greater;
+
+# version_le
+ok( $r->version_lt($_),  "$version version_lt $_" )     for @greater;
+ok( !$r->version_lt($_), "$version not version_lt $_" ) for @lesser;
+
+# version_le
+ok( $r->version_le($_), "$version version_le $_" ) for $version, @greater;
+ok( !$r->version_le($_), "$version not version_le $_" ) for @lesser;
+
+# version_ge
+ok( $r->version_ge($_), "$version version_ge $_" ) for $version, @lesser;
+ok( !$r->version_ge($_), "$version not version_ge $_" ) for @greater;
 
 # test a number of special cases
 my $dev;

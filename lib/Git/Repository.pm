@@ -159,8 +159,23 @@ sub _version_gt {
              : looks_like_number($v2) ? ''        : $v1 gt $v2;
 }
 
+# every op is a combination of eq and gt
 sub version_eq { return _version_eq( $_[0]->version, $_[1] ); }
+sub version_ne { return !_version_eq( $_[0]->version, $_[1] ); }
 sub version_gt { return _version_gt( $_[0]->version, $_[1] ); }
+sub version_le { return !_version_gt( $_[0]->version, $_[1] ); }
+
+sub version_lt {
+    my $v;
+    return !_version_eq( $v = $_[0]->version, $_[1] )
+        && !_version_gt( $v, $_[1] );
+}
+
+sub version_ge {
+    my $v;
+    return _version_eq( $v = $_[0]->version, $_[1] )
+        || _version_gt( $v, $_[1] );
+}
 
 1;
 
