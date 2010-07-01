@@ -211,6 +211,13 @@ Git::Repository - Perl interface to Git repositories
     # - obtain a Git::Repository::Command object
     $cmd = $r->command(@cmd);
 
+    # obtain version information
+    my $version = $r->version();
+
+    if ( $r->version_gt('1.6.5') ) {
+        ...;
+    }
+
 =head1 DESCRIPTION
 
 C<Git::Repository> is a Perl interface to Git, allowing scripted
@@ -300,6 +307,40 @@ Used as current working directory by C<Git::Repository::Command>.
 Return the (relative) subdirectory path of the working copy.
 If defined, will be used as current working directory by
 C<Git::Repository::Command>, instead of C<wc_path>.
+
+=head2 version()
+
+Return the version of git, as given by C<git --version>.
+
+=head2 Version-comparison "operators"
+
+Git evolves very fast, and new features are constantly added to it.
+To facilitate the creation of programs that can properly handle the
+wide variety of Git versions seen in the wild, a number of version
+comparison "operators" are available.
+
+They are named C<version_I<op>> where I<op> is the equivalent of the Perl
+operators C<lt>, C<gt>, C<le>, C<ge>, C<eq>, C<ne>. They return a boolean
+value, obtained by comparing the version of the git binary and the
+version string passed as parameter.
+
+The methods are:
+
+=over 4
+
+=item version_lt( $version )
+
+=item version_gt( $version )
+
+=item version_le( $version )
+
+=item version_ge( $version )
+
+=item version_eq( $version )
+
+=item version_ne( $version )
+
+=back
 
 =head1 HOW-TO
 
