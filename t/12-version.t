@@ -3,12 +3,12 @@ use warnings;
 use Test::More;
 use Git::Repository;
 
-# current version
+# get the git version
 my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
-my @version = split /\./, $version;
-diag "Git version $version";
+diag "git version $version";
 
 # other versions based on the current one
+my @version = split /\./, $version;
 my ( @lesser, @greater );
 for ( 0 .. $#version ) {
     local $" = '.';
@@ -37,10 +37,13 @@ my @false = (
     [ '1.7.1.rc1', 'version_eq', '1.7.1.rc2' ],
 );
 
-plan tests => 4 + 6 * @lesser + 6 * @greater + @true + @false +
+plan tests => 5 + 6 * @lesser + 6 * @greater + @true + @false +
     grep { $_->[1] eq 'version_gt' } @true;
 
 my $r = 'Git::Repository';
+
+# version
+is( Git::Repository->version(), $version, "git version $version" );
 
 # version_eq
 ok( $r->version_eq($version), "$version version_eq $version" );
