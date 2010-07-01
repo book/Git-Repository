@@ -282,7 +282,12 @@ C<Git::Repository::Command>, instead of C<wc_path>.
 
 =head2 Create a new repository
 
+    # git version 1.6.5 and above
     my $r = Git::Repository->create( init => $dir );
+
+    # any older git will need two steps
+    chdir $dir;
+    my $r = Git::Repository->create( 'init' );
 
 =head2 Clone a repository
 
