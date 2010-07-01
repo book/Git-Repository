@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Scalar::Util qw( looks_like_number );
 use Git::Repository;
 
 # get the git version
@@ -13,6 +14,7 @@ my ( @lesser, @greater );
 for ( 0 .. $#version ) {
     local $" = '.';
     my @v = @version;
+    next if ! looks_like_number( $v[$_] );
     $v[$_]++;
     push @greater, "@v";
     next if 0 > ( $v[$_] -= 2 );
