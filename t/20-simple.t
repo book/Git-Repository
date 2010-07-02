@@ -192,6 +192,56 @@ $r = Git::Repository->new();
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
 
-is( $r->wc_path, $dir, 'work tree' );
+is( $r->wc_path,   $dir,    'work tree' );
 is( $r->repo_path, $gitdir, 'git dir' );
+
+# PASS - use an option HASH
+BEGIN { $tests += 3 }
+is( Git::Repository->options(), undef, 'No options on the class' );
+$r = Git::Repository->new(
+    working_copy => $dir,
+    {   env => {
+            GIT_AUTHOR_NAME  => 'Example author',
+            GIT_AUTHOR_EMAIL => 'author@example.com'
+        }
+    },
+    { git => '/bin/false' },    # second option hash will be ignored silently
+);
+update_file( my $file = File::Spec->catfile( $dir, 'other.txt' ), << 'TXT' );
+Some other text
+forcing an author
+TXT
+$r->run( add => $file );
+$r->run( commit => '-m', 'Test option hash in new()' );
+my ($author) = grep {/^Author:/} $r->run( log => '-1' );
+is( $author,
+    'Author: Example author <author@example.com>',
+    'Option hash in new()'
+);
+
+update_file( $file, << 'TXT' );
+Some other text
+forcing another author
+TXT
+$r->run(
+    commit => '-a',
+    '-m', 'Test option hash in run()',
+    { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } }
+);
+($author) = grep {/^Author:/} $r->run( log => '-1' );
+is( $author,
+    'Author: Example author <example@author.com>',
+    'Option hash in new() and run()'
+);
+
+# PASS - use an option HASH (no env key)
+BEGIN { $tests += 1 }
+( $parent, $tree ) = split /-/, $r->run( log => '--pretty=format:%H-%T', -1 );
+$r = Git::Repository->new(
+    working_copy => $dir,
+    { input => 'a dumb way to set log message' },
+);
+$commit = $r->run( 'commit-tree', $tree, '-p', $parent );
+my $log = $r->run( log => '--pretty=format:%s', -1, $commit );
+is( $log, 'a dumb way to set log message', 'Option hash in new() worked' );
 
