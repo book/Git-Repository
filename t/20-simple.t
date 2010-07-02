@@ -161,7 +161,8 @@ BEGIN { $tests += 2 }
 ok( !eval {
         $r->run(
             log => '-1',
-            { cwd => File::Spec->catdir( $dir, 'not-there' ) }
+            { cwd => File::Spec->catdir( $dir, 'not-there' ) },
+            bless( {}, 'Foo' )    # will be ignored silently
         );
     },
     'Fail with option { cwd => non-existent dir }'
@@ -226,7 +227,9 @@ TXT
 $r->run(
     commit => '-a',
     '-m', 'Test option hash in run()',
-    { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } }
+    { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } },
+    bless( { wc_path => 'TEH FAIL' }, 'Git::Repository' ),  # ignored silently
+    { env => { GIT_AUTHOR_EMAIL => 'fail@fail.com' } },     # ignored silently
 );
 ($author) = grep {/^Author:/} $r->run( log => '-1' );
 is( $author,
