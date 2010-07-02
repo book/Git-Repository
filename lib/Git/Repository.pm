@@ -16,7 +16,7 @@ our $VERSION = '1.04';
 # a few simple accessors
 for my $attr (qw( repo_path wc_path wc_subdir )) {
     no strict 'refs';
-    *$attr = sub { $_[0]{$attr} };
+    *$attr = sub { return ref $_[0] ? $_[0]{$attr} : () };
 }
 
 #
