@@ -335,6 +335,10 @@ Return the (relative) subdirectory path of the working copy.
 If defined, will be used as current working directory by
 C<Git::Repository::Command>, instead of C<wc_path>.
 
+=head2 options()
+
+Return the option hash that was passed to C<< Git::Repository->new() >>.
+
 =head2 version()
 
 Return the version of git, as given by C<git --version>.
