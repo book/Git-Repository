@@ -19,6 +19,14 @@ plan tests => my $tests;
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $home = cwd;
 
+# small helper sub
+sub update_file {
+    my ( $file, $content ) = @_;
+    open my $fh, '>', $file or die "Can't open $file: $!";
+    print {$fh} $content;
+    close $fh;
+}
+
 # a place to put a git repository
 my $dir = abs_path( tempdir( CLEANUP => 1 ) );
 
@@ -42,9 +50,7 @@ ok( ! eval { $r->run( qw( commit --bonk ) ); }, "FAIL with usage text" );
 like( $@, qr/^usage: git commit/m, '... expected usage message' );
 
 # add file to the index
-my $file = File::Spec->catfile( $dir, 'readme.txt' );
-open my $fh, '>', $file or die "Can't open $file: $!";
-print {$fh} << 'TXT';
+update_file( File::Spec->catfile( $dir, 'readme.txt' ), << 'TXT' );
 Some readme text
 for our example
 TXT
