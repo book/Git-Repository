@@ -39,6 +39,9 @@ my @true = (
     [ '1.0.3',                'version_gt', '1.0.0a' ],
     [ '1.7.0.4',              'version_ne', '1.7.2.rc0.13.gc9eaaa' ],
     [ '1.7.1.rc1',            'version_ne', '1.7.1.rc2' ],
+    [ '1.0.0a',               'version_ne', '1.0.0' ],
+    [ '1.4.0.rc1',            'version_le', '1.4.1' ],
+    [ '1.0.0a', 'version_gt', '1.0.0', 'TODO' ], # will probably never be done
 );
 
 # operator reversal: $a op $b <=> $b rop $a
@@ -58,7 +61,10 @@ my %negate = (
     version_le => 'version_gt',
     version_lt => 'version_ge',
 );
-@true = ( @true, map { [ $_->[2], $reverse{ $_->[1] }, $_->[0] ] } @true );
+@true = (
+    @true,
+    map { [ $_->[2], $reverse{ $_->[1] }, $_->[0], $_->[3] || () ] } @true
+);
 
 plan tests => 5 + 6 * @lesser + 6 * @greater + 2 * @true;
 
@@ -101,8 +107,9 @@ my $dev;
 }
 $r = 'Git::Repository::VersionFaker';
 
-for ( @true ) {
-    ( $dev, my $meth, my $v ) = @$_;
+for (@true) {
+    ( $dev, my $meth, my $v, $TODO ) = @$_;
+    local $TODO = $TODO ? 'version comparison not exhaustive' : '';
     ok( $r->$meth($v), "$dev $meth $v" );
     $meth = $negate{$meth};
     ok( !$r->$meth($v), "$dev not $meth $v" );
