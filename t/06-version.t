@@ -34,13 +34,27 @@ my @true = (
     [ '1.7.1.1',              'version_gt', '1.7.1.1.gc8c07' ],
     [ '1.7.1.1',              'version_gt', '1.7.1.1.g5f35a' ],
 );
-my @false = (
-    [ '1.7.0.4',   'version_eq', '1.7.2.rc0.13.gc9eaaa' ],
-    [ '1.7.1.rc1', 'version_eq', '1.7.1.rc2' ],
-);
 
-plan tests => 5 + 6 * @lesser + 6 * @greater + @true + @false +
-    grep { $_->[1] eq 'version_gt' } @true;
+# operator reversal: $a op $b <=> $b rop $a
+my %reverse = (
+    version_eq => 'version_eq',
+    version_ne => 'version_ne',
+    version_ge => 'version_le',
+    version_gt => 'version_lt',
+    version_le => 'version_ge',
+    version_lt => 'version_gt',
+);
+my %negate = (
+    version_ne => 'version_eq',
+    version_eq => 'version_ne',
+    version_ge => 'version_lt',
+    version_gt => 'version_le',
+    version_le => 'version_gt',
+    version_lt => 'version_ge',
+);
+@true = ( @true, map { [ $_->[2], $reverse{ $_->[1] }, $_->[0] ] } @true );
+
+plan tests => 5 + 6 * @lesser + 6 * @greater + 2 * @true;
 
 my $r = 'Git::Repository';
 
@@ -81,14 +95,10 @@ my $dev;
 }
 $r = 'Git::Repository::VersionFaker';
 
-for (@true) {
+for ( @true ) {
     ( $dev, my $meth, my $v ) = @$_;
     ok( $r->$meth($v), "$dev $meth $v" );
-}
-
-for ( @false, map { [ reverse @$_ ] } grep { $_->[1] eq 'version_gt' } @true )
-{
-    ( $dev, my $meth, my $v ) = @$_;
+    $meth = $negate{$meth};
     ok( !$r->$meth($v), "$dev not $meth $v" );
 }
 
