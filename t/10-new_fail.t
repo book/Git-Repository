@@ -10,7 +10,7 @@ use Git::Repository;
 plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
 
-plan tests => 10;
+plan tests => 12;
 
 # a place to put a git repository
 my $dir = abs_path( tempdir( CLEANUP => 1 ) );
@@ -67,4 +67,12 @@ like(
     qr/^fatal: Not a git repository/,   # error from git itself
     '... expected error message'
 );
+
+# FAIL - extra parameters
+ok( !eval {
+        Git::Repository->new( working_copy => $dir, extra => 'stuff' );
+    },
+    'unknown extra parameter'
+);
+like( $@, qr/^Unknown parameters: extra /, '... expected error message' );
 
