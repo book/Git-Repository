@@ -14,7 +14,7 @@ my ( @lesser, @greater );
 for ( 0 .. $#version ) {
     local $" = '.';
     my @v = @version;
-    next if ! looks_like_number( $v[$_] );
+    next if !looks_like_number( $v[$_] );
     $v[$_]++;
     push @greater, "@v";
     next if 0 > ( $v[$_] -= 2 );
@@ -24,6 +24,8 @@ for ( 0 .. $#version ) {
 # more complex comparisons
 my @true = (
     [ '1.7.2.rc0.13.gc9eaaa', 'version_eq', '1.7.2.rc0.13.gc9eaaa' ],
+    [ '1.7.2.rc0.13.gc9eaaa', 'version_ge', '1.7.2.rc0.13.gc9eaaa' ],
+    [ '1.7.2.rc0.13.gc9eaaa', 'version_le', '1.7.2.rc0.13.gc9eaaa' ],
     [ '1.7.1',                'version_gt', '1.7.1.rc0' ],
     [ '1.7.1.rc1',            'version_gt', '1.7.1.rc0' ],
     [ '1.3.2',                'version_gt', '0.99' ],
@@ -33,6 +35,10 @@ my @true = (
     [ '1.7.2.rc0.10.g1ba5c',  'version_gt', '1.7.2.rc0.1.g078e' ],
     [ '1.7.1.1',              'version_gt', '1.7.1.1.gc8c07' ],
     [ '1.7.1.1',              'version_gt', '1.7.1.1.g5f35a' ],
+    [ '1.0.0b',               'version_gt', '1.0.0a' ],
+    [ '1.0.3',                'version_gt', '1.0.0a' ],
+    [ '1.7.0.4',              'version_ne', '1.7.2.rc0.13.gc9eaaa' ],
+    [ '1.7.1.rc1',            'version_ne', '1.7.1.rc2' ],
 );
 
 # operator reversal: $a op $b <=> $b rop $a
