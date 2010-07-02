@@ -68,8 +68,18 @@ sub new {
     if ($r) {
 
         # get some useful paths
-        ( $repo_path, $wc_path, $wc_subdir )
-            = ( $r->repo_path, $r->wc_path, $r->wc_subdir );
+        ( $repo_path, $wc_path, $wc_subdir, my $repo_o )
+            = ( $r->repo_path, $r->wc_path, $r->wc_subdir, $r->options );
+
+        # merge the option hashes
+        if ($repo_o) {
+            $o = {
+                %$repo_o, %$o,
+                exists $repo_o->{env} && exists $o->{env}
+                ? ( env => { %{ $repo_o->{env} }, %{ $o->{env} } } )
+                : ()
+            };
+        }
 
         # setup our %ENV
         delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
@@ -211,7 +221,7 @@ The recognized keys are:
 
 The actual git binary to run. By default, it is just C<git>.
 
-=item cwd
+=item C<cwd>
 
 The I<current working directory> in which the git command will be run.
 
@@ -224,6 +234,9 @@ A hashref containing key / values to add to the git command environment.
 A string that is send to the git command standard input, which is then closed.
 
 =back
+
+If several option hashes are passed to C<new()>, only the first one will
+be used.
 
 The hash returned by C<new()> has the following keys:
 
