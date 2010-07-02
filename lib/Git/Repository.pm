@@ -14,7 +14,7 @@ use Git::Repository::Command;
 our $VERSION = '1.04';
 
 # a few simple accessors
-for my $attr (qw( repo_path wc_path wc_subdir )) {
+for my $attr (qw( repo_path wc_path wc_subdir options )) {
     no strict 'refs';
     *$attr = sub { return ref $_[0] ? $_[0]{$attr} : () };
 }
@@ -24,16 +24,22 @@ for my $attr (qw( repo_path wc_path wc_subdir )) {
 #
 
 sub new {
-    my ( $class, %arg ) = @_;
-
-    # setup default options
-    my ( $repo_path, $wc_path ) = @arg{qw( repository working_copy )};
-    $wc_path = cwd()
-        if !defined $repo_path && !defined $wc_path;
+    my ( $class, @arg ) = @_;
 
     # create the object
     my $self = bless {}, $class;
 
+    # take out the option hash
+    my %arg = grep { !( ref eq 'HASH' ? $self->{options} ||= $_ : 0 ) } @arg;
+
+    # setup default options
+    my ( $repo_path, $wc_path ) = delete @arg{qw( repository working_copy )};
+    $wc_path = cwd()
+        if !defined $repo_path && !defined $wc_path;
+
+    croak "Unknown parameters: @{[keys %arg]}" if keys %arg;
+
+    # compute the various paths
     if ( defined $repo_path ) {
         croak "directory not found: $repo_path"
             if !-d $repo_path;
@@ -244,7 +250,7 @@ using the C<env> option.
 
 C<Git::Repository> supports the following methods:
 
-=head2 new( %args )
+=head2 new( %args, $options )
 
 Create a new C<Git::Repository> object, based on an existing Git repository.
 
@@ -264,6 +270,27 @@ The location of the git working copy (for a non-bare repository).
 
 At least one of the two parameters is required. Usually, one is enough,
 as C<Git::Repository> can work out where the other directory (if any) is.
+
+C<new()> also accepts a reference to an option hash, that will be
+automatically used by C<Git::Repository::Command> when working with
+the corresponding C<Git::Repository> instance.
+
+So this:
+
+    my $options = {
+        git => '/path/to/some/other/git',
+        env => {
+            GIT_COMMITTER_EMAIL => 'book@cpan.org',
+            GIT_COMMITTER_NAME  => 'Philippe Bruhat (BooK)',
+        },
+    };
+    my $r = Git::Repository->new(
+        working_copy => $dir,
+        $options
+    );
+
+will be equivalent to having any option hash that will be passed to
+C<run()> or C<command()> be pre-filled with these options.
 
 =head2 create( @cmd )
 
