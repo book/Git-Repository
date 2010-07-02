@@ -11,7 +11,7 @@ use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
 
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 # a few simple accessors
 for my $attr (qw( repo_path wc_path wc_subdir options )) {

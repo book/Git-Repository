@@ -1,5 +1,16 @@
 Revision history for Git-Repository
 
+1.05 Sat Jul  3 00:40:09 CEST 2010
+        [ENHANCEMENTS]
+        - version() method returns the git binary version
+        - version_eq(), version_gt(), etc allow simple version comparison
+          for the current git binary
+        - allow providing a default option hash to Git::Repository->new()
+        [DOCUMENTATION]
+        - Document git init behaviour changed in 1.6.5
+        [TESTS]
+        - extensive version comparison tests
+
 1.04 Sun Jun 27 17:24:02 CEST 2010
         [ENHANCEMENTS]
         - create() now supports "reinitializing existing Git repository"
