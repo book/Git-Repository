@@ -4,6 +4,9 @@ use Test::More;
 use Scalar::Util qw( looks_like_number );
 use Git::Repository;
 
+plan skip_all => 'Default git binary not found in PATH'
+    if !Git::Repository::Command::_has_git('git');
+
 # get the git version
 my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
 diag "git version $version";
