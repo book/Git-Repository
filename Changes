@@ -1,5 +1,11 @@
 Revision history for Git-Repository
 
+1.06 Sat Jul  3 22:02:59 CEST 2010
+        [ENHANCEMENTS]
+        - none
+        [TESTS]
+        - just make sure all tests fail gracefully when git is not installed
+
 1.05 Sat Jul  3 00:40:09 CEST 2010
         [ENHANCEMENTS]
         - version() method returns the git binary version
