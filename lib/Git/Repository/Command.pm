@@ -17,6 +17,10 @@ for my $attr (qw( pid stdin stdout stderr exit signal core )) {
     no strict 'refs';
     *$attr = sub { return $_[0]{$attr} };
 }
+for my $attr (qw( cmdline )) {
+    no strict 'refs';
+    *$attr = sub { return @{ $_[0]{$attr} } };
+}
 
 # CAN I HAS GIT?
 sub _has_git {
@@ -134,10 +138,11 @@ sub new {
 
     # create the object
     return bless {
-        pid    => $pid,
-        stdin  => $in,
-        stdout => $out,
-        stderr => $err,
+        cmdline => [ $git, @cmd ],
+        pid     => $pid,
+        stdin   => $in,
+        stdout  => $out,
+        stderr  => $err,
     }, $class;
 }
 
@@ -266,6 +271,10 @@ through a number of accessors.
 The object returned by C<new()> will have the following attributes defined:
 
 =over 4
+
+=item cmdline()
+
+Return the command-line actually executed, as a list of strings.
 
 =item pid()
 
