@@ -235,6 +235,10 @@ A string that is send to the git command standard input, which is then closed.
 
 =back
 
+If the C<Git::Repository> object has its own option hash, it will be used
+to provide default values that can be overriden by the actual option hash
+passed to C<new()>.
+
 If several option hashes are passed to C<new()>, only the first one will
 be used.
 
