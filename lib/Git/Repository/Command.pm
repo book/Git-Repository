@@ -12,6 +12,12 @@ use File::Spec;
 use IO::Handle;
 use Config;
 
+# a few simple accessors
+for my $attr (qw( pid stdin stdout stderr exit signal core )) {
+    no strict 'refs';
+    *$attr = sub { return $_[0]{$attr} };
+}
+
 # CAN I HAS GIT?
 sub _has_git {
     my ($binary) = @_;
@@ -179,19 +185,19 @@ Git::Repository::Command - Command objects for running git
     # options can be passed as a hashref
     $cmd = Git::Repository::Command->( $r, @cmd, \%option );
 
-    # $cmd is basically a hash
-    $cmd->{stdin};     # filehandle to the process' stdin (write)
-    $cmd->{stdout};    # filehandle to the process' stdout (read)
-    $cmd->{stderr};    # filehandle to the process' stdout (read)
-    $cmd->{pid};       # pid of the child process
+    # $cmd is basically a hash, with keys / accessors
+    $cmd->stdin();     # filehandle to the process' stdin (write)
+    $cmd->stdout();    # filehandle to the process' stdout (read)
+    $cmd->stderr();    # filehandle to the process' stdout (read)
+    $cmd->pid();       # pid of the child process
 
     # done!
     $cmd->close();
 
     # exit information
-    $cmd->{exit};      # exit status
-    $cmd->{signal};    # signal
-    $cmd->{core};      # core dumped? (boolean)
+    $cmd->exit();      # exit status
+    $cmd->signal();    # signal
+    $cmd->core();      # core dumped? (boolean)
 
 =head1 DESCRIPTION
 
@@ -242,22 +248,60 @@ passed to C<new()>.
 If several option hashes are passed to C<new()>, only the first one will
 be used.
 
-The hash returned by C<new()> has the following keys:
+The C<Git::Repository::Command> object returned by C<new()> has a 
+number of attributes defined (see below).
 
-    $cmd->{stdin};     # filehandle to the process' stdin (write)
-    $cmd->{stdout};    # filehandle to the process' stdout (read)
-    $cmd->{stderr};    # filehandle to the process' stdout (read)
-    $cmd->{pid};       # pid of the child process
 
 =head2 close()
 
 Close all pipes to the child process, and collects exit status, etc.
+and defines a number of attributes (see below).
 
-This adds the following keys to the hash:
 
-    $cmd->{exit};      # exit status
-    $cmd->{signal};    # signal
-    $cmd->{core};      # core dumped? (boolean)
+=head2 Accessors
+
+The attributes of a C<Git::Repository::Command> object are also accessible
+through a number of accessors.
+
+The object returned by C<new()> will have the following attributes defined:
+
+=over 4
+
+=item pid()
+
+The PID of the underlying B<git> command.
+
+=item stdin()
+
+A filehandle opened in write mode to the child process' standard input.
+
+=item stdout()
+
+A filehandle opened in read mode to the child process' standard output.
+
+=item stderr()
+
+A filehandle opened in read mode to the child process' standard error output. 
+
+=back
+
+After the call to C<close()>, the following attributes will be defined:
+
+=over 4
+
+=item exit()
+
+The exit status of the underlying B<git> command.
+
+=item core()
+
+A boolean value indicating if the command dumped core.
+
+=item signal()
+
+The signal, if any, that killed the command.
+
+=back
 
 =head1 AUTHOR
 
