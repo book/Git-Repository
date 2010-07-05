@@ -61,8 +61,8 @@ $r->run( add => 'readme.txt' );
 delete @ENV{qw( EDITOR VISUAL )};
 
 SKIP: {
-    BEGIN { $tests += 2 }
-    skip "these tests require git > 1.6.6, but we only have $version", 2
+    BEGIN { $tests += 3 }
+    skip "these tests require git > 1.6.6, but we only have $version", 3
         if Git::Repository->version_lt('1.6.6');
 
     ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
