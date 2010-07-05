@@ -74,11 +74,12 @@ SKIP: {
 }
 
 # with git commit it's not fatal
-BEGIN { $tests += 3 }
+BEGIN { $tests += 4 }
 {
     ok( my $cmd = $r->command('commit'), 'git commit' );
     isa_ok( $cmd, 'Git::Repository::Command' );
     my $error = $cmd->{stderr}->getline;
+    is_deeply( [ $cmd->cmdline ], [ qw( git commit ) ], 'command-line' );
     $cmd->close;
     like(
         $error,
@@ -112,11 +113,12 @@ cmp_ok( $commit, 'ne', $parent, 'new commit id is different from parent id' );
 $r->run( reset => $commit );
 
 # process "long" output
-BEGIN { $tests += 2 }
+BEGIN { $tests += 3 }
 {
     my $lines;
     my $cmd = $r->command( log => '--pretty=oneline', '--all' );
     isa_ok( $cmd, 'Git::Repository::Command' );
+    is_deeply( [ $cmd->cmdline ], [ qw( git log --pretty=oneline --all ) ], 'command-line' );
     my $log = $cmd->{stdout};
     while (<$log>) {
         $lines++;
