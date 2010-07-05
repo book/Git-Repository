@@ -214,7 +214,7 @@ forcing an author
 TXT
 $r->run( add => $file );
 $r->run( commit => '-m', 'Test option hash in new()' );
-my ($author) = grep {/^Author:/} $r->run( log => '-1' );
+my ($author) = grep {/^Author:/} $r->run( log => '-1', '--pretty=medium' );
 is( $author,
     'Author: Example author <author@example.com>',
     'Option hash in new()'
@@ -231,7 +231,7 @@ $r->run(
     bless( { wc_path => 'TEH FAIL' }, 'Git::Repository' ),  # ignored silently
     { env => { GIT_AUTHOR_EMAIL => 'fail@fail.com' } },     # ignored silently
 );
-($author) = grep {/^Author:/} $r->run( log => '-1' );
+($author) = grep {/^Author:/} $r->run( log => '-1', '--pretty=medium' );
 is( $author,
     'Author: Example author <example@author.com>',
     'Option hash in new() and run()'
