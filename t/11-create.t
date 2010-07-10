@@ -36,26 +36,28 @@ my ( $dir, $r );
 $dir = next_dir;
 
 # PASS - non-existent directory
-BEGIN { $tests += 4 }
+BEGIN { $tests += 5 }
 my $gitdir = File::Spec->catdir( $dir, '.git' );
 mkpath $dir;
 chdir $dir;
-ok( $r = eval { $r = Git::Repository->create( 'init' ); },
+ok( $r = eval { $r = Git::Repository->create( 'init', { cwd => $dir } ); },
     "create( init ) => $i" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
+is_deeply( $r->options, { cwd => $dir }, "... options correctly propagated" );
 chdir $home;
 
 # PASS - new() on a normal repository
-BEGIN { $tests += 4 }
+BEGIN { $tests += 5 }
 ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
     "new( repository => $i )" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
+is( $r->options, undef, "... no options propagated" );
 
 # PASS - new() on a normal repository
 BEGIN { $tests += 4 }

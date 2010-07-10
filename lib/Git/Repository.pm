@@ -87,7 +87,7 @@ sub new {
 sub create {
     my ( $class, @args ) = @_;
     my @output = $class->run(@args);
-    return $class->new( repository => $1 )
+    return $class->new( repository => $1, grep { ref eq 'HASH' } @args )
         if $output[0] =~ /(?:Reinitialized existing|Initialized empty) Git repository in (.*)/;
     return;
 }
@@ -300,6 +300,9 @@ a hashref with options (see L<Git::Repository::Command>.
 
 This method runs the command and parses the first line as
 C<Initialized empty Git repository in $dir> to find the repository path.
+
+C<create()> also accepts a reference to an option hash, that will be
+used to setup the returned C<Git::Repository> instance.
 
 =head2 command( @cmd )
 
