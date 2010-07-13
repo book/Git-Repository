@@ -426,7 +426,7 @@ if something was printed on it. To be able to actually capture error
 output, C<command()> must be used.
 
     my $cmd = $r->command( @cmd );
-    my @errput = $cmd->{stderr}->getlines();
+    my @errput = $cmd->stderr->getlines();
     $cmd->close;
 
 C<run()> also captures all output at once, which can lead to unecessary
@@ -434,7 +434,7 @@ memory consumption when capturing the output of some really verbose
 commands.
 
     my $cmd = $r->command( log => '--pretty=oneline', '--all' );
-    my $log = $cmd->{stdout};
+    my $log = $cmd->stdout;
     while (<$log>) {
         ...;
     }
