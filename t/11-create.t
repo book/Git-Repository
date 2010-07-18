@@ -154,6 +154,34 @@ isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $dir,  '... correct repo_path' );
 is( $r->wc_path,   undef, '... correct wc_path' );
 
+# ======= Tests that don't assume ".git" is the repository ==========
+
+# PASS - non-existent directory
+BEGIN { $tests += 5 }
+$dir = next_dir;
+mkpath $dir;
+chdir $dir;
+$gitdir = File::Spec->catdir( $dir, '.notgit' );
+ok( $r = eval { $r = Git::Repository->create( 'init',
+    { cwd => $dir, env => { GIT_DIR => $gitdir } } ); },
+    "create( init ) => $i, GIT_DIR => '.notgit'" );
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,    '... correct wc_path' );
+is_deeply( $r->options, { cwd => $dir, env => { GIT_DIR => $gitdir } },
+    "... options correctly propagated" );
+
+BEGIN { $tests += 5 }
+ok( $r = eval { Git::Repository->new( repository => $gitdir,
+working_copy => $dir ); },
+    "new( repository => $i )" );
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,    '... correct wc_path' );
+is( $r->options, undef, "... no options propagated" );
+
 # these tests requires git version > 1.6.5
 SKIP: {
     skip "these tests require git > 1.6.5, but we only have $version", $extra
@@ -185,4 +213,9 @@ SKIP: {
     isa_ok( $r, 'Git::Repository' );
     is( $r->repo_path, $gitdir, '... correct repo_path' );
     is( $r->wc_path,   $dir,    '... correct wc_path' );
+}
+
+# Make sure we are not in a directory File::Temp wants to clean up
+END {
+    chdir $home;
 }
