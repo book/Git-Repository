@@ -169,7 +169,7 @@ diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
 is( $r->repo_path, $gitdir, '... correct repo_path' );
-is( $r->wc_path,   $dir,    '... correct wc_path' );
+is( $r->wc_path,   undef,   '... correct wc_path' );
 is_deeply( $r->options, $options, "... options correctly propagated" );
 
 BEGIN { $tests += 5 }
@@ -178,7 +178,7 @@ ok( $r = eval { Git::Repository->new( repository => $gitdir, ); },
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
-is( $r->wc_path,   $dir,    '... correct wc_path' );
+is( $r->wc_path,   undef,   '... correct wc_path' );
 is( $r->options,   undef,   "... no options propagated" );
 
 # these tests requires git version > 1.6.5
