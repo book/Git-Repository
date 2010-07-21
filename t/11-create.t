@@ -12,7 +12,7 @@ plan skip_all => 'Default git binary not found in PATH'
 
 my $version = Git::Repository->version;
 plan skip_all => "these tests require git > 1.6.0, but we only have $version"
-    if Git::Repository->version_lt( '1.6.0' );
+    if Git::Repository->version_lt('1.6.0');
 
 plan tests => my $tests + my $extra;
 
@@ -57,7 +57,7 @@ diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
-is( $r->options, undef, "... no options propagated" );
+is( $r->options,   undef,   "... no options propagated" );
 
 # PASS - new() on a normal repository
 BEGIN { $tests += 4 }
@@ -137,7 +137,7 @@ BEGIN { $tests += 4 }
 $dir = next_dir;
 mkpath $dir;
 chdir $dir;
-ok( $r = eval { Git::Repository->create( qw( init --bare ) ); },
+ok( $r = eval { Git::Repository->create(qw( init --bare )); },
     "create( clone => @{[ $i - 1 ]} ) => $i" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
@@ -162,25 +162,24 @@ $dir = next_dir;
 mkpath $dir;
 chdir $dir;
 $gitdir = File::Spec->catdir( $dir, '.notgit' );
-ok( $r = eval { $r = Git::Repository->create( 'init',
-    { cwd => $dir, env => { GIT_DIR => $gitdir } } ); },
+my $options = { cwd => $dir, env => { GIT_DIR => $gitdir } };
+ok( $r = eval { Git::Repository->create( 'init', $options ); },
     "create( init ) => $i, GIT_DIR => '.notgit'" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
+chdir $home;
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
-is_deeply( $r->options, { cwd => $dir, env => { GIT_DIR => $gitdir } },
-    "... options correctly propagated" );
+is_deeply( $r->options, $options, "... options correctly propagated" );
 
 BEGIN { $tests += 5 }
-ok( $r = eval { Git::Repository->new( repository => $gitdir,
-working_copy => $dir ); },
+ok( $r = eval { Git::Repository->new( repository => $gitdir, ); },
     "new( repository => $i )" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   $dir,    '... correct wc_path' );
-is( $r->options, undef, "... no options propagated" );
+is( $r->options,   undef,   "... no options propagated" );
 
 # these tests requires git version > 1.6.5
 SKIP: {
@@ -215,7 +214,3 @@ SKIP: {
     is( $r->wc_path,   $dir,    '... correct wc_path' );
 }
 
-# Make sure we are not in a directory File::Temp wants to clean up
-END {
-    chdir $home;
-}
