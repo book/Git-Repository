@@ -154,9 +154,8 @@ isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $dir,  '... correct repo_path' );
 is( $r->wc_path,   undef, '... correct wc_path' );
 
-# ======= Tests that don't assume ".git" is the repository ==========
-
-# PASS - non-existent directory
+# PASS - non-existent directory, not a .git GIT_DIR
+# no --work-tree mean it's bare
 BEGIN { $tests += 5 }
 $dir = next_dir;
 mkpath $dir;
@@ -173,13 +172,33 @@ is( $r->wc_path,   undef,   '... correct wc_path' );
 is_deeply( $r->options, $options, "... options correctly propagated" );
 
 BEGIN { $tests += 5 }
-ok( $r = eval { Git::Repository->new( repository => $gitdir, ); },
+ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
     "new( repository => $i )" );
 diag $@ if $@;
 isa_ok( $r, 'Git::Repository' );
 is( $r->repo_path, $gitdir, '... correct repo_path' );
 is( $r->wc_path,   undef,   '... correct wc_path' );
 is( $r->options,   undef,   "... no options propagated" );
+
+# PASS - non-existent directory, not a .git GIT_DIR
+# now provide a --work-tree
+BEGIN { $tests += 5 }
+$dir = next_dir;
+mkpath $dir;
+chdir $dir;
+$gitdir = File::Spec->catdir( $dir, '.notgit' );
+$options = { cwd => $dir, env => { GIT_DIR => $gitdir } };
+ok( $r = eval {
+        Git::Repository->create( "--work-tree=$dir", 'init', $options );
+    },
+    "create( init ) => $i, GIT_DIR => '.notgit'"
+);
+diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
+chdir $home;
+is( $r->repo_path, $gitdir, '... correct repo_path' );
+is( $r->wc_path,   $dir,   '... correct wc_path' );
+is_deeply( $r->options, $options, "... options correctly propagated" );
 
 # these tests requires git version > 1.6.5
 SKIP: {
