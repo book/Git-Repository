@@ -72,8 +72,10 @@ sub new {
 
     # ensure wc_path is the top-level directory of the working copy
     if ( defined $self->{wc_path} ) {
-        my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
-            { cwd => $self->{wc_path} } );
+        my @cdup = qw( rev-parse --show-cdup );
+        my $cdup = eval {
+            Git::Repository->run( @cdup, { cwd => $self->{wc_path} } );
+        } || eval { $self->run(@cdup) };
         if ($cdup) {
             $self->{wc_subdir} = $self->{wc_path};
             $self->{wc_path}
