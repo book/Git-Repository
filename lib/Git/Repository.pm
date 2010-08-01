@@ -31,6 +31,7 @@ sub new {
 
     # take out the option hash
     my %arg = grep { !( ref eq 'HASH' ? $self->{options} ||= $_ : 0 ) } @arg;
+    $self->{options} ||= {};
 
     # setup default options
     my ( $repo_path, $wc_path ) = delete @arg{qw( repository working_copy )};
