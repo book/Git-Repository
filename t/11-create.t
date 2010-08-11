@@ -33,13 +33,12 @@ sub next_dir {
 }
 
 sub test_repo {
-    my ( $r, $gitdir, $dir, $subdir, $options ) = @_;
+    my ( $r, $gitdir, $dir, $options ) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     isa_ok( $r, 'Git::Repository' );
     is( $r->repo_path, $gitdir, '... correct repo_path' );
     is( $r->wc_path,   $dir,    '... correct wc_path' );
-    is( $r->wc_subdir, $subdir, '... correct wc_subdir' );
     is_deeply( $r->options, $options, "... correct options" );
 }
 
@@ -47,53 +46,53 @@ my ( $dir, $r );
 $dir = next_dir;
 
 # PASS - non-existent directory
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 my $gitdir = File::Spec->catdir( $dir, '.git' );
 mkpath $dir;
 chdir $dir;
 ok( $r = eval { $r = Git::Repository->create( 'init', { cwd => $dir } ); },
     "create( init ) => $i" );
 diag $@ if $@;
-test_repo( $r, $gitdir, $dir, undef, { cwd => $dir } );
+test_repo( $r, $gitdir, $dir, { cwd => $dir } );
 chdir $home;
 
 # PASS - new() on a normal repository
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
     "new( repository => $i )" );
 diag $@ if $@;
-test_repo( $r, $gitdir, $dir, undef, {} );
+test_repo( $r, $gitdir, $dir, {} );
 
 # PASS - new() on a normal repository
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 ok( $r = eval { Git::Repository->new( working_copy => $dir ); },
     "new( working_copy => $i )" );
 diag $@ if $@;
-test_repo( $r, $gitdir, $dir, undef, {} );
+test_repo( $r, $gitdir, $dir, {} );
 
 # PASS - new() on a subdir of the working copy
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 my $subdir = File::Spec->catdir( $dir, 'sub' );
 mkpath $subdir;
 ok( $r = eval { Git::Repository->new( working_copy => $subdir ); },
     "new( repository => $i/sub )" );
 diag $@ if $@;
-test_repo( $r, $gitdir, $dir, $subdir, {} );
+test_repo( $r, $gitdir, $dir, {} );
 
 # PASS - new() without arguments
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 chdir $dir;
 ok( $r = eval { $r = Git::Repository->new(); }, "new() => $i" );
 diag $@ if $@;
 chdir $home;
-test_repo( $r, $gitdir, $dir, undef, {} );
+test_repo( $r, $gitdir, $dir, {} );
 
 # PASS - new() without arguments from subdir
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 chdir $subdir;
 ok( $r = eval { $r = Git::Repository->new(); }, "new() => $i/sub" );
 diag $@ if $@;
-test_repo( $r, $gitdir, $dir, $subdir, {} );
+test_repo( $r, $gitdir, $dir, {} );
 chdir $home;
 
 # FAIL - command doesn't initialize a git repository
@@ -104,13 +103,13 @@ diag $@ if $@;
 is( $r, undef, 'create( --version ) did not create a repository' );
 
 # PASS - clone an existing repo and warns
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 my $old = $dir;
 $dir = next_dir;
 ok( $r = eval { Git::Repository->create( clone => $old => $dir ); },
     "create( clone => @{[ $i - 1 ]} => $i )" );
 diag $@ if $@;
-test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, undef, {} );
+test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
 
 # FAIL - clone a non-existing repo
 BEGIN { $tests += 3 }
@@ -123,26 +122,26 @@ is( $r, undef,
 like( $@, qr/^fatal: /, 'fatal error from git' );
 
 # PASS - init a bare repository
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 $dir = next_dir;
 mkpath $dir;
 chdir $dir;
 ok( $r = eval { Git::Repository->create(qw( init --bare )); },
     "create( clone => @{[ $i - 1 ]} ) => $i" );
 diag $@ if $@;
-test_repo( $r, $dir, undef, undef, {} );
+test_repo( $r, $dir, undef, {} );
 chdir $home;
 
 # PASS - new() on a bare repository
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 ok( $r = eval { Git::Repository->new( repository => $dir ); },
     "new( repository => $i )" );
 diag $@ if $@;
-test_repo( $r, $dir, undef, undef, {} );
+test_repo( $r, $dir, undef, {} );
 
 # PASS - non-existent directory, not a .git GIT_DIR
 # no --work-tree mean it's bare
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 $dir = next_dir;
 mkpath $dir;
 chdir $dir;
@@ -152,17 +151,17 @@ ok( $r = eval { Git::Repository->create( 'init', $options ); },
     "create( init ) => $i, GIT_DIR => '.notgit'" );
 diag $@ if $@;
 chdir $home;
-test_repo( $r, $gitdir, undef, undef, $options );
+test_repo( $r, $gitdir, undef, $options );
 
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
     "new( repository => $i )" );
 diag $@ if $@;
-test_repo( $r, $gitdir, undef, undef, {} );
+test_repo( $r, $gitdir, undef, {} );
 
 # PASS - non-existent directory, not a .git GIT_DIR
 # now provide a --work-tree
-BEGIN { $tests += 6 }
+BEGIN { $tests += 5 }
 $dir = next_dir;
 mkpath $dir;
 chdir $dir;
@@ -174,7 +173,7 @@ ok( $r = eval {
     "create( init ) => $i, GIT_DIR => '.notgit'"
 );
 diag $@ if $@;
-test_repo( $r, $gitdir, $dir, undef, $options );
+test_repo( $r, $gitdir, $dir, $options );
 chdir $home;
 
 # these tests requires git version > 1.6.5
@@ -192,17 +191,17 @@ SKIP: {
     like( $@, qr/^fatal: /, 'fatal error from git' );
 
     # PASS - create() on an existing repository
-    BEGIN { $extra += 12 }
+    BEGIN { $extra += 10 }
     $dir = next_dir;
     $gitdir = File::Spec->catdir( $dir, '.git' );
     ok( $r = eval { Git::Repository->create( init => $dir ) },
         "create( init => $i ) " );
     diag $@ if $@;
-    test_repo( $r, $gitdir, $dir, undef, {} );
+    test_repo( $r, $gitdir, $dir, {} );
 
     ok( $r = eval { Git::Repository->create( init => $dir ) },
         "create( init => $i ) again" );
     diag $@ if $@;
-    test_repo( $r, $gitdir, $dir, undef, {} );
+    test_repo( $r, $gitdir, $dir, {} );
 }
 

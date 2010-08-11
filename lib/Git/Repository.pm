@@ -14,7 +14,7 @@ use Git::Repository::Command;
 our $VERSION = '1.06';
 
 # a few simple accessors
-for my $attr (qw( repo_path wc_path wc_subdir options )) {
+for my $attr (qw( repo_path wc_path options )) {
     no strict 'refs';
     *$attr = sub { return ref $_[0] ? $_[0]{$attr} : () };
 }
@@ -78,7 +78,6 @@ sub new {
             Git::Repository->run( @cdup, { cwd => $self->{wc_path} } );
         } || eval { $self->run(@cdup) };
         if ($cdup) {
-            $self->{wc_subdir} = $self->{wc_path};
             $self->{wc_path}
                 = abs_path( File::Spec->catdir( $self->{wc_path}, $cdup ) );
         }
@@ -334,12 +333,6 @@ Returns the repository path.
 
 Returns the working copy path.
 Used as current working directory by C<Git::Repository::Command>.
-
-=head2 wc_subdir()
-
-Return the (relative) subdirectory path of the working copy.
-If defined, will be used as current working directory by
-C<Git::Repository::Command>, instead of C<wc_path>.
 
 =head2 options()
 

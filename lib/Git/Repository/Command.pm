@@ -72,14 +72,14 @@ sub new {
     local %ENV = %ENV;
 
     # possibly useful paths
-    my ( $repo_path, $wc_path, $wc_subdir );
+    my ( $repo_path, $wc_path );
 
     # a Git::Repository object will give more context
     if ($r) {
 
         # get some useful paths
-        ( $repo_path, $wc_path, $wc_subdir, my $repo_o )
-            = ( $r->repo_path, $r->wc_path, $r->wc_subdir, $r->options );
+        ( $repo_path, $wc_path, my $repo_o )
+            = ( $r->repo_path, $r->wc_path, $r->options );
 
         # merge the option hashes
         $o = {
@@ -101,7 +101,6 @@ sub new {
     my $orig = cwd;
     my $dest
         = defined $o->{cwd}                       ? $o->{cwd}
-        : defined $wc_subdir && length $wc_subdir ? $wc_subdir
         : defined $wc_path   && length $wc_path   ? $wc_path
         :                                           undef;
     if ( defined $dest ) {
