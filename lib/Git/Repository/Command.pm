@@ -82,14 +82,12 @@ sub new {
             = ( $r->repo_path, $r->wc_path, $r->wc_subdir, $r->options );
 
         # merge the option hashes
-        if ($repo_o) {
-            $o = {
-                %$repo_o, %$o,
-                exists $repo_o->{env} && exists $o->{env}
-                ? ( env => { %{ $repo_o->{env} }, %{ $o->{env} } } )
-                : ()
-            };
-        }
+        $o = {
+            %$repo_o, %$o,
+            exists $repo_o->{env} && exists $o->{env}
+            ? ( env => { %{ $repo_o->{env} }, %{ $o->{env} } } )
+            : ()
+        };
 
         # setup our %ENV
         delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
