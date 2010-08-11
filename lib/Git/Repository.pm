@@ -268,6 +268,9 @@ The location of the git repository (F<.git> directory or equivalent).
 
 The location of the git working copy (for a non-bare repository).
 
+If C<working_copy> actually points to a subdirectory of the work tree,
+C<Git::Repository> will automatically recompute the proper value.
+
 =back
 
 At least one of the two parameters is required. Usually, one is enough,
