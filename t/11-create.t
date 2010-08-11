@@ -176,6 +176,25 @@ diag $@ if $@;
 test_repo( $r, $gitdir, $dir, $options );
 chdir $home;
 
+# PASS - non-existent directory, not a .git GIT_DIR
+# provide a --work-tree, and start in a subdir
+BEGIN { $tests += 5 }
+$dir = next_dir;
+mkpath $dir;
+$gitdir = File::Spec->catdir( $dir, '.notgit' );
+$subdir = File::Spec->catdir( $dir, 'sub' );
+mkpath $subdir;
+chdir $subdir;
+$options = {
+    cwd => $subdir,
+    env => { GIT_DIR => $gitdir, GIT_WORK_TREE => $dir }
+};
+ok( $r = eval { Git::Repository->create( 'init', $options ); },
+    "create( init ) => $i, GIT_DIR => '.notgit'" );
+diag $@ if $@;
+chdir $home;
+test_repo( $r, $gitdir, $dir, $options );
+
 # these tests requires git version > 1.6.5
 SKIP: {
     skip "these tests require git > 1.6.5, but we only have $version", $extra
