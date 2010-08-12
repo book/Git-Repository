@@ -95,11 +95,8 @@ sub new {
             # check wc_path is the work_tree, and not a subdir
             my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
                 { cwd => $cwd } );
-
-            $self->{wc_path} = $wc_path;
-            if ($cdup) {
-                $self->{wc_path} = _abs_path( $wc_path, $cdup );
-            }
+            $self->{wc_path}
+                = $cdup ? _abs_path( $wc_path, $cdup ) : $wc_path;
         }
 
         # 4) both path defined: trust the values
