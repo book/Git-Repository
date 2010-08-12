@@ -64,22 +64,20 @@ sub new {
          : defined $wc_path        ? $wc_path
          :                           cwd();
 
+    # we'll always have to compute it if not defined
+    $self->{repo_path}
+        = _abs_path( $cwd,
+        Git::Repository->run( qw( rev-parse --git-dir ), { cwd => $cwd } ) )
+        if !defined $repo_path;
+
     # there are 4 possible cases
     if ( !defined $wc_path ) {
 
         # 1) no path defined: trust git with the values
-        if ( !defined $repo_path ) {
-            $self->{repo_path} = _abs_path(
-                $cwd,
-                Git::Repository->run(
-                    qw( rev-parse --git-dir ),
-                    { cwd => $cwd }
-                )
-            );
-        }
+        # $self->{repo_path} already computed
 
         # 2) only repo_path was given: trust it
-        else { $self->{repo_path} = $repo_path; }
+        $self->{repo_path} = $repo_path if defined $repo_path;
 
         # in a non-bare repository, the work tree is just above the gitdir
         if ( $self->run(qw( rev-parse --is-bare-repository )) eq 'false' ) {
@@ -92,16 +90,9 @@ sub new {
         # 3) only wc_path defined:
         if ( !defined $repo_path ) {
 
-            # - compute repo_path using git
-            $self->{repo_path} = _abs_path(
-                $cwd,
-                Git::Repository->run(
-                    qw( rev-parse --git-dir ),
-                    { cwd => $cwd }
-                )
-            );
+            # $self->{repo_path} already computed
 
-            # - check wc_path is the work_tree, and not a subdir
+            # check wc_path is the work_tree, and not a subdir
             my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
                 { cwd => $cwd } );
 
