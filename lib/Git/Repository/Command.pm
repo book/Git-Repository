@@ -91,10 +91,9 @@ sub new {
 
         # setup our %ENV
         delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
-        $ENV{GIT_DIR} = $repo_path
-            if defined $repo_path;
+        $ENV{GIT_DIR}       = $repo_path;
         $ENV{GIT_WORK_TREE} = $wc_path
-            if defined $repo_path && defined $wc_path;
+            if defined $wc_path;
     }
 
     # chdir to the expected directory
