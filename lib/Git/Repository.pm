@@ -19,6 +19,16 @@ for my $attr (qw( repo_path wc_path options )) {
     *$attr = sub { return ref $_[0] ? $_[0]{$attr} : () };
 }
 
+# helper function
+sub _abs_path {
+    my ( $base, $path ) = @_;
+    return abs_path(
+        File::Spec->file_name_is_absolute($path)
+        ? $path
+        : File::Spec->catdir( $base, $path )
+    );
+}
+
 #
 # constructor-related methods
 #
@@ -31,57 +41,89 @@ sub new {
 
     # take out the option hash
     my %arg = grep { !( ref eq 'HASH' ? $self->{options} ||= $_ : 0 ) } @arg;
-    $self->{options} ||= {};
+    my $options = $self->{options} ||= {};
 
     # setup default options
     my ( $repo_path, $wc_path ) = delete @arg{qw( repository working_copy )};
-    $wc_path = cwd()
-        if !defined $repo_path && !defined $wc_path;
 
     croak "Unknown parameters: @{[keys %arg]}" if keys %arg;
 
     # compute the various paths
-    if ( defined $repo_path ) {
-        croak "directory not found: $repo_path"
-            if !-d $repo_path;
-        $self->{repo_path} = abs_path($repo_path);
-    }
+    my $cwd = defined $options->{cwd} ? $options->{cwd} : cwd();
 
-    if ( defined $wc_path ) {
-        croak "directory not found: $wc_path"
-            if !-d $wc_path;
-        $self->{wc_path} = abs_path($wc_path);
-        if ( !defined $self->{repo_path} ) {
-            $self->{repo_path} = $self->run(qw( rev-parse --git-dir ));
-            $self->{repo_path}
-                = File::Spec->catdir( $self->{wc_path}, $self->{repo_path} )
-                if !File::Spec->file_name_is_absolute( $self->{repo_path} );
+    # if wc_path or repo_path are relative there are relative to cwd
+    -d ( $repo_path = _abs_path( $cwd, $repo_path ) )
+        or croak "directory not found: $repo_path"
+        if defined $repo_path;
+    -d ( $wc_path = _abs_path( $cwd, $wc_path ) )
+        or croak "directory not found: $wc_path"
+        if defined $wc_path;
+
+    # if no cwd option given, assume we want to work in wc_path
+    $cwd = defined $options->{cwd} ? $options->{cwd}
+         : defined $wc_path        ? $wc_path
+         :                           cwd();
+
+    # there are 4 possible cases
+    if ( !defined $wc_path ) {
+
+        # 1) no path defined: trust git with the values
+        if ( !defined $repo_path ) {
+            $self->{repo_path} = _abs_path(
+                $cwd,
+                Git::Repository->run(
+                    qw( rev-parse --git-dir ),
+                    { cwd => $cwd }
+                )
+            );
+        }
+
+        # 2) only repo_path was given: trust it
+        else { $self->{repo_path} = $repo_path; }
+
+        # in a non-bare repository, the work tree is just above the gitdir
+        if ( $self->run(qw( rev-parse --is-bare-repository )) eq 'false' ) {
+            $self->{wc_path}
+                = _abs_path( $self->{repo_path}, File::Spec->updir );
         }
     }
+    else {
 
-    # this is a non-bare repository, the work tree is just above the gitdir
-    elsif ( $self->run(qw( rev-parse --is-bare-repository )) eq 'false' ) {
-        $self->{wc_path} = abs_path(
-            File::Spec->catdir( $self->{repo_path}, File::Spec->updir ) );
+        # 3) only wc_path defined:
+        if ( !defined $repo_path ) {
+
+            # - compute repo_path using git
+            $self->{repo_path} = _abs_path(
+                $cwd,
+                Git::Repository->run(
+                    qw( rev-parse --git-dir ),
+                    { cwd => $cwd }
+                )
+            );
+
+            # - check wc_path is the work_tree, and not a subdir
+            my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
+                { cwd => $cwd } );
+
+            $self->{wc_path} = $wc_path;
+            if ($cdup) {
+                $self->{wc_path} = _abs_path( $wc_path, $cdup );
+            }
+        }
+
+        # 4) both path defined: trust the values
+        else {
+            $self->{repo_path} = $repo_path;
+            $self->{wc_path}   = $wc_path;
+        }
     }
 
     # sanity check
     my $gitdir
-        = eval { abs_path( $self->run(qw( rev-parse --git-dir )) ) } || '';
-    croak "fatal: Not a git repository: $repo_path"
+        = eval { _abs_path( $cwd, $self->run(qw( rev-parse --git-dir )) ) }
+        || '';
+    croak "fatal: Not a git repository: $self->{repo_path}"
         if $self->{repo_path} ne $gitdir;
-
-    # ensure wc_path is the top-level directory of the working copy
-    if ( defined $self->{wc_path} ) {
-        my @cdup = qw( rev-parse --show-cdup );
-        my $cdup = eval {
-            Git::Repository->run( @cdup, { cwd => $self->{wc_path} } );
-        } || eval { $self->run(@cdup) };
-        if ($cdup) {
-            $self->{wc_path}
-                = abs_path( File::Spec->catdir( $self->{wc_path}, $cdup ) );
-        }
-    }
 
     return $self;
 }
