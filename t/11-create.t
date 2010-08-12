@@ -122,6 +122,15 @@ ok( $r = eval { Git::Repository->create( clone => $old => $dir ); },
 diag $@ if $@;
 test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
 
+# PASS - clone an existing repo as bare and warns
+BEGIN { $tests += 5 }
+$old = $dir;
+$dir = next_dir;
+ok( $r = eval { Git::Repository->create( clone => '--bare', $old => $dir ); },
+    "create( clone => --bare, @{[ $i - 1 ]} => $i )" );
+diag $@ if $@;
+test_repo( $r, $dir, undef, {} );
+
 # FAIL - clone a non-existing repo
 BEGIN { $tests += 3 }
 $old = next_dir;
