@@ -75,14 +75,14 @@ BEGIN { $tests += 5 }
 my $subdir = File::Spec->catdir( $dir, 'sub' );
 mkpath $subdir;
 ok( $r = eval { Git::Repository->new( working_copy => $subdir ); },
-    "new( repository => $i/sub )" );
+    "new( working_copy => $i/sub )" );
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 
 # PASS - new() without arguments
 BEGIN { $tests += 5 }
 chdir $dir;
-ok( $r = eval { $r = Git::Repository->new(); }, "new() => $i" );
+ok( $r = eval { Git::Repository->new(); }, "new() => $i" );
 diag $@ if $@;
 chdir $home;
 test_repo( $r, $gitdir, $dir, {} );
@@ -90,7 +90,7 @@ test_repo( $r, $gitdir, $dir, {} );
 # PASS - new() without arguments from subdir
 BEGIN { $tests += 5 }
 chdir $subdir;
-ok( $r = eval { $r = Git::Repository->new(); }, "new() => $i/sub" );
+ok( $r = eval { Git::Repository->new(); }, "new() => $i/sub" );
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 chdir $home;
