@@ -95,6 +95,17 @@ diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 chdir $home;
 
+# PASS - new() with both arguments from subdir
+BEGIN { $tests += 5 }
+chdir $subdir;
+ok( $r = eval {
+        Git::Repository->new( working_copy => $dir, repository => $gitdir );
+    },
+    "new( working_copy => $i, repository => $i/.git ) => $i/sub"
+);
+diag $@ if $@;
+test_repo( $r, $gitdir, $dir, {} );
+chdir $home;
 # FAIL - command doesn't initialize a git repository
 BEGIN { $tests += 2 }
 ok( !( $r = eval { Git::Repository->create('--version'); } ),
