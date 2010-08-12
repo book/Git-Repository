@@ -119,9 +119,22 @@ sub new {
 sub create {
     my ( $class, @args ) = @_;
     my @output = $class->run(@args);
-    return $class->new( repository => $1, grep { ref eq 'HASH' } @args )
-        if $output[0] =~ /(?:Reinitialized existing|Initialized empty) Git repository in (.*)/;
-    return;
+    my $gitdir;
+
+    # git init or clone until v1.7.1 (inclusive)
+    if ( $output[0] =~ /^(?:Reinitialized existing|Initialized empty) Git repository in (.*)/ ) {
+        $gitdir = $1;
+    }
+
+    # git clone after v1.7.1
+    elsif ( $output[0] =~ /Cloning into (bare repository )?(.*)\.\.\./ ) {
+        $gitdir = $1 ? $2 : File::Spec->catdir( $2, '.git' );
+    }
+
+    # some other command (no git repository created)
+    else {return}
+
+    return $class->new( repository => $gitdir, grep { ref eq 'HASH' } @args );
 }
 
 #
@@ -333,8 +346,9 @@ Runs a repository initializing command (like C<init> or C<clone>) and
 returns a C<Git::Repository> object pointing to it. C<@cmd> can contain
 a hashref with options (see L<Git::Repository::Command>.
 
-This method runs the command and parses the first line as
-C<Initialized empty Git repository in $dir> to find the repository path.
+This method runs the command and parses the first line to find the
+repository path. Using the option I<-q> on such commands makes no sense,
+as it will prevent C<create()> to parse their output.
 
 C<create()> also accepts a reference to an option hash, that will be
 used to setup the returned C<Git::Repository> instance.
