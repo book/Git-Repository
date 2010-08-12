@@ -265,6 +265,7 @@ Git::Repository - Perl interface to Git repositories
     # obtain version information
     my $version = $r->version();
 
+    # compare current git version
     if ( $r->version_gt('1.6.5') ) {
         ...;
     }
@@ -508,6 +509,17 @@ Use the C<env> option:
     );
 
 See L<Git::Repository::Command> for other available options.
+
+=head2 Process the output of B<git log>
+
+When creating a tool that needs to process the output of B<git log>,
+you should always define precisely the expected format using the
+I<--pretty> option, and choose a format that is easy to parse.
+
+Assuming B<git log> will output the default format will eventually
+lead to problems, for example when the user's git configuration defines
+C<format.pretty> to be something else than the default of C<medium>.
+
 
 =head1 OTHER PERL GIT WRAPPERS
 
