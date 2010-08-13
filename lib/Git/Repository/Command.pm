@@ -72,14 +72,14 @@ sub new {
     local %ENV = %ENV;
 
     # possibly useful paths
-    my ( $repo_path, $wc_path );
+    my ( $git_dir, $work_tree );
 
     # a Git::Repository object will give more context
     if ($r) {
 
         # get some useful paths
-        ( $repo_path, $wc_path, my $repo_o )
-            = ( $r->repo_path, $r->wc_path, $r->options );
+        ( $git_dir, $work_tree, my $repo_o )
+            = ( $r->git_dir, $r->work_tree, $r->options );
 
         # merge the option hashes
         $o = {
@@ -91,16 +91,16 @@ sub new {
 
         # setup our %ENV
         delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
-        $ENV{GIT_DIR}       = $repo_path;
-        $ENV{GIT_WORK_TREE} = $wc_path
-            if defined $wc_path;
+        $ENV{GIT_DIR}       = $git_dir;
+        $ENV{GIT_WORK_TREE} = $work_tree
+            if defined $work_tree;
     }
 
     # chdir to the expected directory
     my $orig = cwd;
     my $dest
         = defined $o->{cwd}                       ? $o->{cwd}
-        : defined $wc_path   && length $wc_path   ? $wc_path
+        : defined $work_tree && length $work_tree ? $work_tree
         :                                           undef;
     if ( defined $dest ) {
         chdir $dest or croak "Can't chdir to $dest: $!";
