@@ -21,17 +21,17 @@ my $gitdir  = File::Spec->catdir( $dir, '.git' );
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 
 # FAIL - missing repository directory
-ok( !eval { Git::Repository->new( repository => $missing ) },
+ok( !eval { Git::Repository->new( git_dir => $missing ) },
     'Missing repository directory' );
 like( $@, qr/^directory not found: \Q$missing /, '... expected error message' );
 
 # FAIL - missing working copy directory
-ok( !eval { Git::Repository->new( working_copy => $missing ) },
-    'Missing working_copy directory' );
+ok( !eval { Git::Repository->new( work_tree => $missing ) },
+    'Missing work_tree directory' );
 like( $@, qr/^directory not found: \Q$missing /, '... expected error message' );
 
 # FAIL - repository is not a git repository
-ok( !eval { Git::Repository->new( repository => $dir ) },
+ok( !eval { Git::Repository->new( git_dir => $dir ) },
     'repository directory is not a git repository'
 );
 like(
@@ -44,9 +44,9 @@ like(
 SKIP: {
     my $tmp = File::Spec->tmpdir();
     skip "$tmp is already a working copy for some git repository", 2
-        if eval { Git::Repository->new( working_copy => $tmp ) };
-    ok( !eval { Git::Repository->new( working_copy => $dir ) },
-        'working_copy directory is not a git working copy'
+        if eval { Git::Repository->new( work_tree => $tmp ) };
+    ok( !eval { Git::Repository->new( work_tree => $dir ) },
+        'work_tree directory is not a git working copy'
     );
     like(
         $@,
@@ -58,9 +58,9 @@ SKIP: {
 # FAIL - working copy is not a git working copy
 mkpath($gitdir);
 ok( !eval {
-        Git::Repository->new( working_copy => $dir, repository => $gitdir );
+        Git::Repository->new( work_tree => $dir, git_dir => $gitdir );
     },
-    'working_copy\'s repository directory is not a git repository'
+    'work_tree\'s repository directory is not a git repository'
 );
 like(
     $@,
@@ -70,7 +70,7 @@ like(
 
 # FAIL - extra parameters
 ok( !eval {
-        Git::Repository->new( working_copy => $dir, extra => 'stuff' );
+        Git::Repository->new( work_tree => $dir, extra => 'stuff' );
     },
     'unknown extra parameter'
 );

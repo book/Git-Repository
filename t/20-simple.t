@@ -37,12 +37,12 @@ my $r = Git::Repository->create( 'init' );
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
 
-is( $r->wc_path, $dir, 'work tree' );
+is( $r->work_tree, $dir, 'work tree' );
 
 my $gitdir = $r->run( qw( rev-parse --git-dir ) );
 $gitdir = File::Spec->catfile( $dir, $gitdir )
     if ! File::Spec->file_name_is_absolute( $gitdir );
-is( $gitdir, $r->repo_path, 'git-dir' );
+is( $gitdir, $r->git_dir, 'git-dir' );
 
 # check usage exit code
 BEGIN { $tests += 2 }
@@ -181,12 +181,12 @@ is( $got, $commit, 'git log -1' );
 # PASS - try with a relative dir
 BEGIN { $tests += 3 }
 chdir $dir;
-$r = Git::Repository->new( working_copy => '.' );
+$r = Git::Repository->new( work_tree => '.' );
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
 
-is( $r->wc_path, $dir, 'work tree' );
-is( $r->repo_path, $gitdir, 'git dir' );
+is( $r->work_tree, $dir, 'work tree' );
+is( $r->git_dir, $gitdir, 'git dir' );
 
 # PASS - try with a no dir
 BEGIN { $tests += 3 }
@@ -195,14 +195,14 @@ $r = Git::Repository->new();
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
 
-is( $r->wc_path,   $dir,    'work tree' );
-is( $r->repo_path, $gitdir, 'git dir' );
+is( $r->work_tree,   $dir,    'work tree' );
+is( $r->git_dir, $gitdir, 'git dir' );
 
 # PASS - use an option HASH
 BEGIN { $tests += 3 }
 is( Git::Repository->options(), undef, 'No options on the class' );
 $r = Git::Repository->new(
-    working_copy => $dir,
+    work_tree => $dir,
     {   env => {
             GIT_AUTHOR_NAME  => 'Example author',
             GIT_AUTHOR_EMAIL => 'author@example.com'
@@ -230,7 +230,7 @@ $r->run(
     commit => '-a',
     '-m', 'Test option hash in run()',
     { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } },
-    bless( { wc_path => 'TEH FAIL' }, 'Git::Repository' ),  # ignored silently
+    bless( { work_tree => 'TEH FAIL' }, 'Git::Repository' ),  # ignored silently
     { env => { GIT_AUTHOR_EMAIL => 'fail@fail.com' } },     # ignored silently
 );
 ($author) = grep {/^Author:/} $r->run( log => '-1', '--pretty=medium' );
@@ -243,7 +243,7 @@ is( $author,
 BEGIN { $tests += 1 }
 ( $parent, $tree ) = split /-/, $r->run( log => '--pretty=format:%H-%T', -1 );
 $r = Git::Repository->new(
-    working_copy => $dir,
+    work_tree => $dir,
     { input => 'a dumb way to set log message' },
 );
 $commit = $r->run( 'commit-tree', $tree, '-p', $parent );

@@ -37,8 +37,8 @@ sub test_repo {
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     isa_ok( $r, 'Git::Repository' );
-    is( $r->repo_path, $gitdir, '... correct repo_path' );
-    is( $r->wc_path,   $dir,    '... correct wc_path' );
+    is( $r->git_dir,   $gitdir, '... correct git_dir' );
+    is( $r->work_tree, $dir,    '... correct work_tree' );
     is_deeply( $r->options, $options, "... correct options" );
 }
 
@@ -58,15 +58,15 @@ chdir $home;
 
 # PASS - new() on a normal repository
 BEGIN { $tests += 5 }
-ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
-    "new( repository => $i )" );
+ok( $r = eval { Git::Repository->new( git_dir => $gitdir ); },
+    "new( git_dir => $i )" );
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 
 # PASS - new() on a normal repository
 BEGIN { $tests += 5 }
-ok( $r = eval { Git::Repository->new( working_copy => $dir ); },
-    "new( working_copy => $i )" );
+ok( $r = eval { Git::Repository->new( work_tree => $dir ); },
+    "new( work_tree => $i )" );
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 
@@ -74,8 +74,8 @@ test_repo( $r, $gitdir, $dir, {} );
 BEGIN { $tests += 5 }
 my $subdir = File::Spec->catdir( $dir, 'sub' );
 mkpath $subdir;
-ok( $r = eval { Git::Repository->new( working_copy => $subdir ); },
-    "new( working_copy => $i/sub )" );
+ok( $r = eval { Git::Repository->new( work_tree => $subdir ); },
+    "new( work_tree => $i/sub )" );
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 
@@ -99,9 +99,9 @@ chdir $home;
 BEGIN { $tests += 5 }
 chdir $subdir;
 ok( $r = eval {
-        Git::Repository->new( working_copy => $dir, repository => $gitdir );
+        Git::Repository->new( work_tree => $dir, git_dir => $gitdir );
     },
-    "new( working_copy => $i, repository => $i/.git ) => $i/sub"
+    "new( work_tree => $i, git_dir => $i/.git ) => $i/sub"
 );
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
@@ -154,8 +154,8 @@ chdir $home;
 
 # PASS - new() on a bare repository
 BEGIN { $tests += 5 }
-ok( $r = eval { Git::Repository->new( repository => $dir ); },
-    "new( repository => $i )" );
+ok( $r = eval { Git::Repository->new( git_dir => $dir ); },
+    "new( git_dir => $i )" );
 diag $@ if $@;
 test_repo( $r, $dir, undef, {} );
 
@@ -174,8 +174,8 @@ chdir $home;
 test_repo( $r, $gitdir, undef, $options );
 
 BEGIN { $tests += 5 }
-ok( $r = eval { Git::Repository->new( repository => $gitdir ); },
-    "new( repository => $i )" );
+ok( $r = eval { Git::Repository->new( git_dir => $gitdir ); },
+    "new( git_dir => $i )" );
 diag $@ if $@;
 test_repo( $r, $gitdir, undef, {} );
 
