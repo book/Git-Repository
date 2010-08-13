@@ -26,11 +26,7 @@ my $tmp = abs_path( tempdir( CLEANUP => 1 ) );
 # some dirname generating routine
 my $i;
 
-sub next_dir {
-    my $dir = File::Spec->catdir( $tmp, ++$i );
-    mkpath $dir if @_;
-    return $dir;
-}
+sub next_dir { return File::Spec->catdir( $tmp, ++$i ); }
 
 sub test_repo {
     my ( $r, $gitdir, $dir, $options ) = @_;
