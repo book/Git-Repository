@@ -15,7 +15,7 @@ name: Git-Repository
 provides:
   Git::Repository:
     file: lib/Git/Repository.pm
-    version: 1.06
+    version: 1.07
   Git::Repository::Command:
     file: lib/Git/Repository/Command.pm
 requires:
@@ -27,4 +27,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/book/Git-Repository
-version: 1.06
+version: 1.07

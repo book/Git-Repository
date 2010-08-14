@@ -1,5 +1,26 @@
 Revision history for Git-Repository
 
+1.07 Sat Aug 14 16:52:21 CEST 2010
+        [ENHANCEMENTS]
+        - support for option hash in create(), which is attached to the
+          returned Git::Repository object
+        - accessors for Git::Repository::Command objects
+          (including a 'cmdline' accessor)
+        - removed the wc_subdir() attribute, which is useless and
+          redundant with the cwd option
+        - completely rewrote the repo_path and wc_path computation in new()
+        - support new (post-v1.7.1) clone output in create()
+        - less confusing names for options and attributes:
+          + new() now takes git_dir and work_tree
+            (instead of repository and working_copy)
+          + the corresponding attributes are now git_dir and work_tree
+            (instead of repo_path and wc_path)
+          + the older options and attributes are being kept for compatibility
+        [TESTS]
+        - tests for the case when GIT_DIR is not .git (Mark Lawrence)
+        - protect git log tests against format.pretty (Aristotle Pagaltzis)
+        - tests for backward-compatibility with repository, working_copy, etc.
+
 1.06 Sat Jul  3 22:02:59 CEST 2010
         [ENHANCEMENTS]
         - none
