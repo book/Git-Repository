@@ -187,15 +187,13 @@ sub run {
 #
 # version comparison methods
 #
+
+# NOTE: it doesn't make sense to try to cache the results of version():
+# - yes, it will make faster benchmarks, but
+# - the 'git' option allows to change the git binary anytime
+# - version comparison is usually done once anyway
 sub version {
-    my ($self) = @_;
-
-    # create a dummy instance if needed
-    $self = bless { options => {} }, __PACKAGE__ if !ref $self;
-
-    # cache the version in the instance
-    return $self->{version}
-        ||= ( $_[0]->run('--version') =~ /git version (.*)/g )[0];
+    return ( $_[0]->run('--version') =~ /git version (.*)/g )[0];
 }
 
 sub _version_eq {
