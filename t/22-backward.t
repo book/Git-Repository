@@ -10,8 +10,8 @@ plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
 
 my $version = Git::Repository->version;
-plan skip_all => "these tests require git > 1.6.0, but we only have $version"
-    if Git::Repository->version_lt('1.6.0');
+plan skip_all => "these tests require git >= 1.5.0, but we only have $version"
+    if Git::Repository->version_lt('1.5.0');
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};

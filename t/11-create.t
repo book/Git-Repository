@@ -11,7 +11,7 @@ plan skip_all => 'Default git binary not found in PATH'
     if !Git::Repository::Command::_has_git('git');
 
 my $version = Git::Repository->version;
-plan skip_all => "these tests require git > 1.6.0, but we only have $version"
+plan skip_all => "these tests require git >= 1.6.0, but we only have $version"
     if Git::Repository->version_lt('1.6.0');
 
 plan tests => my $tests + my $extra;
@@ -211,9 +211,9 @@ diag $@ if $@;
 chdir $home;
 test_repo( $r, $gitdir, $dir, $options );
 
-# these tests requires git version > 1.6.5
+# these tests requires git version >= 1.6.5
 SKIP: {
-    skip "these tests require git > 1.6.5, but we only have $version", $extra
+    skip "these tests require git >= 1.6.5, but we only have $version", $extra
         if Git::Repository->version_lt('1.6.5');
 
     # FAIL - init a dir that is a file
