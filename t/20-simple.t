@@ -244,11 +244,15 @@ is( $author,
 );
 
 # PASS - use an option HASH (no env key)
-BEGIN { $tests += 1 }
+BEGIN { $tests += 2 }
 ( $parent, $tree ) = split /-/, $r->run( log => '--pretty=format:%H-%T', -1 );
-$r = Git::Repository->new(
-    work_tree => $dir,
-    { input => 'a dumb way to set log message' },
+ok( $r = eval {
+        Git::Repository->new(
+            work_tree => $dir,
+            { input => 'a dumb way to set log message' },
+        );
+    },
+    'Git::Repository->new()'
 );
 $commit = $r->run( 'commit-tree', $tree, '-p', $parent );
 my $log = $r->run( log => '--pretty=format:%s', -1, $commit );
