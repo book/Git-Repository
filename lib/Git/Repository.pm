@@ -188,7 +188,14 @@ sub run {
 # version comparison methods
 #
 sub version {
-    return ( $_[0]->run('--version') =~ /git version (.*)/g )[0];
+    my ($self) = @_;
+
+    # create a dummy instance if needed
+    $self = bless { options => {} }, __PACKAGE__ if !ref $self;
+
+    # cache the version in the instance
+    return $self->{version}
+        ||= ( $_[0]->run('--version') =~ /git version (.*)/g )[0];
 }
 
 sub _version_eq {
