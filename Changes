@@ -1,5 +1,12 @@
 Revision history for Git-Repository
 
+1.08 Tue Aug 17 14:49:11 CEST 2010
+        [ENHANCEMENTS]
+        - Git::Repository->new() now supports git versions older than 1.5.3
+        [TESTS]
+        - ensure we have some identity when committing
+        - make tests require the lowest git version they support
+
 1.07 Sat Aug 14 16:52:21 CEST 2010
         [ENHANCEMENTS]
         - support for option hash in create(), which is attached to the
