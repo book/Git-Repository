@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More;
 use Scalar::Util qw( looks_like_number );
-use File::Temp qw( tempdir );
 use Git::Repository;
 
 plan skip_all => 'Default git binary not found in PATH'
@@ -70,17 +69,12 @@ my %negate = (
     map { [ $_->[2], $reverse{ $_->[1] }, $_->[0], $_->[3] || () ] } @true
 );
 
-plan tests => 6 + 6 * @lesser + 6 * @greater + 2 * @true;
+plan tests => 5 + 6 * @lesser + 6 * @greater + 2 * @true;
+
+my $r = 'Git::Repository';
 
 # version
 is( Git::Repository->version(), $version, "git version $version" );
-
-# create a git repository
-my $r;
-my $dir = tempdir( CLEANUP => 1 );
-chdir $dir;
-ok( $r = eval { $r = Git::Repository->create('init') }, 'create( init )' );
-diag $@ if $@;
 
 # version_eq
 ok( $r->version_eq($version), "$version version_eq $version" );
