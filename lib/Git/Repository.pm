@@ -34,6 +34,17 @@ sub _abs_path {
 }
 
 #
+# support for loading mixins
+#
+sub import {
+    my ( $class, @mixins ) = @_;
+    for my $mixin (@mixins) {
+        eval "use Git::Repository::Mixin::$mixin; 1;" or croak $@;
+        push our @ISA, "Git::Repository::Mixin::$mixin";
+    }
+}
+
+#
 # constructor-related methods
 #
 
@@ -558,6 +569,58 @@ I<--pretty> option, and choose a format that is easy to parse.
 Assuming B<git log> will output the default format will eventually
 lead to problems, for example when the user's git configuration defines
 C<format.pretty> to be something else than the default of C<medium>.
+
+
+=head1 SUPPORT FOR MIXINS
+
+C<Git::Repository> has a very little number of methods, on purpose.
+The idea is to provide a lightweight wrapper around git, to be used
+to create interesting tools based on Git.
+
+However, people will want to add extra functionality to C<Git::Repository>,
+the obvious example being a C<log()> method that returns simple objects
+with useful attributes.
+
+A hypothetical C<Git::Repository::Mixin::Hello> module could be written
+like this:
+
+    package Git::Repository::Mixin::Hello;
+
+    sub hello { return "Hello, git world!\n" }
+
+    sub hello_gitdir { return "Hello, " . $_[0]->git_dir . "!\n"; }
+
+    1;
+
+And the methods would be loaded and used as follows:
+
+    use Git::Repository qw( Hello );
+
+    my $r = Git::Repository->new();
+    print $r->hello();
+    print $r->hello_gitdir();
+
+So, instead of subclassing C<Git::Repository>, the idea is to put the
+extra methods in the C<Git::Repository::Mixin::Hello> namespace, and
+make them available to C<Git::Repository> objects via C<@ISA>. In case
+of conflict over the new method names mixed in, modules loaded early
+will have precedence over modules loaded later. And since the methods
+will be called on C<Git::Repository> objects, all C<Git::Repository>
+methods will of course be available.
+
+To make things more explicit,
+
+    use Git::Repository qw( Foo Bar Baz );
+    say $_ for @Git::Repository::ISA;
+
+will output:
+
+    Git::Repository::Mixin::Foo
+    Git::Repository::Mixin::Bar
+    Git::Repository::Mixin::Baz
+
+Given the way C<@ISA> works, if mixins C<Foo> and C<Bar> both provide
+the C<quux()> method, it's always C<Foo>'s version that will be called.
 
 
 =head1 OTHER PERL GIT WRAPPERS
