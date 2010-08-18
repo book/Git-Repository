@@ -1,5 +1,15 @@
 Revision history for Git-Repository
 
+1.09 Thu Aug 19 00:34:47 CEST 2010
+        [ENHANCEMENTS]
+        - now handle SIGPIPE when writing to git stdin
+          (fixes RT bug #60482, reported by Todd Rinaldo (TODDR))
+        - new() ignores the 'input' option for git commands called
+          during initialization
+        [TESTS]
+        - t/20-simple.t should stop failing with "Non-zero wait status: 13"
+          as it has been doing since 1.05.
+
 1.08 Tue Aug 17 14:49:11 CEST 2010
         [ENHANCEMENTS]
         - Git::Repository->new() now supports git versions older than 1.5.3
