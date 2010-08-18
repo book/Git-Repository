@@ -47,6 +47,9 @@ sub new {
     my %arg = grep { !( ref eq 'HASH' ? $self->{options} ||= $_ : 0 ) } @arg;
     my $options = $self->{options} ||= {};
 
+    # ignore 'input' option during object creation
+    my $input = delete $options->{input};
+
     # setup default options
     # accept older for backward compatibility
     my ($git_dir) = grep {defined} delete @arg{qw( git_dir repository )};
@@ -118,6 +121,9 @@ sub new {
         || '';
     croak "fatal: Not a git repository: $self->{git_dir}"
         if $self->{git_dir} ne $gitdir;
+
+    # put back the ignored option
+    $options->{input} = $input if defined $input;
 
     return $self;
 }
@@ -357,6 +363,12 @@ So this:
 
 will be equivalent to having any option hash that will be passed to
 C<run()> or C<command()> be pre-filled with these options.
+
+It probably makes no sense to set the C<input> option in C<new()> or
+C<create()>, but C<Git::Repository> won't stop you.
+Note that on some systems, some git commands may close standard input
+on startup, which will cause a SIGPIPE. C<Git::Repository::Command>
+will raise an exception.
 
 =head2 create( @cmd )
 

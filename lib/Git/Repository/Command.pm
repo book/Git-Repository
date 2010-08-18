@@ -122,7 +122,9 @@ sub new {
     croak $@ if !defined $pid;
 
     # some input was provided
-    if ( exists $o->{input} ) {
+    if ( defined $o->{input} ) {
+        local $SIG{PIPE}
+            = sub { croak "Broken pipe when writing to: $git @cmd" };
         print {$in} $o->{input};
         $in->close;
     }
@@ -239,6 +241,9 @@ A hashref containing key / values to add to the git command environment.
 =item C<input>
 
 A string that is send to the git command standard input, which is then closed.
+
+On some systems, some git commands may close standard input on startup,
+which will cause a SIGPIPE. This will raise an exception.
 
 =back
 
