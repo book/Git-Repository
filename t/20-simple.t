@@ -255,6 +255,6 @@ ok( $r = eval {
     'Git::Repository->new()'
 );
 $commit = $r->run( 'commit-tree', $tree, '-p', $parent );
-my $log = $r->run( log => '--pretty=format:%s', -1, $commit );
+my $log = $r->run( log => '--pretty=format:%s', -1, $commit, { input => '' } );
 is( $log, 'a dumb way to set log message', 'Option hash in new() worked' );
 
