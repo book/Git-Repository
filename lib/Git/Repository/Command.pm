@@ -122,7 +122,7 @@ sub new {
     croak $@ if !defined $pid;
 
     # some input was provided
-    if ( defined $o->{input} ) {
+    if ( defined $o->{input} && length $o->{input} ) {
         local $SIG{PIPE}
             = sub { croak "Broken pipe when writing to: $git @cmd" };
         print {$in} $o->{input};
