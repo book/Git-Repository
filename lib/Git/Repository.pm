@@ -573,7 +573,7 @@ C<format.pretty> to be something else than the default of C<medium>.
 
 =head1 SUPPORT FOR MIXINS
 
-C<Git::Repository> has a very little number of methods, on purpose.
+C<Git::Repository> intentionally has only few methods.
 The idea is to provide a lightweight wrapper around git, to be used
 to create interesting tools based on Git.
 
