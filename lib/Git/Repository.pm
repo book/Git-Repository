@@ -290,7 +290,7 @@ Git::Repository - Perl interface to Git repositories
 =head1 DESCRIPTION
 
 C<Git::Repository> is a Perl interface to Git, for scripted interactions
-repositories. It's a low-level interface that allows calling any Git
+with repositories. It's a low-level interface that allows calling any Git
 command, whether I<porcelain> or I<plumbing>, including bidirectional
 commands such as C<git commit-tree>.
 
