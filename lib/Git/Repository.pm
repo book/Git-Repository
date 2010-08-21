@@ -289,25 +289,25 @@ Git::Repository - Perl interface to Git repositories
 
 =head1 DESCRIPTION
 
-C<Git::Repository> is a Perl interface to Git, allowing scripted
-interactions with one or more repositories. It's a low-level interface,
-allowing to call B<any> Git command, either I<porcelain> or I<plumbing>,
-including bidirectional commands such as C<git commit-tree>.
-
-Since it is a low-level interface, it doesn't provide any fancy way to
-call Git commands. It is up to the programmer to setup any environment
-variables that the underlying Git command may need and use.
+C<Git::Repository> is a Perl interface to Git, for scripted interactions
+repositories. It's a low-level interface that allows calling any Git
+command, whether I<porcelain> or I<plumbing>, including bidirectional
+commands such as C<git commit-tree>.
 
 A C<Git::Repository> object simply provides context to the git commands
 being run. Is it possible to call the  C<command()>and C<run()> methods
-agains the class itself, and the context (typically I<current working
+against the class itself, and the context (typically I<current working
 directory>) will be obtained from the options and environment.
 
-The C<GIT_DIR> and C<GIT_WORK_TREE> environment variables are special:
-if the command is run in the context of a C<Git::Repository> object, they
-will be overriden by the object's C<git_dir> and C<work_tree> attributes,
-respectively. It is however still possible to override them if necessary,
-using the C<env> option.
+As a low-level interface, it provides no sugar for particular Git
+commands. Specifically, it will not prepare environment variables that
+individual Git commands may need or use.
+
+However, the C<GIT_DIR> and C<GIT_WORK_TREE> environment variables are
+special: if the command is run in the context of a C<Git::Repository>
+object, they will be overriden by the object's C<git_dir> and
+C<work_tree> attributes, respectively. It is however still possible to
+override them if necessary, using the C<env> option.
 
 =head1 METHODS
 
@@ -326,7 +326,7 @@ Parameters are:
 The location of the git repository (F<.git> directory or equivalent).
 
 For backward compatibility with versions 1.06 and before, C<repository>
-is accepted in place of C<git_dir> (but the newer takes precedence).
+is accepted in place of C<git_dir> (but the newer name takes precedence).
 
 =item work_tree => $dir
 
@@ -336,16 +336,16 @@ If C<work_tree> actually points to a subdirectory of the work tree,
 C<Git::Repository> will automatically recompute the proper value.
 
 For backward compatibility with versions 1.06 and before, C<working_copy>
-is accepted in place of C<work_tree> (but the newer takes precedence).
+is accepted in place of C<work_tree> (but the newer name takes precedence).
 
 =back
 
 At least one of the two parameters is required. Usually, one is enough,
 as C<Git::Repository> can work out where the other directory (if any) is.
 
-C<new()> also accepts a reference to an option hash, that will be
-automatically used by C<Git::Repository::Command> when working with
-the corresponding C<Git::Repository> instance.
+C<new()> also accepts a reference to an option hash which will be used
+as the default by C<Git::Repository::Command> when working with the
+corresponding C<Git::Repository> instance.
 
 So this:
 
@@ -361,27 +361,26 @@ So this:
         $options
     );
 
-will be equivalent to having any option hash that will be passed to
-C<run()> or C<command()> be pre-filled with these options.
+is equivalent to explicitly passing the option hash to each
+C<run()> or C<command()>.
 
 It probably makes no sense to set the C<input> option in C<new()> or
-C<create()>, but C<Git::Repository> won't stop you.
+C<create()>, but L<Git::Repository> won't stop you.
 Note that on some systems, some git commands may close standard input
-on startup, which will cause a SIGPIPE. C<Git::Repository::Command>
+on startup, which will cause a C<SIGPIPE>. L<Git::Repository::Command>
 will raise an exception.
 
 =head2 create( @cmd )
 
-Runs a repository initializing command (like C<init> or C<clone>) and
-returns a C<Git::Repository> object pointing to it. C<@cmd> can contain
+Runs a repository initialization command (like C<init> or C<clone>) and
+returns a C<Git::Repository> object pointing to it. C<@cmd> may contain
 a hashref with options (see L<Git::Repository::Command>.
 
-This method runs the command and parses the first line to find the
-repository path. Using the option I<-q> on such commands makes no sense,
-as it will prevent C<create()> to parse their output.
+Do not use the I<-q> option on such commands. C<create()> needs to parse
+their output to find the path to the repository.
 
-C<create()> also accepts a reference to an option hash, that will be
-used to setup the returned C<Git::Repository> instance.
+C<create()> also accepts a reference to an option hash which will be
+used to set up the returned C<Git::Repository> instance.
 
 =head2 command( @cmd )
 
@@ -389,12 +388,12 @@ Runs the git sub-command and options, and returns a C<Git::Repository::Command>
 object pointing to the sub-process running the command.
 
 As described in the L<Git::Repository::Command> documentation, C<@cmd>
-can also hold a hashref containing options for the command.
+may also contain a hashref containing options for the command.
 
 =head2 run( @cmd )
 
 Runs the command and returns the output as a string in scalar context,
-and as a list of lines in list context. Also accepts a hashref of options.
+or as a list of lines in list context. Also accepts a hashref of options.
 
 Lines are automatically C<chomp>ed.
 
@@ -431,7 +430,7 @@ Return the version of git, as given by C<git --version>.
 
 =head2 Version-comparison "operators"
 
-Git evolves very fast, and new features are constantly added to it.
+Git evolves very fast, and new features are constantly added.
 To facilitate the creation of programs that can properly handle the
 wide variety of Git versions seen in the wild, a number of version
 comparison "operators" are available.
@@ -462,12 +461,8 @@ The methods are:
 Note that there are a small number of cases where the version comparison
 operators will I<not> compare versions correctly for I<very old> versions of
 Git. Typical example is C<1.0.0a gt 1.0.0> which should return true, but
-doesn't. It actually only concerns cases when it is needed to compare
-and the last significant bit of very close (and very old) version numbers.
-
-However, this only concerns Git versions older than C<1.4.0-rc1> (June 2006).
-It wasn't worth the trouble to try and correctly compare older version
-numbers.
+doesn't. This only matters in comparisons, only for version numbers prior to
+C<1.4.0-rc1> (June 2006), and only when the compared versions are very close.
 
 Other issues exist when comparing development version numbers with one
 another. For example, C<1.7.1.1> is greater than both C<1.7.1.1.gc8c07>
@@ -477,9 +472,9 @@ C<1.7.1.1.gc8c07> will compare as greater than C<1.7.1.1.g5f35a>
 compared, as they are two siblings children of the commit tagged
 C<v1.7.1>).
 
-If one was to compute the set of all possible version numbers (as returned
+If one were to compute the set of all possible version numbers (as returned
 by C<git --version>) for all git versions that can be compiled from each
-commit in the F<git.git> repository, this would not be a totally ordered
+commit in the F<git.git> repository, the result would not be a totally ordered
 set. Big deal.
 
 =head1 HOW-TO
@@ -512,7 +507,7 @@ output, C<command()> must be used.
     my @errput = $cmd->stderr->getlines();
     $cmd->close;
 
-C<run()> also captures all output at once, which can lead to unecessary
+C<run()> also captures all output at once, which can lead to unnecessary
 memory consumption when capturing the output of some really verbose
 commands.
 
@@ -565,8 +560,8 @@ C<format.pretty> to be something else than the default of C<medium>.
 A number of Perl git wrappers already exist. Why create a new one?
 
 I have a lot of ideas of nice things to do with Git as a tool to
-manipulate blobs, trees, and tags, that may or may not reprensent
-version history of a project. A lot of those commands can output
+manipulate blobs, trees, and tags, that may or may not represent
+revision history of a project. A lot of those commands can output
 huge amounts of data, which I need to be able to process in chunks.
 Some of these commands also expect to receive input.
 
