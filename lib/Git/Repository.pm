@@ -619,8 +619,8 @@ will output:
     Git::Repository::Mixin::Bar
     Git::Repository::Mixin::Baz
 
-Given the way C<@ISA> works, if mixins C<Foo> and C<Bar> both provide
-the C<quux()> method, it's always C<Foo>'s version that will be called.
+Given the way C<@ISA> works, if mixins C<::Foo> and C<::Bar> both provide
+the C<quux()> method, it's always C<::Foo>'s version that will be called.
 
 
 =head1 OTHER PERL GIT WRAPPERS
