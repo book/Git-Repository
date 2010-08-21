@@ -58,6 +58,11 @@ ok( $got = eval { $r->hello_gitdir }, 'hello_gitdir() method is there' );
 diag $@ if $@;
 is( $got, "Hello, $gitdir!\n", '... with expected value' );
 
+# FAIL - can't load this mixin
+BEGIN { $tests += 2 }
+ok( ! eval q{use Git::Repository 'DoesNotExist'; 1;}, 'Failed to load inexistent mixin' );
+like( $@, qr{^Can't locate Git/Repository/Mixin/DoesNotExist\.pm }, '... expected error message' );
+
 # PASS - load Hello2
 BEGIN { $tests += 2 }
 use_ok( 'Git::Repository', 'Hello2' );
