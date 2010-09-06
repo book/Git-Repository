@@ -12,6 +12,8 @@ use Scalar::Util qw( blessed );
 use File::Spec;
 use Config;
 
+our $VERSION = '1.06';
+
 # a few simple accessors
 for my $attr (qw( pid stdin stdout stderr exit signal core )) {
     no strict 'refs';
