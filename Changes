@@ -1,5 +1,13 @@
 Revision history for Git-Repository
 
+1.10 Fri Sep 24 18:04:05 CEST 2010
+        [ENHANCEMENTS]
+        - Git::Repository::Command doesn't write to the command stdin
+          if the input option is set to something empty
+        - Git::Repository::Command now has a version number too
+        [DOCUMENTATION]
+        - minor copy editing by Aristotle Pagaltzis
+
 1.09 Thu Aug 19 00:34:47 CEST 2010
         [ENHANCEMENTS]
         - now handle SIGPIPE when writing to git stdin
