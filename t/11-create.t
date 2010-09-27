@@ -14,7 +14,7 @@ my $version = Git::Repository->version;
 plan skip_all => "these tests require git >= 1.6.0, but we only have $version"
     if Git::Repository->version_lt('1.6.0');
 
-plan tests => my $tests + my $extra;
+plan tests => my $tests + my $between + my $extra;
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
@@ -109,27 +109,37 @@ ok( !( $r = eval { Git::Repository->create('--version'); } ),
 diag $@ if $@;
 is( $r, undef, 'create( --version ) did not create a repository' );
 
-# PASS - clone an existing repo and warns
-BEGIN { $tests += 5 }
-my $old = $dir;
-$dir = next_dir;
-ok( $r = eval { Git::Repository->create( clone => $old => $dir ); },
-    "create( clone => @{[ $i - 1 ]} => $i )" );
-diag $@ if $@;
-test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
+SKIP: {
+    skip "git clone is quiet for 1.7.1 < git < 1.7.1.1, we have $version",
+        $between
+        if Git::Repository->version_lt('1.7.1.1')
+            && Git::Repository->version_gt('1.7.1');
 
-# PASS - clone an existing repo as bare and warns
-BEGIN { $tests += 5 }
-$old = $dir;
-$dir = next_dir;
-ok( $r = eval { Git::Repository->create( clone => '--bare', $old => $dir ); },
-    "create( clone => --bare, @{[ $i - 1 ]} => $i )" );
-diag $@ if $@;
-test_repo( $r, $dir, undef, {} );
+    # PASS - clone an existing repo and warns
+    BEGIN { $between += 5 }
+    my $old = $dir;
+    $dir = next_dir;
+    ok( $r = eval { Git::Repository->create( clone => $old => $dir ); },
+        "create( clone => @{[ $i - 1 ]} => $i )" );
+    diag $@ if $@;
+    test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
+
+    # PASS - clone an existing repo as bare and warns
+    BEGIN { $between += 5 }
+    $old = $dir;
+    $dir = next_dir;
+    ok( $r = eval {
+            Git::Repository->create( clone => '--bare', $old => $dir );
+        },
+        "create( clone => --bare, @{[ $i - 1 ]} => $i )"
+    );
+    diag $@ if $@;
+    test_repo( $r, $dir, undef, {} );
+}
 
 # FAIL - clone a non-existing repo
 BEGIN { $tests += 3 }
-$old = next_dir;
+my $old = next_dir;
 $dir = next_dir;
 ok( !( $r = eval { Git::Repository->create( clone => $old => $dir ); } ),
     "create( clone => @{[ $i - 1 ]} => $i ) FAILED" );
