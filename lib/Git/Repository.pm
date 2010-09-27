@@ -217,8 +217,20 @@ sub _version_gt {
     my @v1 = split /\./, $v1;
     my @v2 = split /\./, $v2;
 
+    # pick up any dev parts
+    my @dev1 = splice @v1, -2 if substr( $v1[-1], 0, 1 ) eq 'g';
+    my @dev2 = splice @v2, -2 if substr( $v2[-1], 0, 1 ) eq 'g';
+
     # skip to the first difference
     shift @v1, shift @v2 while @v1 && @v2 && $v1[0] eq $v2[0];
+
+    # we're comparing dev versions with the same ancestor
+    if ( !@v1 && !@v2 ) {
+        @v1 = @dev1;
+        @v2 = @dev2;
+    }
+
+    # prepare the bits to compare
     ( $v1, $v2 ) = ( $v1[0] || 0, $v2[0] || 0 );
 
     # rcX is less than any number
