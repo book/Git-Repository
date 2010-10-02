@@ -26,13 +26,15 @@ for my $attr (qw( git_dir work_tree options )) {
 # helper function
 sub _abs_path {
     my ( $base, $path ) = @_;
-    return eval {
-        abs_path(
+    my $abs_path = '';
+    eval {
+        $abs_path = abs_path(
             File::Spec->file_name_is_absolute($path)
             ? $path
             : File::Spec->catdir( $base, $path )
         );
     };
+    return $abs_path;
 }
 
 #
