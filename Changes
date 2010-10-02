@@ -1,5 +1,13 @@
 Revision history for Git-Repository
 
+1.11 Sat Oct  2 18:17:33 CEST 2010
+        [ENHANCEMENTS]
+        - fixed a bug in version comparison
+          (version 1.7.1.209.gd60ad81 is smaller than 1.7.1.1.1.g66bd8ab)
+        [TESTS]
+        - fix abs_path dying on Win32 with a path to a non-existent file
+          (again)
+
 1.10 Fri Sep 24 18:04:05 CEST 2010
         [ENHANCEMENTS]
         - Git::Repository::Command doesn't write to the command stdin
