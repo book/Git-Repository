@@ -5,6 +5,8 @@ Revision history for Git-Repository
         - fixed a bug in version comparison
           (version 1.7.1.209.gd60ad81 is smaller than 1.7.1.1.1.g66bd8ab)
         [TESTS]
+        - skip tests that fail between between versions 1.7.1 and 1.7.1.1
+          (thanks to Sébastien Aperghis-Tramoni for the private report)
         - fix abs_path dying on Win32 with a path to a non-existent file
           (again)
 
