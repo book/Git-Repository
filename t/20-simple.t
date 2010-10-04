@@ -258,3 +258,10 @@ $commit = $r->run( 'commit-tree', $tree, '-p', $parent );
 my $log = $r->run( log => '--pretty=format:%s', -1, $commit, { input => undef } );
 is( $log, 'a dumb way to set log message', 'Option hash in new() worked' );
 
+# PASS - create the empty tree
+BEGIN { $tests += 2 }
+ok( $r = eval { Git::Repository->new( work_tree => $dir ) },
+    'Git::Repository->new()' );
+$tree = $r->run( mktree => { input => '' } );
+is( $tree, '4b825dc642cb6eb9a060e54bf8d69288fbee4904', 'mktree empty tree' );
+
