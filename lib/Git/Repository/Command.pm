@@ -124,10 +124,10 @@ sub new {
     croak $@ if !defined $pid;
 
     # some input was provided
-    if ( defined $o->{input} && length $o->{input} ) {
+    if ( defined $o->{input} ) {
         local $SIG{PIPE}
             = sub { croak "Broken pipe when writing to: $git @cmd" };
-        print {$in} $o->{input};
+        print {$in} $o->{input} if length $o->{input};
         $in->close;
     }
 
@@ -244,8 +244,16 @@ A hashref containing key / values to add to the git command environment.
 
 A string that is send to the git command standard input, which is then closed.
 
+Using the empty string as C<input> will close the git command standard input
+without writing to it.
+
+Using C<undef> as C<input> will not do anything. This behaviour provides
+a way to modify options inherited from C<new()> or a hash populated by
+some other part of the program.
+
 On some systems, some git commands may close standard input on startup,
-which will cause a SIGPIPE. This will raise an exception.
+which will cause a SIGPIPE when trying to write to it. This will raise
+an exception.
 
 =back
 
