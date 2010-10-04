@@ -1,5 +1,10 @@
 Revision history for Git-Repository
 
+1.12 Mon Oct  4 02:30:51 CEST 2010
+        [ENHANCEMENTS]
+        - the input option can now be empty: it means "close stdin first"
+        - if the input option is undef, it still means "don't touch stdin"
+
 1.11 Sat Oct  2 18:17:33 CEST 2010
         [ENHANCEMENTS]
         - fixed a bug in version comparison
