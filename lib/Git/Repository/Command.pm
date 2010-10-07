@@ -273,6 +273,12 @@ number of attributes defined (see below).
 Close all pipes to the child process, and collects exit status, etc.
 and defines a number of attributes (see below).
 
+Note that C<close()> is automatically called when the
+C<Git::Repository::Command> object is destroyed.
+Annoyingly, this means that in the following example C<$fh> will be
+closed when you tried to use it:
+
+    my $fh = Git::Repository::Command->new( @cmd )->stdout;
 
 =head2 Accessors
 
