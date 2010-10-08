@@ -203,7 +203,9 @@ sub run {
 # - the 'git' option allows to change the git binary anytime
 # - version comparison is usually done once anyway
 sub version {
-    return ( $_[0]->run('--version') =~ /git version (.*)/g )[0];
+    return (
+        shift->run( '--version', grep { ref eq 'HASH' } @_ )
+            =~ /git version (.*)/g )[0];
 }
 
 sub _version_eq {
