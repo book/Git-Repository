@@ -61,14 +61,7 @@ sub new {
       : blessed $_ && $_->isa('Git::Repository') ? $r ||= $_
       :                                          0 )
     } @cmd;
-
-    # get and check the git command
-    my $git = defined $o->{git} ? $o->{git} : 'git';
-    $binary{$git} = _has_git($git)
-        if !exists $binary{$git};
-
-    croak "git binary '$git' not available or broken"
-        if !$binary{$git};
+    $o ||= {};    # no options
 
     # keep changes to the environment local
     local %ENV = %ENV;
@@ -97,6 +90,14 @@ sub new {
         $ENV{GIT_WORK_TREE} = $work_tree
             if defined $work_tree;
     }
+
+    # get and check the git command
+    my $git = defined $o->{git} ? $o->{git} : 'git';
+    $binary{$git} = _has_git($git)
+        if !exists $binary{$git};
+
+    croak "git binary '$git' not available or broken"
+        if !$binary{$git};
 
     # chdir to the expected directory
     my $orig = cwd;
