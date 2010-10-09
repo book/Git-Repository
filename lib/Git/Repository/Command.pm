@@ -183,13 +183,13 @@ Git::Repository::Command - Command objects for running git
     use Git::Repository::Command;
 
     # invoke an external git command, and return an object
-    $cmd = Git::Repository::Command->(@cmd);
+    $cmd = Git::Repository::Command->new(@cmd);
 
     # a Git::Repository object can provide more context
-    $cmd = Git::Repository::Command->( $r, @cmd );
+    $cmd = Git::Repository::Command->new( $r, @cmd );
 
     # options can be passed as a hashref
-    $cmd = Git::Repository::Command->( $r, @cmd, \%option );
+    $cmd = Git::Repository::Command->new( $r, @cmd, \%option );
 
     # $cmd is basically a hash, with keys / accessors
     $cmd->stdin();     # filehandle to the process' stdin (write)
