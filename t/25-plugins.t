@@ -40,13 +40,8 @@ ok( !eval { $r->hello }, 'No hello() method' );
 chdir $home;
 
 # PASS - load Hello
-BEGIN { $tests += 2 }
+BEGIN { $tests += 1 }
 use_ok( 'Git::Repository', 'Hello' );
-is_deeply(
-    \@Git::Repository::ISA,
-    ['Git::Repository::Mixin::Hello'],
-    'expected @Git::Repository::ISA'
-);
 
 # PASS - new methods
 BEGIN { $tests += 4 }
@@ -58,27 +53,30 @@ ok( $got = eval { $r->hello_gitdir }, 'hello_gitdir() method is there' );
 diag $@ if $@;
 is( $got, "Hello, $gitdir!\n", '... with expected value' );
 
-# FAIL - can't load this mixin
+# FAIL - can't load this plugin
 BEGIN { $tests += 2 }
-ok( ! eval q{use Git::Repository 'DoesNotExist'; 1;}, 'Failed to load inexistent mixin' );
-like( $@, qr{^Can't locate Git/Repository/Mixin/DoesNotExist\.pm }, '... expected error message' );
+ok( ! eval q{use Git::Repository 'DoesNotExist'; 2;}, 'Failed to load inexistent plugin' );
+like( $@, qr{^Can't locate Git/Repository/Plugin/DoesNotExist\.pm }, '... expected error message' );
 
-# PASS - load Hello2
+# PASS - load Hello2 and only a single method
 BEGIN { $tests += 2 }
-use_ok( 'Git::Repository', 'Hello2' );
-is_deeply(
-    \@Git::Repository::ISA,
-    [ 'Git::Repository::Mixin::Hello', 'Git::Repository::Mixin::Hello2', ],
-    'expected @Git::Repository::ISA'
-);
+my @warnings;
+$SIG{__WARN__} = sub { push @warnings, shift };
+use_ok( 'Git::Repository',  [ Hello2 => 'hello' ] );
+
+like( $warnings[0], qr/^Subroutine Git::Repository::hello redefined /, 'warning about redefined method' );
+@warnings =();
 
 # PASS - new methods
 BEGIN { $tests += 4 }
 ok( $got = eval { $r->hello }, 'hello() method is there' );
 diag $@ if $@;
-is( $got, "Hello, git world!\n", '... with expected old value' );
+is( $got, "Hello, world!\n", '... with new value' );
 
-ok( $got = eval { $r->hello_worktree }, 'hello_worktree() method is there' );
-diag $@ if $@;
-is( $got, "Hello, $dir!\n", '... with expected value' );
+ok( !eval { $r->hello_worktree }, 'hello_worktree() method is not there' );
+like(
+    $@,
+    qr/^Can't locate object method "hello_worktree" via package "Git::Repository" /,
+    '... expected error message'
+);
 
