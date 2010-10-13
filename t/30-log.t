@@ -71,9 +71,9 @@ EXTRA
             parent => '1c8f8d241bb94f4c10cc6639a23accd53b7ba93e',
             parent => '9adb8a6926b6a93a6aca057e6d01443f73464afa',
             author =>
-                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 +0200',
+                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 -0200',
             committer =>
-                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 +0200',
+                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 -0200',
             message => << 'MESSAGE',
     Merge branch 'master' into git-log
     
@@ -89,19 +89,19 @@ MESSAGE
                 '9adb8a6926b6a93a6aca057e6d01443f73464afa'
             ],
             author =>
-                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 +0200',
+                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 -0200',
             author_gmtime    => '1282050772',
-            author_localtime => '1282057972',
-            author_tz        => '+0200',
+            author_localtime => '1282043572',
+            author_tz        => '-0200',
             author_name      => 'Philippe Bruhat (BooK)',
             author_email     => 'book@cpan.org',
             committer =>
-                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 +0200',
+                'Philippe Bruhat (BooK) <book@cpan.org> 1282050772 -0200',
             committer_name      => 'Philippe Bruhat (BooK)',
             committer_email     => 'book@cpan.org',
             committer_gmtime    => '1282050772',
-            committer_localtime => '1282057972',
-            committer_tz        => '+0200',
+            committer_localtime => '1282043572',
+            committer_tz        => '-0200',
             message             => << 'MESSAGE',
     Merge branch 'master' into git-log
     
