@@ -45,8 +45,12 @@ sub import {
 
     for my $plugin (@plugins) {
         ( $plugin, my @names ) = @$plugin if ref $plugin;
-        eval "use Git::Repository::Plugin::$plugin; 1;" or croak $@;
-        "Git::Repository::Plugin::$plugin"->install(@names);
+        $plugin
+            = substr( $plugin, 0, 1 ) eq '+'
+            ? substr( $plugin, 1 )
+            : "Git::Repository::Plugin::$plugin";
+        eval "use $plugin; 1;" or croak $@;
+        $plugin->install(@names);
     }
 }
 
