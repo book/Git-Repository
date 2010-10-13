@@ -42,6 +42,13 @@ The L<SYNOPSIS> provides a full example.
 The documentation of L<Git::Repository> describes how to load plugins
 with all the methods they provide, or only a selection of them.
 
+=head1 METHODS
+
+C<Git::Repository::Plugin> provides a single method:
+
+=head2 install( @names )
+
+Install all names provided in the C<Git::Repository> namespace.
 
 =head1 AUTHOR
 
