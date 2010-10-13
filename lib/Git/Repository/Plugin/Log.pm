@@ -1,8 +1,12 @@
-package Git::Repository::Mixin::Log;
+package Git::Repository::Plugin::Log;
 
 use warnings;
 use strict;
 use 5.006;
+
+use Git::Repository::Plugin;
+our @ISA      = qw( Git::Repository::Plugin );
+our @KEYWORDS = qw( log );
 
 use Git::Repository::Log::Iterator;
 
@@ -12,9 +16,9 @@ sub log {
 
     # skip the invocant when invoked as a class method
     shift if !ref $_[0];
-    
+
     # get the iterator
-    my $iter = Git::Repository::Log::Iterator->new( @_ );
+    my $iter = Git::Repository::Log::Iterator->new(@_);
 
     # scalar context: return the iterator
     return $iter if !wantarray;
@@ -33,11 +37,11 @@ __END__
 
 =head1 NAME
 
-Git::Repository::Mixin::Log - Add a log() method to Git::Repository
+Git::Repository::Plugin::Log - Add a log() method to Git::Repository
 
 =head1 SYNOPSIS
 
-    # load the log() method
+    # load the plugin
     use Git::Repository 'Log';
 
     my $r = Git::Repository->new();
@@ -53,7 +57,7 @@ Git::Repository::Mixin::Log - Add a log() method to Git::Repository
 
 =head1 DESCRIPTION
 
-This module mixes in a new method into C<Git::Repository>.
+This module adds a new method to C<Git::Repository>.
 
 =head1 METHOD
 

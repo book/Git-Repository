@@ -571,7 +571,7 @@ lead to problems, for example when the user's git configuration defines
 C<format.pretty> to be something else than the default of C<medium>.
 
 
-=head1 SUPPORT FOR MIXINS
+=head1 SUPPORT FOR PLUGINS
 
 C<Git::Repository> intentionally has only few methods.
 The idea is to provide a lightweight wrapper around git, to be used
@@ -581,18 +581,10 @@ However, people will want to add extra functionality to C<Git::Repository>,
 the obvious example being a C<log()> method that returns simple objects
 with useful attributes.
 
-A hypothetical C<Git::Repository::Mixin::Hello> module could be written
-like this:
-
-    package Git::Repository::Mixin::Hello;
-
-    sub hello { return "Hello, git world!\n" }
-
-    sub hello_gitdir { return "Hello, " . $_[0]->git_dir . "!\n"; }
-
-    1;
-
-And the methods would be loaded and used as follows:
+See L<Git::Repository::Plugin> about how to create a new plugin.
+Taking the hypothetical C<Git::Repository::Plugin::Hello> module which
+source code is listed in the previous reference, the methods it provides
+would be loaded and used as follows:
 
     use Git::Repository qw( Hello );
 
@@ -600,27 +592,13 @@ And the methods would be loaded and used as follows:
     print $r->hello();
     print $r->hello_gitdir();
 
-So, instead of subclassing C<Git::Repository>, the idea is to put the
-extra methods in the C<Git::Repository::Mixin::Hello> namespace, and
-make them available to C<Git::Repository> objects via C<@ISA>. In case
-of conflict over the new method names mixed in, modules loaded early
-will have precedence over modules loaded later. And since the methods
-will be called on C<Git::Repository> objects, all C<Git::Repository>
-methods will of course be available.
+It's possible to load only a selection of methods from the plugin:
 
-To make things more explicit,
+    use Git::Repository [ Hello => 'hello' ];
 
-    use Git::Repository qw( Foo Bar Baz );
-    say $_ for @Git::Repository::ISA;
-
-will output:
-
-    Git::Repository::Mixin::Foo
-    Git::Repository::Mixin::Bar
-    Git::Repository::Mixin::Baz
-
-Given the way C<@ISA> works, if mixins C<::Foo> and C<::Bar> both provide
-the C<quux()> method, it's always C<::Foo>'s version that will be called.
+    my $r = Git::Repository->new();
+    print $r->hello();
+    print $r->hello_gitdir();    # dies
 
 
 =head1 OTHER PERL GIT WRAPPERS
