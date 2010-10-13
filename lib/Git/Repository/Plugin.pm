@@ -33,31 +33,15 @@ Git::Repository::Plugin - Base class for Git::Repository plugins
 
 =head1 DESCRIPTION
 
-C<Git::Repository> intentionally has only few methods.
-The idea is to provide a lightweight wrapper around git, to be used to
-create interesting tools based on Git.
+C<Git::Repository::Plugin> allows one to define new methods for
+C<Git::Repository>, that will be imported in the C<Git::Repository>
+namespace.
 
-However, people will want to add extra functionality to
-C<Git::Repository>, the obvious example being a C<log()> method that
-returns simple objects with useful attributes.
+The L<SYNOPSIS> provides a full example.
 
-A hypothetical C<Git::Repository::Plugin::Hello> module could be written
-like in the L<SYNOPSIS>.  And the methods would be loaded and used
-as follows:
+The documentation of L<Git::Repository> describes how to load plugins
+with all the methods they provide, or only a selection of them.
 
-    use Git::Repository qw( Hello );
-
-    my $r = Git::Repository->new();
-    print $r->hello();
-    print $r->hello_gitdir();
-
-It's possible to load only a selection of methods from the plugin:
-
-    use Git::Repository [ Hello => 'hello' ];
-
-    my $r = Git::Repository->new();
-    print $r->hello();
-    print $r->hello_gitdir();    # dies
 
 =head1 AUTHOR
 
