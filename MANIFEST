@@ -14,8 +14,8 @@ t/10-new_fail.t
 t/11-create.t
 t/20-simple.t
 t/22-backward.t
-t/25-mixins.t
-t/Git/Repository/Mixin/Hello.pm
-t/Git/Repository/Mixin/Hello2.pm
+t/25-plugins.t
+t/Git/Repository/Plugins/Hello.pm
+t/Git/Repository/Plugins/Hello2.pm
 t/pod-coverage.t
 t/pod.t

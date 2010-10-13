@@ -71,7 +71,7 @@ Git::Repository::Log - Class representing git log data
 
 =head1 SYNOPSIS
 
-    # load the Log Mixin
+    # load the Log plugin
     use Git::Repository 'Log';
 
     # get the log for last commit
