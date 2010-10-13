@@ -707,7 +707,7 @@ L<http://search.cpan.org/dist/Git-Repository>
 
 Thanks to Todd Rinalo, who wanted to add more methods to
 C<Git::Repository>, which made me look for a solution that would preserve
-the minimalism of C<Git::Repository>. The C<::Mixin> interface is what
+the minimalism of C<Git::Repository>. The C<::Plugin> interface is what
 I came up with.
 
 =head1 COPYRIGHT
