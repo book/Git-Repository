@@ -34,13 +34,15 @@ sub _abs_path {
 }
 
 #
-# support for loading mixins
+# support for loading plugins
 #
 sub import {
-    my ( $class, @mixins ) = @_;
-    for my $mixin (@mixins) {
-        eval "use Git::Repository::Mixin::$mixin; 1;" or croak $@;
-        push our @ISA, "Git::Repository::Mixin::$mixin";
+    my ( $class, @plugins ) = @_;
+
+    for my $plugin (@plugins) {
+        ( $plugin, my @names ) = @$plugin if ref $plugin;
+        eval "use Git::Repository::Plugin::$plugin; 1;" or croak $@;
+        "Git::Repository::Plugin::$plugin"->install(@names);
     }
 }
 
