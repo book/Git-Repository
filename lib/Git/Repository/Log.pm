@@ -28,7 +28,7 @@ for my $attr (qw( parent )) {
 
 sub new {
     my ( $class, @args ) = @_;
-    my $self = bless {}, $class;
+    my $self = bless { parent => [] }, $class;
 
     # pick up key/values from the list
     while ( my ( $key, $value ) = splice @args, 0, 2 ) {
@@ -45,7 +45,7 @@ sub new {
 
     # compute other keys
     (my $message = $self->{message} ) =~ s/^    //gm;
-    @{$self}{qw( subject body )} = split /\n/m, $message, 2;
+    @{$self}{qw( subject body )} = ( split( /\n/m, $message, 2), '' );
     $self->{body} =~ s/\A\s//gm;
 
     # author and committer details
