@@ -71,6 +71,8 @@ which can return C<Git::Repository::Log> objects on demand.
 In list context, returns the full list C<Git::Repository::Log> objects.
 Note that this can be very memory-intensive.
 
+See L<Git::Repository::Log::Iterator>'s documentation for details about
+how parameters are handled.
 
 =head1 AUTHOR
 
@@ -80,6 +82,12 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 Many thanks to Aristotle Pagaltzis who requested a C<log()> method in
 the first place, and for very interesting conversations on the topic.
+
+=head1 SEE ALSO
+
+L<Git::Repository::Plugin>,
+L<Git::Repository::Log::Iterator>,
+L<Git::Repository::Log>.
 
 =head1 COPYRIGHT
 

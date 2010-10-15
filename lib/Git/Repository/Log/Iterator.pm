@@ -88,6 +88,13 @@ C<Git::Repository::Log> objects represening each log item.
 Create a new B<git log> stream from the parameter list in C<@args>
 and return a iterator on it.
 
+C<new()> will happily accept any parameters, but note that
+C<Git::Repository::Log::Iterator> expects the output to look like that
+of C<--pretty=raw>, and so will force the the C<--pretty> option.
+
+Extra ouput (like patches) will be stored in the C<extra> parameter of
+the C<Git::Repository::Log> object.  Decorations will be lost.
+
 =head2 next()
 
 Return the next log item as a C<Git::Repository::Log> object,
