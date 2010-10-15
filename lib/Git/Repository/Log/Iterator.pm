@@ -27,7 +27,7 @@ sub next {
     my $fh = $self->{cmd}->stdout;
 
     # get records
-    my @records = ( delete $self->{record} || () );
+    my @records = defined $self->{record} ? ( delete $self->{record} ) : ();
     {
         local $/ = "\n\n";
         while (<$fh>) {
