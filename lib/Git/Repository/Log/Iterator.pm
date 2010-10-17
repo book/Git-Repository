@@ -16,7 +16,7 @@ sub new {
     # pick up unsupported log options
     my @badopts = do {
         my $options = 1;
-        grep {/^--(?:pretty=(?!raw)|graph)$/}
+        grep {/^--(?:pretty=(?!raw).*|graph)$/}
             grep { $options = 0 if $_ eq '--'; $options } @cmd;
     };
     croak "log() cannot parse @badopts. "
