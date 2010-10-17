@@ -13,13 +13,21 @@ our $VERSION = '1.00';
 sub new {
     my ( $class, @cmd ) = @_;
 
+    # check the last --pretty option (if any)
+    my ($pretty) = do {
+        my $options = 1;
+        reverse map { /^--pretty=(.*)/ ? $1 : () }
+            grep { $options = 0 if $_ eq '--'; $options } @cmd;
+    };
+
     # enforce the format
-    @cmd = ( 'log', map { $_ eq '--' ? ( '--pretty=raw', $_ ) : $_ } @cmd,
-        '--' );
-    pop @cmd;
+    carp 'log() can only parse --pretty=raw format. '
+        . 'Use run( log => ... ) to parse the output yourself'
+        if $pretty && $pretty ne 'raw';
+    @cmd = ( 'log', $pretty ? () : '--pretty=raw', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
-    bless { cmd => Git::Repository::Command->new( @cmd ) }, $class;
+    bless { cmd => Git::Repository::Command->new(@cmd) }, $class;
 }
 
 sub next {
