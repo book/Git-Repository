@@ -80,3 +80,10 @@ like(
     '... expected error message'
 );
 
+# PASS - load a fully qualified plgin class
+BEGIN { $tests += 3 }
+use_ok( 'Git::Repository', '+MyGit::Hello' );
+ok( $got = eval { $r->myhello }, 'myhello() method is there' );
+diag $@ if $@;
+is( $got, "Hello, my git world!\n", '... with expected value' );
+
