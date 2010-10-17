@@ -98,10 +98,15 @@ and return a iterator on it.
 
 C<new()> will happily accept any parameters, but note that
 C<Git::Repository::Log::Iterator> expects the output to look like that
-of C<--pretty=raw>, and so will force the the C<--pretty> option.
+of C<--pretty=raw>, and so will force the the C<--pretty> option
+(in case C<format.pretty> is defined in the Git configuration).
 
 Extra ouput (like patches) will be stored in the C<extra> parameter of
-the C<Git::Repository::Log> object.  Decorations will be lost.
+the C<Git::Repository::Log> object. Decorations will be lost.
+
+When unsupported options are recognized in the parameter list, C<new()>
+will C<carp()> with a message advising to use C<< run( 'log' => ... ) >>
+to parse the output yourself.
 
 =head2 next()
 
