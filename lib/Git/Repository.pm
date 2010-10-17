@@ -624,6 +624,11 @@ It's possible to load only a selection of methods from the plugin:
     # dies: Can't locate object method "hello_gitdir"
     print $r->hello_gitdir();
 
+If your plugin lives in another namespace than C<Git::Repository::Plugin::>,
+just prefix the fully qualified class name with a C<+>. For example:
+
+    use Git::Repository qw( +MyGit::Hello );
+
 See L<Git::Repository::Plugin> about how to create a new plugin.
 
 =head1 OTHER PERL GIT WRAPPERS
