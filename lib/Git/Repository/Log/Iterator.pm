@@ -13,18 +13,18 @@ our $VERSION = '1.00';
 sub new {
     my ( $class, @cmd ) = @_;
 
-    # check the last --pretty option (if any)
-    my ($pretty) = do {
+    # pick up unsupported log options
+    my @badopts = do {
         my $options = 1;
-        reverse map { /^--pretty=(.*)/ ? $1 : () }
+        grep {/^--(?:pretty=(?!raw)|graph)$/}
             grep { $options = 0 if $_ eq '--'; $options } @cmd;
     };
+    carp "log() cannot parse @badopts. "
+        . 'Use run( log => ... ) to parse the output yourself'
+        if @badopts;
 
     # enforce the format
-    carp 'log() can only parse --pretty=raw format. '
-        . 'Use run( log => ... ) to parse the output yourself'
-        if $pretty && $pretty ne 'raw';
-    @cmd = ( 'log', $pretty ? () : '--pretty=raw', @cmd );
+    @cmd = ( 'log', '--pretty=raw', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
     bless { cmd => Git::Repository::Command->new(@cmd) }, $class;
