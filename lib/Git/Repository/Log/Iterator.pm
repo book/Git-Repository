@@ -19,7 +19,7 @@ sub new {
         grep {/^--(?:pretty=(?!raw)|graph)$/}
             grep { $options = 0 if $_ eq '--'; $options } @cmd;
     };
-    carp "log() cannot parse @badopts. "
+    croak "log() cannot parse @badopts. "
         . 'Use run( log => ... ) to parse the output yourself'
         if @badopts;
 
@@ -105,7 +105,7 @@ Extra ouput (like patches) will be stored in the C<extra> parameter of
 the C<Git::Repository::Log> object. Decorations will be lost.
 
 When unsupported options are recognized in the parameter list, C<new()>
-will C<carp()> with a message advising to use C<< run( 'log' => ... ) >>
+will C<croak()> with a message advising to use C<< run( 'log' => ... ) >>
 to parse the output yourself.
 
 =head2 next()
