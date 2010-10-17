@@ -129,19 +129,23 @@ new file mode 100644
 index 0000000..e69de29
 DIFF
         [ [qw( file )],            [ '', '' ] ],
-        [ [qw( --decorate file )], [ '', '' ] ],
+        [ [qw( --decorate file )], [ '', '' ], '1.5.2.rc0' ],
         [ [qw( --pretty=raw )],    [ '', '' ] ],
     );
     $tests += 13 * @options;
 }
 
 for my $o (@options) {
-    my ( $args, $extra ) = @$o;
+    my ( $args, $extra, $minver ) = @$o;
     @log = $r->log(@$args);
-    is( scalar @log, 2, "2 commits for @$args" );
-    isa_ok( $_, 'Git::Repository::Log' ) for @log;
-    check_commit( 2 => $log[0], extra => $extra->[0] );
-    check_commit( 1 => $log[1], extra => $extra->[1] );
+SKIP: {
+        skip "git log @$args needs $minver, we only have $version", 13
+            if $minver && Git::Repository->version_lt($minver);
+        is( scalar @log, 2, "2 commits for @$args" );
+        isa_ok( $_, 'Git::Repository::Log' ) for @log;
+        check_commit( 2 => $log[0], extra => $extra->[0] );
+        check_commit( 1 => $log[1], extra => $extra->[1] );
+    }
 }
 
 my @badopts;
