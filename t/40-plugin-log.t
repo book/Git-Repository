@@ -48,14 +48,14 @@ my %commit = (
         tree    => '6820ead72140bd33a7a821965a05f9a1e89bf3c8',
         parent  => [],
         subject => 'one line',
-        body    => 'of data',
+        body    => "of data\n",
         extra   => '',
     },
 );
 
 sub check_commit {
-    my ( $id, $log ) = @_;
-    my $commit = $commit{$id};
+    my ( $id, $log, %more ) = @_;
+    my $commit = { %{ $commit{$id} }, %more };
     is( $log->tree, $commit->{tree}, "commit $id tree" );
     is_deeply( [ $log->parent ], $commit->{parent}, "commit $id parent" );
     is( $log->subject, $commit->{subject}, "commit $id subject" );
@@ -109,4 +109,25 @@ isa_ok( $_, 'Git::Repository::Log' ) for @log;
 check_commit( 2 => $log[0] );
 
 chdir $home;
+
+# various options combinations
+BEGIN { $tests += 13 }
+@log = $r->log(qw( -p -- file ));
+is( scalar @log, 2, '2 commits' );
+isa_ok( $_, 'Git::Repository::Log' ) for @log;
+
+check_commit( 2 => $log[0], extra => << 'DIFF' );
+diff --git a/file b/file
+index e69de29..dcf168c 100644
+--- a/file
++++ b/file
+@@ -0,0 +1 @@
++line 1
+\ No newline at end of file
+DIFF
+check_commit( 1 => $log[1], extra => << 'DIFF' );
+diff --git a/file b/file
+new file mode 100644
+index 0000000..e69de29
+DIFF
 
