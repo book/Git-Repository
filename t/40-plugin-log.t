@@ -144,3 +144,14 @@ for my $o (@options) {
     check_commit( 1 => $log[1], extra => $extra->[1] );
 }
 
+my @badopts;
+
+BEGIN {
+    @badopts = ( [qw( --pretty=oneline )], [qw( --graph )], );
+    $tests += 2 * @badopts;
+}
+for my $badopt (@badopts) {
+    ok( !eval { $r->log(@$badopt) }, "bad options: @$badopt" );
+    like( $@, qr/^log\(\) cannot parse @$badopt/, '.. expected error' );
+}
+
