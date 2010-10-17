@@ -40,7 +40,6 @@ sub next {
         local $/ = "\n\n";
         while (<$fh>) {
             $self->{record} = $_, last if /\Acommit / && @records;
-            chomp;
             push @records, $_;
         }
     }
@@ -51,6 +50,7 @@ sub next {
     # the first two records are always the same, with --pretty=raw
     my ( $header, $message, $extra ) = ( @records, '' );
     my @headers = map { chomp; split / /, $_, 2 } split /^/m, $header;
+    chomp( $message, $extra ) if exists $self->{record};
 
     # create the log object
     return Git::Repository::Log->new(
