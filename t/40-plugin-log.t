@@ -111,12 +111,11 @@ check_commit( 2 => $log[0] );
 chdir $home;
 
 # various options combinations
-BEGIN { $tests += 13 }
-@log = $r->log(qw( -p -- file ));
-is( scalar @log, 2, '2 commits' );
-isa_ok( $_, 'Git::Repository::Log' ) for @log;
+my @options;
 
-check_commit( 2 => $log[0], extra => << 'DIFF' );
+BEGIN {
+    @options = (
+        [ [qw( -p -- file )], [ <<'DIFF', << 'DIFF'] ],
 diff --git a/file b/file
 index e69de29..dcf168c 100644
 --- a/file
@@ -125,9 +124,23 @@ index e69de29..dcf168c 100644
 +line 1
 \ No newline at end of file
 DIFF
-check_commit( 1 => $log[1], extra => << 'DIFF' );
 diff --git a/file b/file
 new file mode 100644
 index 0000000..e69de29
 DIFF
+        [ [qw( file )],            [ '', '' ] ],
+        [ [qw( --decorate file )], [ '', '' ] ],
+        [ [qw( --pretty=raw )],    [ '', '' ] ],
+    );
+    $tests += 13 * @options;
+}
+
+for my $o (@options) {
+    my ( $args, $extra ) = @$o;
+    @log = $r->log(@$args);
+    is( scalar @log, 2, "2 commits for @$args" );
+    isa_ok( $_, 'Git::Repository::Log' ) for @log;
+    check_commit( 2 => $log[0], extra => $extra->[0] );
+    check_commit( 1 => $log[1], extra => $extra->[1] );
+}
 
