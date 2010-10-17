@@ -61,11 +61,17 @@ like( $@, qr{^Can't locate Git/Repository/Plugin/DoesNotExist\.pm }, '... expect
 # PASS - load Hello2 and only a single method
 BEGIN { $tests += 2 }
 my @warnings;
-$SIG{__WARN__} = sub { push @warnings, shift };
-use_ok( 'Git::Repository',  [ Hello2 => 'hello' ] );
+{
+    local $SIG{__WARN__} = sub { push @warnings, shift };
+    use_ok( 'Git::Repository', [ Hello2 => 'hello' ] );
 
-like( $warnings[0], qr/^Subroutine Git::Repository::hello redefined /, 'warning about redefined method' );
-@warnings =();
+    like(
+        $warnings[0],
+        qr/^Subroutine Git::Repository::hello redefined /,
+        'warning about redefined method'
+    );
+}
+@warnings = ();
 
 # PASS - new methods
 BEGIN { $tests += 4 }
