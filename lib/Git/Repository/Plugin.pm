@@ -3,6 +3,8 @@ package Git::Repository::Plugin;
 use strict;
 use warnings;
 
+our $VERSION = '1.00';
+
 sub install {
     my ( $class, @names ) = @_;
     no strict 'refs';
