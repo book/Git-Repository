@@ -1,5 +1,19 @@
 Revision history for Git-Repository
 
+1.13 Mon Oct 18 22:36:17 CEST 2010
+        [ENHANCEMENTS]
+        - using 'git' as an option of a Git::Repository object now works
+          as expected
+        - version() also accepts option hashes
+        - plugin system to load new keywords in the Git::Repository namespace
+        - Git::Repository::Plugin::Log provides the log() method with the
+          help of Git::Repository::Log and Git::Repository::Log::Iterator
+          (Thanks to Todd Rinaldo and Aristotle Pagaltzis for discussions
+          and ideas about what became the plugin system.)
+        [TESTS]
+        - tested against 120+ versions of git, including all versions
+          of the 1.6.* and 1.7.* branches up until 1.7.3.1
+
 1.12 Mon Oct  4 02:30:51 CEST 2010
         [ENHANCEMENTS]
         - the input option can now be empty: it means "close stdin first"

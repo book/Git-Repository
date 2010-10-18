@@ -12,7 +12,7 @@ use Scalar::Util qw( blessed );
 use File::Spec;
 use Config;
 
-our $VERSION = '1.07';
+our $VERSION = '1.08';
 
 # a few simple accessors
 for my $attr (qw( pid stdin stdout stderr exit signal core )) {
