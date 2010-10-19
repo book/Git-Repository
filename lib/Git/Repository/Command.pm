@@ -39,11 +39,10 @@ sub _has_git {
             split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
 
     # try to run it
-    my ( $in, $out );
-    my $err = Symbol::gensym;
-    my $pid = eval { open3( $in, $out, $err, $binary, '--version' ); };
+    my $out;
+    my $pid = eval { open( $out, "-|", $binary, '--version' ) };
     waitpid $pid, 0;
-    my $version = <$out>;
+    my $version = <$out> or return;
 
     # does it really look like git?
     return $version =~ /^git version \d/;
