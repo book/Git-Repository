@@ -2,14 +2,27 @@ package Git::Repository::Plugin;
 
 use strict;
 use warnings;
+use Carp;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 sub install {
-    my ( $class, @names ) = @_;
+    my ( $class, @keywords ) = @_;
     no strict 'refs';
-    @names = @{"$class\::KEYWORDS"} if !@names;
-    *{"Git::Repository::$_"} = \&{"$class\::$_"} for @names;
+    my %keyword = map { $_ => 1 } my @all_keywords = $class->_keywords;
+    @keywords = @all_keywords if !@keywords;
+    @keywords = grep {
+        !( !exists $keyword{$_} and carp "Unknown keyword '$_' in $class" )
+    } @keywords;
+    carp "No keywords installed from $class" if !@keywords;
+    *{"Git::Repository::$_"} = \&{"$class\::$_"} for @keywords;
+}
+
+sub _keywords {
+    my ($class) = @_;
+    no strict 'refs';
+    carp "Use of \@KEYWORDS by $class is deprecated";
+    return @{"$class\::KEYWORDS"};
 }
 
 1;
@@ -25,8 +38,9 @@ Git::Repository::Plugin - Base class for Git::Repository plugins
     package Git::Repository::Plugin::Hello;
 
     use Git::Repository::Plugin;
-    our @ISA      = qw( Git::Repository::Plugin );
-    our @KEYWORDS = qw( hello hello_gitdir );
+    our @ISA = qw( Git::Repository::Plugin );
+
+    sub _keywords { return qw( hello hello_gitdir ) }
 
     sub hello        { return "Hello, git world!\n"; }
     sub hello_gitdir { return "Hello, " . $_[0]->git_dir . "!\n"; }
@@ -48,9 +62,16 @@ with all the methods they provide, or only a selection of them.
 
 C<Git::Repository::Plugin> provides a single method:
 
-=head2 install( @names )
+=head2 install( @keywords )
 
-Install all names provided in the C<Git::Repository> namespace.
+Install all keywords provided in the C<Git::Repository> namespace.
+
+If called with an empty list, will install all available keywords.
+
+=head1 SUBCLASSING
+
+When creating a plugin, the new keywords that are added by the plugin
+to C<Git::Repository> must be returned by a C<_keywords()> method.
 
 =head1 AUTHOR
 
@@ -67,6 +88,8 @@ I<inherit> the extra methods), further discussions with Aristotle
 Pagaltzis and a quick peek at Dancer's plugin management helped me
 come up with the current design. Thank you Aristotle and the Dancer
 team.
+
+Further improvements to the plugin system proposed by Aristotle Pagaltzis.
 
 =head1 COPYRIGHT
 
