@@ -6,11 +6,11 @@ use 5.006;
 
 use Git::Repository::Plugin;
 our @ISA      = qw( Git::Repository::Plugin );
-our @KEYWORDS = qw( log );
+sub _keywords { qw( log ) }
 
 use Git::Repository::Log::Iterator;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 sub log {
 
