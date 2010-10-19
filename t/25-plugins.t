@@ -82,6 +82,26 @@ my @warnings;
         '... redefined method warning'
     );
     @warnings = ();
+
+    BEGIN { $tests += 5 }
+    use_ok( 'Git::Repository', [ Hello2 => 'bam' ] );
+    is( scalar @warnings, 3, 'Got 3 warnings' );
+    like(
+        $warnings[0],
+        qr/^Use of \@KEYWORDS by Git::Repository::Plugin::Hello2 is deprecated /,
+        '... deprecation warning'
+    );
+    like(
+        $warnings[1],
+        qr/^Unknown keyword 'bam' in Git::Repository::Plugin::Hello2 /,
+        '... unknown keyword'
+    );
+    like(
+        $warnings[2],
+        qr/^No keywords installed from Git::Repository::Plugin::Hello2 /,
+        '... no valid keyword left'
+    );
+    @warnings = ();
 }
 
 # PASS - new methods
