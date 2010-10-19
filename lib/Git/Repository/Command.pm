@@ -50,6 +50,14 @@ sub _has_git {
 
 my %binary;    # cache calls to _has_git
 
+# Trap the real STDIN/ERR/OUT file handles in case someone *COUGH* Catalyst *COUGH* screws with them which breaks open3
+my ($REAL_STDIN, $REAL_STDOUT, $REAL_STDERR);
+BEGIN {
+    open $REAL_STDIN, "<&=".fileno(*STDIN);
+    open $REAL_STDOUT, ">>&=".fileno(*STDOUT);
+    open $REAL_STDERR, ">>&=".fileno(*STDERR);
+}
+
 sub new {
     my ( $class, @cmd ) = @_;
 
@@ -118,6 +126,10 @@ sub new {
     # start the command
     my ( $in, $out, $err );
     $err = Symbol::gensym;
+    
+    local *STDIN = $REAL_STDIN;
+    local *STDOUT = $REAL_STDOUT;
+    local *STDERR = $REAL_STDERR;
     my $pid = eval { open3( $in, $out, $err, $git, @cmd ); };
 
     # FIXME - better check open3 error conditions
