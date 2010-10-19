@@ -5,7 +5,7 @@ use warnings;
 
 use Git::Repository::Plugin;
 our @ISA      = qw( Git::Repository::Plugin );
-our @KEYWORDS = qw( hello hello_gitdir );
+sub _keywords { qw( hello hello_gitdir ) }
 
 sub hello { return "Hello, git world!\n" }
 
