@@ -55,8 +55,13 @@ is( $got, "Hello, $gitdir!\n", '... with expected value' );
 
 # FAIL - can't load this plugin
 BEGIN { $tests += 2 }
-ok( ! eval q{use Git::Repository 'DoesNotExist'; 2;}, 'Failed to load inexistent plugin' );
-like( $@, qr{^Can't locate Git/Repository/Plugin/DoesNotExist\.pm }, '... expected error message' );
+ok( !eval q{use Git::Repository 'DoesNotExist'; 2;},
+    'Failed to load inexistent plugin' );
+like(
+    $@,
+    qr{^Can't locate Git/Repository/Plugin/DoesNotExist\.pm },
+    '... expected error message'
+);
 
 # PASS - load Hello2 and throw various warnings
 my @warnings;
