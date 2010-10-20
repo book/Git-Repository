@@ -265,7 +265,7 @@ passed to C<new()>.
 If several option hashes are passed to C<new()>, only the first one will
 be used.
 
-The C<Git::Repository::Command> object returned by C<new()> has a 
+The C<Git::Repository::Command> object returned by C<new()> has a
 number of attributes defined (see below).
 
 
@@ -308,7 +308,7 @@ A filehandle opened in read mode to the child process' standard output.
 
 =item stderr()
 
-A filehandle opened in read mode to the child process' standard error output. 
+A filehandle opened in read mode to the child process' standard error output.
 
 =back
 
