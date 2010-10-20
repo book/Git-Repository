@@ -97,7 +97,7 @@ sub new {
     # we'll always have to compute it if not defined
     $self->{git_dir}
         = _abs_path( $cwd,
-        Git::Repository->run( qw( rev-parse --git-dir ), { cwd => $cwd } ) )
+        Git::Repository->run( qw( rev-parse --git-dir ), { %$options, cwd => $cwd } ) )
         if !defined $git_dir;
 
     # there are 4 possible cases
@@ -124,7 +124,7 @@ sub new {
 
             # check work_tree is the top-level work tree, and not a subdir
             my $cdup = Git::Repository->run( qw( rev-parse --show-cdup ),
-                { cwd => $cwd } );
+                { %$options, cwd => $cwd } );
             $self->{work_tree}
                 = $cdup ? _abs_path( $work_tree, $cdup ) : $work_tree;
         }
