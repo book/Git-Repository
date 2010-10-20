@@ -177,10 +177,12 @@ like( $@, qr/^Can't chdir to \Q$dir/, '... expected error message' );
 
 # now work with GIT_DIR and GIT_WORK_TREE only
 BEGIN { $tests += 1 }
-$ENV{GIT_DIR} = $gitdir;
+{
+    local $ENV{GIT_DIR} = $gitdir;
 
-my $got = Git::Repository->run( log => '-1', '--pretty=format:%H' );
-is( $got, $commit, 'git log -1' );
+    my $got = Git::Repository->run( log => '-1', '--pretty=format:%H' );
+    is( $got, $commit, 'git log -1' );
+}
 
 # PASS - try with a relative dir
 BEGIN { $tests += 3 }
