@@ -62,7 +62,7 @@ sub _is_git {
 
     # if we can't find any, we're done
     return $binary{$type}{$key}{$binary} = undef
-       if ! ( defined $git && -x $git );
+        if !( defined $git && -x $git );
 
     # try to run it
     my ( $in, $out );
@@ -75,7 +75,7 @@ sub _is_git {
     return $binary{$type}{$key}{$binary}
         = $version =~ /^git version \d/
             ? $type eq 'path'
-                ? $binary
+                ? $binary    # leave the shell figure it out itself too
                 : $git
             : undef;
 }
