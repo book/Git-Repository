@@ -222,7 +222,7 @@ BEGIN { $tests += 9 }
     is( $r->git_dir, $gitdir, 'git dir (work_tree, no PATH, git option)' );
 
     chdir $dir;
-    $r = Git::Repository->new();
+    $r = Git::Repository->new( { git => $abs_git } );
     isa_ok( $r, 'Git::Repository' );
     chdir $home;
     is( $r->work_tree, $dir,    'work tree (no PATH, git option)' );
