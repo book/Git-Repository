@@ -68,7 +68,7 @@ sub _is_git {
     my $out;
     my $pid = eval { open( $out, "-|", $git, '--version' ) };
     waitpid $pid, 0;
-    my $version = <$out> or return;
+    my $version = <$out>;
 
     # does it really look like git?
     return $binary{$type}{$key}{$binary}
