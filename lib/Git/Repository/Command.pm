@@ -48,8 +48,11 @@ sub _is_git {
     my $git;
     if ( $type eq 'path' ) {
         my $path_sep = $Config::Config{path_sep} || ';';
-        ($git)
-            = map { File::Spec->catfile( $_, $binary ) }
+        ($git) = map {
+            my $path = $_;
+            map { File::Spec->catfile( $path, $_ ) }
+                map {"$binary$_"} '', '.cmd', '.exe'
+            }
             split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
     }
     else {
