@@ -5,7 +5,7 @@ use warnings;
 use 5.006;
 
 use Carp;
-use Cwd qw( cwd );
+use Cwd qw( cwd abs_path );
 use IO::Handle;
 use IPC::Open3 qw( open3 );
 use Scalar::Util qw( blessed );
@@ -25,31 +25,56 @@ for my $attr (qw( cmdline )) {
 }
 
 # CAN I HAS GIT?
-sub _has_git {
+my %binary;    # cache calls to _is_git
+sub _is_git {
     my ($binary) = @_;
 
-    # compute a list of candidate files (if relative, look in PATH)
-    # if we can't find any, we're done
-    my $path_sep = $Config::Config{path_sep} || ';';
-    return
-        if !grep {-x} File::Spec->file_name_is_absolute($binary)
-            || ( File::Spec->splitpath($binary) )[1]
-        ? $binary
-        : map { File::Spec->catfile( $_, $binary ) }
+    # compute cache key:
+    # - absolute path (abs): empty string
+    # - relative path (rel): dirname
+    # - filename (path):     path
+    # this relatively complex cache key scheme allows PATH or cwd to change
+    # during the life of a Git::Repository object
+    my ( $type, $key )
+        = File::Spec->file_name_is_absolute($binary) ? ( 'abs', '' )
+        : ( File::Spec->splitpath($binary) )[1]      ? ( 'rel', cwd() )
+        :   ( 'path', defined $ENV{PATH} ? $ENV{PATH} : '' );
+
+    # check the cache
+    return $binary{$type}{$key}{$binary}
+        if exists $binary{$type}{$key}{$binary};
+
+    # compute a list of candidate files (look in PATH if needed)
+    my $git;
+    if ( $type eq 'path' ) {
+        my $path_sep = $Config::Config{path_sep} || ';';
+        ($git)
+            = map { File::Spec->catfile( $_, $binary ) }
             split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
+    }
+    else {
+        $git = $type eq 'rel' ? eval { abs_path($binary) } : $binary;
+    }
+
+    # if we can't find any, we're done
+    return $binary{$type}{$key}{$binary} = undef
+       if ! ( defined $git && -x $git );
 
     # try to run it
     my ( $in, $out );
     my $err = Symbol::gensym;
-    my $pid = eval { open3( $in, $out, $err, $binary, '--version' ); };
+    my $pid = eval { open3( $in, $out, $err, $git, '--version' ); };
     waitpid $pid, 0;
     my $version = <$out>;
 
     # does it really look like git?
-    return $version =~ /^git version \d/;
+    return $binary{$type}{$key}{$binary}
+        = $version =~ /^git version \d/
+            ? $type eq 'path'
+                ? $binary
+                : $git
+            : undef;
 }
-
-my %binary;    # cache calls to _has_git
 
 sub new {
     my ( $class, @cmd ) = @_;
@@ -92,12 +117,11 @@ sub new {
     }
 
     # get and check the git command
-    my $git = defined $o->{git} ? $o->{git} : 'git';
-    $binary{$git} = _has_git($git)
-        if !exists $binary{$git};
+    my $git_cmd = defined $o->{git} ? $o->{git} : 'git';
+    my $git = _is_git($git_cmd);
 
-    croak "git binary '$git' not available or broken"
-        if !$binary{$git};
+    croak "git binary '$git_cmd' not available or broken"
+        if !defined $git;
 
     # chdir to the expected directory
     my $orig = cwd;
