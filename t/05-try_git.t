@@ -22,8 +22,8 @@ for my $not_git (@not_git) {
     $not_git ||= 'git';
 
     # direct test
-    ok( !Git::Repository::Command::_has_git($not_git),
-        "_has_git( $not_git ) fails with bad git command"
+    ok( !Git::Repository::Command::_is_git($not_git),
+        "_is_git( $not_git ) fails with bad git command"
     );
 
     # as an option

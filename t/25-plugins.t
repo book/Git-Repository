@@ -8,7 +8,7 @@ use Cwd qw( cwd abs_path );
 use Git::Repository;
 
 plan skip_all => 'Default git binary not found in PATH'
-    if !Git::Repository::Command::_has_git('git');
+    if !Git::Repository::Command::_is_git('git');
 
 my $version = Git::Repository->version;
 plan skip_all => "these tests require git >= 1.5.0, but we only have $version"
