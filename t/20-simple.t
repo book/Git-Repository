@@ -202,6 +202,33 @@ chdir $home;
 is( $r->work_tree,   $dir,    'work tree' );
 is( $r->git_dir, $gitdir, 'git dir' );
 
+# PASS - pass the git binary as an option to new()
+BEGIN { $tests += 9 }
+{
+    my $path_sep = $Config::Config{path_sep} || ';';
+    my ($abs_git) = grep {-e}
+        map { File::Spec->catfile( $_, 'git' ) }
+        split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
+    local $ENV{PATH};
+
+    $r = Git::Repository->new( git_dir => $gitdir, { git => $abs_git } );
+    isa_ok( $r, 'Git::Repository' );
+    is( $r->work_tree, $dir,    'work tree (git_dir, no PATH, git option)' );
+    is( $r->git_dir,   $gitdir, 'git dir (git_dir, no PATH, git option)' );
+
+    $r = Git::Repository->new( work_tree => $dir, { git => $abs_git } );
+    isa_ok( $r, 'Git::Repository' );
+    is( $r->work_tree, $dir, 'work tree (work_tree, no PATH, git option)' );
+    is( $r->git_dir, $gitdir, 'git dir (work_tree, no PATH, git option)' );
+
+    chdir $dir;
+    $r = Git::Repository->new();
+    isa_ok( $r, 'Git::Repository' );
+    chdir $home;
+    is( $r->work_tree, $dir,    'work tree (no PATH, git option)' );
+    is( $r->git_dir,   $gitdir, 'git dir (no PATH, git option)' );
+}
+
 # PASS - use an option HASH
 BEGIN { $tests += 3 }
 is( Git::Repository->options(), undef, 'No options on the class' );
