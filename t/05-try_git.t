@@ -48,7 +48,8 @@ SKIP:
         if !Git::Repository::Command::_is_git('git');
 
     my $path_sep = $Config::Config{path_sep} || ';';
-    my ($abs_git) = map { File::Spec->catfile( $_, 'git' ) }
+    my ($abs_git) = grep {-e}
+        map { File::Spec->catfile( $_, 'git' ) }
         split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
 
     diag "Testing _is_git with $abs_git from $cwd";
