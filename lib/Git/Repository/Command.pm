@@ -65,10 +65,11 @@ sub _is_git {
         if !( defined $git && -x $git );
 
     # try to run it
-    my $out;
-    my $pid = eval { open( $out, "-|", $git, '--version' ) };
-    waitpid $pid, 0;
-    my $version = <$out>;
+    my ( $pid, $out, $version );
+    if ( $pid = open( $out, "-|", $git, '--version' ) ) {
+        waitpid $pid, 0;
+        $version = <$out>;
+    }
 
     # does it really look like git?
     return $binary{$type}{$key}{$binary}
