@@ -2,6 +2,7 @@ package Git::Repository::Log::Iterator;
 
 use strict;
 use warnings;
+use 5.006;
 use Carp;
 
 use Git::Repository;

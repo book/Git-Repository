@@ -2,6 +2,7 @@ package Git::Repository::Log;
 
 use strict;
 use warnings;
+use 5.006;
 
 our $VERSION = '1.00';
 

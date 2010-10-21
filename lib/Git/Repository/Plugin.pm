@@ -2,6 +2,7 @@ package Git::Repository::Plugin;
 
 use strict;
 use warnings;
+use 5.006;
 use Carp;
 
 our $VERSION = '1.01';
