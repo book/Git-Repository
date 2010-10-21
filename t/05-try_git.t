@@ -49,7 +49,11 @@ SKIP:
 
     my $path_sep = $Config::Config{path_sep} || ';';
     my ($abs_git) = grep {-e}
-        map { File::Spec->catfile( $_, 'git' ) }
+        map {
+        my $path = $_;
+        map { File::Spec->catfile( $path, $_ ) }
+            map {"git$_"} '', '.cmd', '.exe'
+        }
         split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
 
     diag "Testing _is_git with $abs_git from $cwd";
