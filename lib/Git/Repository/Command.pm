@@ -14,6 +14,15 @@ use Config;
 
 our $VERSION = '1.08';
 
+# Trap the real STDIN/ERR/OUT file handles in case someone
+# *COUGH* Catalyst *COUGH* screws with them which breaks open3
+my ($REAL_STDIN, $REAL_STDOUT, $REAL_STDERR);
+BEGIN {
+    open $REAL_STDIN, "<&=".fileno(*STDIN);
+    open $REAL_STDOUT, ">>&=".fileno(*STDOUT);
+    open $REAL_STDERR, ">>&=".fileno(*STDERR);
+}
+
 # a few simple accessors
 for my $attr (qw( pid stdin stdout stderr exit signal core )) {
     no strict 'refs';
@@ -65,8 +74,12 @@ sub _is_git {
         if !( defined $git && -x $git );
 
     # try to run it
-    my ( $pid, $out, $version );
-    if ( $pid = open( $out, "-|", $git, '--version' ) ) {
+    my ( $version, $in, $out );
+    my $err = Symbol::gensym;
+    local *STDIN  = $REAL_STDIN;
+    local *STDOUT = $REAL_STDOUT;
+    local *STDERR = $REAL_STDERR;
+    if ( my $pid = eval { open3( $in, $out, $err, $git, '--version' ) } ) {
         waitpid $pid, 0;
         $version = <$out>;
     }
@@ -78,14 +91,6 @@ sub _is_git {
                 ? $binary    # leave the shell figure it out itself too
                 : $git
             : undef;
-}
-
-# Trap the real STDIN/ERR/OUT file handles in case someone *COUGH* Catalyst *COUGH* screws with them which breaks open3
-my ($REAL_STDIN, $REAL_STDOUT, $REAL_STDERR);
-BEGIN {
-    open $REAL_STDIN, "<&=".fileno(*STDIN);
-    open $REAL_STDOUT, ">>&=".fileno(*STDOUT);
-    open $REAL_STDERR, ">>&=".fileno(*STDERR);
 }
 
 sub new {
@@ -155,8 +160,8 @@ sub new {
     # start the command
     my ( $in, $out, $err );
     $err = Symbol::gensym;
-    
-    local *STDIN = $REAL_STDIN;
+
+    local *STDIN  = $REAL_STDIN;
     local *STDOUT = $REAL_STDOUT;
     local *STDERR = $REAL_STDERR;
     my $pid = eval { open3( $in, $out, $err, $git, @cmd ); };
