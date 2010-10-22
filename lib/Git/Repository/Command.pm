@@ -39,15 +39,16 @@ sub _is_git {
     my ($binary) = @_;
 
     # compute cache key:
+    # - filename (path):     path
     # - absolute path (abs): empty string
     # - relative path (rel): dirname
-    # - filename (path):     path
     # this relatively complex cache key scheme allows PATH or cwd to change
     # during the life of a Git::Repository object
+    my $path = defined $ENV{PATH} && length( $ENV{PATH} ) ? $ENV{PATH} : '';
     my ( $type, $key )
-        = File::Spec->file_name_is_absolute($binary) ? ( 'abs', '' )
-        : ( File::Spec->splitpath($binary) )[1]      ? ( 'rel', cwd() )
-        :   ( 'path', defined $ENV{PATH} ? $ENV{PATH} : '' );
+        = ( File::Spec->splitpath($binary) )[2] eq $binary ? ( 'path', $path )
+        : File::Spec->file_name_is_absolute($binary)       ? ( 'abs', '' )
+        :                                                    ( 'rel', cwd() );
 
     # check the cache
     return $binary{$type}{$key}{$binary}
@@ -63,7 +64,7 @@ sub _is_git {
             map { File::Spec->catfile( $path, $_ ) }
                 map {"$binary$_"} '', '.cmd', '.exe'
             }
-            split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
+            split /\Q$path_sep\E/, $path;
     }
     else {
         $git = $type eq 'rel' ? eval { abs_path($binary) } : $binary;
