@@ -58,11 +58,11 @@ sub _is_git {
     my $git;
     if ( $type eq 'path' ) {
         my $path_sep = $Config::Config{path_sep} || ';';
+        my @ext = ( '', $^O eq 'MSWin32' ? ( '.cmd', '.exe' ) : () );
         ($git) = grep {-e}
             map {
             my $path = $_;
-            map { File::Spec->catfile( $path, $_ ) }
-                map {"$binary$_"} '', '.cmd', '.exe'
+            map { File::Spec->catfile( $path, $_ ) } map {"$binary$_"} @ext
             }
             split /\Q$path_sep\E/, $path;
     }
