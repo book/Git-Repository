@@ -5,7 +5,7 @@ use warnings;
 use 5.006;
 
 use Carp;
-use Cwd qw( cwd abs_path );
+use Cwd qw( cwd );
 use IO::Handle;
 use IPC::Open3 qw( open3 );
 use Scalar::Util qw( blessed );
@@ -67,7 +67,7 @@ sub _is_git {
             split /\Q$path_sep\E/, $path;
     }
     else {
-        $git = $type eq 'rel' ? eval { abs_path($binary) } : $binary;
+        $git = File::Spec->rel2abs($binary);
     }
 
     # if we can't find any, we're done
