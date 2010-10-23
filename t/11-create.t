@@ -4,7 +4,7 @@ use Test::More;
 use File::Temp qw( tempdir );
 use File::Spec;
 use File::Path;
-use Cwd qw( cwd abs_path );
+use Cwd qw( cwd realpath );
 use Git::Repository;
 
 plan skip_all => 'Default git binary not found in PATH'
@@ -21,7 +21,7 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $home = cwd();
 
 # a place to put a git repository
-my $tmp = abs_path( tempdir( CLEANUP => 1 ) );
+my $tmp = realpath( tempdir( CLEANUP => 1 ) );
 
 # some dirname generating routine
 my $i;
@@ -30,6 +30,10 @@ sub next_dir { return File::Spec->catdir( $tmp, ++$i ); }
 
 sub test_repo {
     my ( $r, $gitdir, $dir, $options ) = @_;
+
+    # normalize under Win32, but do not die
+    eval { $gitdir = realpath($gitdir) };
+    eval { $dir    = realpath($dir) };
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     isa_ok( $r, 'Git::Repository' );
