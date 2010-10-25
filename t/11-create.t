@@ -197,7 +197,8 @@ $dir = next_dir;
 mkpath $dir;
 chdir $dir;
 $gitdir = File::Spec->catdir( $dir, '.notgit' );
-my $options = { cwd => $dir, env => { GIT_DIR => $gitdir } };
+my $options =
+  { cwd => $dir, env => { GIT_DIR => File::Spec->abs2rel($gitdir) } };
 ok( $r = eval { Git::Repository->create( 'init', $options ); },
     "create( init ) => $i, GIT_DIR => '.notgit'" );
 diag $@ if $@;
@@ -217,7 +218,7 @@ $dir = next_dir;
 mkpath $dir;
 chdir $dir;
 $gitdir = File::Spec->catdir( $dir, '.notgit' );
-$options = { cwd => $dir, env => { GIT_DIR => $gitdir } };
+$options = { cwd => $dir, env => { GIT_DIR => File::Spec->abs2rel($gitdir) } };
 ok( $r = eval {
         Git::Repository->create( "--work-tree=$dir", 'init', $options );
     },
@@ -238,7 +239,10 @@ mkpath $subdir;
 chdir $subdir;
 $options = {
     cwd => $subdir,
-    env => { GIT_DIR => $gitdir, GIT_WORK_TREE => $dir }
+    env => {
+        GIT_DIR       => File::Spec->abs2rel( $gitdir, $subdir ),
+        GIT_WORK_TREE => File::Spec->abs2rel( $dir,    $subdir )
+    }
 };
 ok( $r = eval { Git::Repository->create( 'init', $options ); },
     "create( init ) => $i, GIT_DIR => '.notgit'" );
