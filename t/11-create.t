@@ -31,9 +31,9 @@ sub next_dir { return File::Spec->catdir( $tmp, ++$i ); }
 sub test_repo {
     my ( $r, $gitdir, $dir, $options ) = @_;
 
-    # normalize under Win32, but do not die
-    eval { $gitdir = realpath($gitdir) };
-    eval { $dir    = realpath($dir) };
+    # normalize actual paths, but do not die under Win32
+    eval { $gitdir = realpath($gitdir) } if defined $gitdir;
+    eval { $dir    = realpath($dir) }    if defined $dir;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     isa_ok( $r, 'Git::Repository' );
