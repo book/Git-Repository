@@ -129,16 +129,36 @@ SKIP: {
     test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
 
     # PASS - clone an existing repo as bare and warns
+    # relative target path
     BEGIN { $between += 5 }
     $old = $dir;
     $dir = next_dir;
+    chdir $tmp;
     ok( $r = eval {
-            Git::Repository->create( clone => '--bare', $old => $dir );
+            Git::Repository->create( clone => '--bare', $old => $i );
         },
         "create( clone => --bare, @{[ $i - 1 ]} => $i )"
     );
     diag $@ if $@;
+    chdir $home;
     test_repo( $r, $dir, undef, {} );
+
+    # PASS - clone an existing repo as bare and warns
+    # absolute target path
+  SKIP: {
+        $old = $dir;
+        $dir = next_dir;
+        skip 'git clone --bare fails with absolute target path', 5
+          if $^O eq 'MSWin32';
+        ok(
+            $r = eval {
+                Git::Repository->create( clone => '--bare', $old => $dir );
+            },
+            "create( clone => --bare, @{[ $i - 1 ]} => $i )"
+        );
+        diag $@ if $@;
+        test_repo( $r, $dir, undef, {} );
+    }
 }
 
 # FAIL - clone a non-existing repo
