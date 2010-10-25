@@ -145,6 +145,7 @@ SKIP: {
 
     # PASS - clone an existing repo as bare and warns
     # absolute target path
+    BEGIN { $between += 5 }
   SKIP: {
         $old = $dir;
         $dir = next_dir;
