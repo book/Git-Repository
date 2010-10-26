@@ -51,7 +51,7 @@ is( $gitdir, $r->git_dir, 'git-dir' );
 # check usage exit code
 BEGIN { $tests += 2 }
 SKIP: {
-	skip "run( commit --bonk ) hangs on Win32", 2 if $^O eq 'MSWin32';
+    skip "run( commit --bonk ) hangs on Win32", 2 if $^O eq 'MSWin32';
 ok( ! eval { $r->run( qw( commit --bonk ) ); }, "FAIL with usage text" );
 like( $@, qr/^usage: .*?git[- ]commit/m, '... expected usage message' );
 }
@@ -111,8 +111,8 @@ like( $parent, qr/^[a-f0-9]{40}$/, 'parent tree id' );
 
 my $commit;
 SKIP: {
-	skip "run( commit-tree ) hangs on MSWin32", 12
-	  if $^O eq 'MSWin32';
+    skip "run( commit-tree ) hangs on MSWin32", 12
+      if $^O eq 'MSWin32';
 $commit = $r->run(
     'commit-tree' => $tree,
     '-p',
@@ -291,8 +291,8 @@ is( $author,
 );
 
 SKIP: {
-	skip "run( commit-tree ) and run( mktree ) hang on MSWin32", 4
-	  if $^O eq 'MSWin32';
+    skip "run( commit-tree ) and run( mktree ) hang on MSWin32", 4
+      if $^O eq 'MSWin32';
 # PASS - use an option HASH (no env key)
 BEGIN { $tests += 2 }
 ( $parent, $tree ) = split /-/, $r->run( log => '--pretty=format:%H-%T', -1 );
