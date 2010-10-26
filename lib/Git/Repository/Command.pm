@@ -58,7 +58,9 @@ sub _is_git {
     my $git;
     if ( $type eq 'path' ) {
         my $path_sep = $Config::Config{path_sep} || ';';
-        my @ext = ( '', $^O eq 'MSWin32' ? ( '.cmd', '.exe' ) : () );
+        my @ext = (
+            '', $^O eq 'MSWin32' ? ( split /\Q$path_sep\E/, $ENV{PATHEXT} ) : ()
+        );
         ($git) = grep {-e}
             map {
             my $path = $_;
