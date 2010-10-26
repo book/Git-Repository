@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 use File::Temp qw( tempdir );
 use File::Spec;
-use Cwd qw( cwd abs_path );
+use Cwd qw( cwd realpath );
 use Git::Repository;
 
 plan skip_all => 'Default git binary not found in PATH'
@@ -18,8 +18,8 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $home = cwd();
 
 # a place to put a git repository
-my $dir  = abs_path( tempdir( CLEANUP => 1 ) );
-my $fake = abs_path( tempdir( CLEANUP => 1 ) );
+my $dir  = realpath( tempdir( CLEANUP => 1 ) );
+my $fake = realpath( tempdir( CLEANUP => 1 ) );
 my $gitdir = File::Spec->catdir( $dir, '.git' );
 my $r;
 
@@ -68,9 +68,9 @@ for my $t (@tests) {
         "Git::Repository->new( @args )" );
     diag $@ if !$r;
     isa_ok( $r, 'Git::Repository' ) or next;
-    is( $r->git_dir,   $gitdir,       '... correct git_dir' );
-    is( $r->work_tree, $dir,          '... correct work_tree' );
-    is( $r->repo_path, $r->git_dir,   '... repo_path == git_dir' );
-    is( $r->wc_path,   $r->work_tree, '... wc_path == work_tree' );
+    is( $r->git_dir,   realpath($gitdir), '... correct git_dir' );
+    is( $r->work_tree, realpath($dir),    '... correct work_tree' );
+    is( $r->repo_path, $r->git_dir,       '... repo_path == git_dir' );
+    is( $r->wc_path,   $r->work_tree,     '... wc_path == work_tree' );
 }
 
