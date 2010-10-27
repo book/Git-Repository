@@ -12,7 +12,7 @@ use Scalar::Util qw( blessed );
 use File::Spec;
 use Config;
 
-our $VERSION = '1.08';
+our $VERSION = '1.09';
 
 # Trap the real STDIN/ERR/OUT file handles in case someone
 # *COUGH* Catalyst *COUGH* screws with them which breaks open3

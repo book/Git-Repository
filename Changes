@@ -1,5 +1,23 @@
 Revision history for Git-Repository
 
+1.14 Wed Oct 27 21:49:45 CEST 2010
+        [ENHANCEMENTS]
+        - complete rewrite of _has_git, which was renamed to _is_git,
+          with a much improved cache for the "is this git valid?" info
+        - calling new() with the 'git' option will now work correctly
+          when there is no git in the PATH (fixes RT bug #62283,
+          reported by Todd Rinaldo)
+        - improved the plugin system design (thanks to Aristotle Pagaltzis)
+        - fixes for making Git::Repository work with modules that do
+          bad things to STDIN, STDOUT and STDERR (thanks to Todd Rinaldo)
+        [TESTS]
+        - improved tests on Win32 (thanks to Olivier Raginel (BABAR)
+          for giving me access to a Win32 VM with Git installed)
+        [BUGS]
+        - sadly, the work on Win32 showed that Git::Repository doesn't
+          fully support that platform, but the test suite safely skips
+          the tests that hang under Win32. I hope to fix this over time.
+
 1.13 Mon Oct 18 22:36:17 CEST 2010
         [ENHANCEMENTS]
         - using 'git' as an option of a Git::Repository object now works
