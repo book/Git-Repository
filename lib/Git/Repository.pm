@@ -136,11 +136,8 @@ sub new {
     }
 
     # sanity check
-    my $gitdir
-        = eval { _abs_path( $self->run(qw( rev-parse --git-dir )), $cwd ) }
-        || '';
-    croak "fatal: Not a git repository: $self->{git_dir}"
-        if $self->{git_dir} ne $gitdir;
+    $self->is_git_repo($cwd)
+        or croak "fatal: Not a git repository: $self->{git_dir}";
 
     # put back the ignored option
     $options->{input} = $input if defined $input;
@@ -208,6 +205,19 @@ sub run {
 
     # return the output
     return wantarray ? @output : join "\n", @output;
+}
+
+# check whether a certain directory is a git repo
+# this is refactored so it can be used by others using Git::Repository
+sub is_git_repo {
+    my $self = shift;
+    my $cwd  = shift;
+
+    my $gitdir
+        = eval { _abs_path( $self->run(qw( rev-parse --git-dir )), $cwd ) }
+        || '';
+
+    return $self->{git_dir} eq $gitdir;
 }
 
 #
@@ -461,6 +471,10 @@ it provided as an alias to C<work_tree()>.
 =head2 options()
 
 Return the option hash that was passed to C<< Git::Repository->new() >>.
+
+=head2 is_git_repo($directory)
+
+Return whether a certain directory is a git repository or not.
 
 =head2 version()
 
