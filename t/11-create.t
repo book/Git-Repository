@@ -1,18 +1,16 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Git;
 use File::Temp qw( tempdir );
 use File::Spec;
 use File::Path;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-plan skip_all => 'Default git binary not found in PATH'
-    if !Git::Repository::Command::_is_git('git');
+has_git( '1.6.0');
 
 my $version = Git::Repository->version;
-plan skip_all => "these tests require git >= 1.6.0, but we only have $version"
-    if Git::Repository->version_lt('1.6.0');
 
 plan tests => my $tests + my $between + my $extra;
 

@@ -1,14 +1,14 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Git;
 use Cwd qw( abs_path );
 use File::Temp qw( tempdir );
 use File::Spec;
 use File::Path;
 use Git::Repository;
 
-plan skip_all => 'Default git binary not found in PATH'
-    if !Git::Repository::Command::_is_git('git');
+has_git;
 
 plan tests => 12;
 

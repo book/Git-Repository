@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Git;
 use Scalar::Util qw( looks_like_number );
 use Git::Repository;
 
-plan skip_all => 'Default git binary not found in PATH'
-    if !Git::Repository::Command::_is_git('git');
+has_git;
 
 # get the git version
 my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
