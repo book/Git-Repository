@@ -12,28 +12,17 @@ has_git('1.5.0');
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
-my $home = cwd();
-
-# a place to put a git repository
-my $dir = abs_path( tempdir( CLEANUP => 1 ) );
 
 plan tests => my $tests;
 
 # first create a new empty repository
-chdir $dir;
-BEGIN { $tests += 1 }
-ok( my $r = eval { Git::Repository->create('init') },
-    q{Git::Repository->create( 'init' ) => dir }
-);
-diag $@ if !$r;
+my $r      = test_repository;
+my $dir    = $r->work_tree;
 my $gitdir = $r->git_dir;
 
 # FAIL - no hello method
 BEGIN { $tests += 1 }
 ok( !eval { $r->hello }, 'No hello() method' );
-
-# make sure 't' is still where it should be
-chdir $home;
 
 # PASS - load Hello
 BEGIN { $tests += 1 }

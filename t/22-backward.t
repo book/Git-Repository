@@ -14,10 +14,10 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 my $home = cwd();
 
 # a place to put a git repository
-my $dir  = realpath( tempdir( CLEANUP => 1 ) );
-my $fake = realpath( tempdir( CLEANUP => 1 ) );
-my $gitdir = File::Spec->catdir( $dir, '.git' );
-my $r;
+my $fake   = realpath( tempdir( CLEANUP => 1 ) );
+my $r      = test_repository;
+my $dir    = $r->work_tree;
+my $gitdir = $r->git_dir;
 
 # use new with various options
 my @tests = (
@@ -45,14 +45,7 @@ my @tests = (
 );
 
 # test backward compatibility
-plan tests => 6 * @tests + 1;
-
-# first create a new empty repository
-chdir $dir;
-ok( $r = eval { Git::Repository->create('init') },
-    q{Git::Repository->create( 'init' ) => dir }
-);
-diag $@ if !$r;
+plan tests => 6 * @tests;
 
 # now test most possible cases for backward compatibility
 for my $t (@tests) {
