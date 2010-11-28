@@ -6,10 +6,13 @@ use warnings;
 use Exporter;
 use Test::Builder;
 use Git::Repository 1.14;
+use File::Temp qw( tempdir );
+use Cwd qw( cwd );
+use Carp;
 
 our $VERSION = '1.00';
 our @ISA     = qw( Exporter );
-our @EXPORT  = qw( has_git );
+our @EXPORT  = qw( has_git test_repository );
 
 my $Test = Test::Builder->new();
 
@@ -25,6 +28,29 @@ sub has_git {
     $Test->skip_all(
         "Test script requires git >= $version (this is only $git_version)" )
         if $version && Git::Repository->version_lt($version);
+}
+
+sub test_repository {
+    my %args = @_;
+
+    # setup some default values
+    my $temp = $args{temp} || [ CLEANUP => 1 ];    # File::Temp options
+    my $init = $args{init} || [];                  # git init options
+    my $opts = $args{git}  || {};                  # Git::Repository options
+
+    # create a temporary directory to host our repository
+    my $dir = tempdir(@$temp);
+
+    # create the git repository there
+    my $home = cwd;
+    chdir $dir or croak "Can't chdir to $dir: $!";
+    Git::Repository->run( init => @$init, $opts );
+
+    # create the Git::Repository object
+    my $gitdir = Git::Repository->run(qw( rev-parse --git-dir ));
+    my $r = Git::Repository->new( git_dir => $gitdir, $opts );
+    chdir $home or croak "Can't chdir to $home: $!";
+    return $r;
 }
 
 1;
@@ -49,7 +75,11 @@ Test::Git - Helper functions for test scripts using Git
     # normal plan
     plan tests => 2;
     
-    # run some tests using git
+    # create a new, empty repository in a temporary location
+    # and return a Git::Repository object
+    my $r = test_repository();
+    
+    # run some tests on the repository
     ...
 
 =head1 DESCRIPTION
@@ -67,7 +97,33 @@ Checks if there is a git binary available, or skips all tests.
 If the optionanl C<$version> argument is provided, also checks if the
 available git binary has a version greater or equal to C<$version>.
 
-This function must be called before C<plan()>.
+This function must be called before C<plan()>, as it performs a B<skip_all>
+if requirements are not met.
+
+
+=head2 test_repository( %options )
+
+Creates a new empty git repository in a temporary location, and returns
+a C<Git::Repository> object pointing to it.
+
+This function takes options as a hash. Each key will influence a
+different part of the creation process.
+
+This call is the equivalent of the default call with no options:
+
+    test_repository(
+        temp => [ CLEANUP => 1 ],    # File::Temp::tempdir options
+        init => [],                  # git init options
+        git  => {},                  # Git::Repository options
+    );
+
+To create a I<bare> repository:
+
+    test_repository( init => [ '--bare' ] );
+
+To leave the repository in its location after the end of the test:
+
+    test_repository( temp => [ CLEANUP => 0 ] );
 
 
 =head1 AUTHOR
