@@ -515,6 +515,11 @@ by C<git --version>) for all git versions that can be compiled from each
 commit in the F<git.git> repository, the result would not be a totally ordered
 set. Big deal.
 
+Also, don't be to precise when requiring the minimum version of Git that
+supported a given feature. The precise commit in git.git at which a given
+feature was added doesn't mean as much as the release branch in which that
+commit was merged.
+
 =head1 HOW-TO
 
 =head2 Create a new repository
