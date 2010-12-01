@@ -48,11 +48,9 @@ is( $gitdir, $r->git_dir, 'git-dir' );
 
 # check usage exit code
 BEGIN { $tests += 2 }
-SKIP: {
-    skip "run( commit --bonk ) hangs on Win32", 2 if $^O eq 'MSWin32';
 ok( ! eval { $r->run( qw( commit --bonk ) ); }, "FAIL with usage text" );
 like( $@, qr/^usage: .*?git[- ]commit/m, '... expected usage message' );
-}
+
 # add file to the index
 update_file( File::Spec->catfile( $dir, 'readme.txt' ), << 'TXT' );
 Some readme text
@@ -108,9 +106,6 @@ my $tree = $r->run( log => '--pretty=format:%T' );
 like( $parent, qr/^[a-f0-9]{40}$/, 'parent tree id' );
 
 my $commit;
-SKIP: {
-    skip "run( commit-tree ) hangs on MSWin32", 12
-      if $^O eq 'MSWin32';
 $commit = $r->run(
     'commit-tree' => $tree,
     '-p',
@@ -187,8 +182,6 @@ BEGIN { $tests += 1 }
 
     my $got = Git::Repository->run( log => '-1', '--pretty=format:%H' );
     is( $got, $commit, 'git log -1' );
-}
-
 }
 
 # PASS - try with a relative dir
@@ -288,9 +281,6 @@ is( $author,
     'Option hash in new() and run()'
 );
 
-SKIP: {
-    skip "run( commit-tree ) and run( mktree ) hang on MSWin32", 4
-      if $^O eq 'MSWin32';
 # PASS - use an option HASH (no env key)
 BEGIN { $tests += 2 }
 ( $parent, $tree ) = split /-/, $r->run( log => '--pretty=format:%H-%T', -1 );
@@ -313,5 +303,4 @@ ok( $r = eval { Git::Repository->new( work_tree => $dir ) },
     'Git::Repository->new()' );
 $tree = $r->run( mktree => { input => '' } );
 is( $tree, '4b825dc642cb6eb9a060e54bf8d69288fbee4904', 'mktree empty tree' );
-}
 
