@@ -12,6 +12,10 @@ use Scalar::Util qw( blessed );
 use File::Spec;
 use Config;
 
+# MSWin32 support
+use constant MSWin32 => $^O eq 'MSWin32';
+require IPC::Run if MSWin32;
+
 our $VERSION = '1.09';
 
 # Trap the real STDIN/ERR/OUT file handles in case someone
@@ -167,7 +171,21 @@ sub new {
     local *STDIN  = $REAL_STDIN;
     local *STDOUT = $REAL_STDOUT;
     local *STDERR = $REAL_STDERR;
-    my $pid = eval { open3( $in, $out, $err, $git, @cmd ); };
+    my $pid;
+
+    if (MSWin32) {
+        $in  = Symbol::gensym;
+        $out = Symbol::gensym;
+        $pid = IPC::Run::start(
+            [ $git, @cmd ],
+            '<pipe'  => $in,
+            '>pipe'  => $out,
+            '2>pipe' => $err,
+        );
+    }
+    else {
+        $pid = eval { open3( $in, $out, $err, $git, @cmd ); };
+    }
 
     # FIXME - better check open3 error conditions
     croak $@ if !defined $pid;
@@ -188,10 +206,11 @@ sub new {
     # create the object
     return bless {
         cmdline => [ $git, @cmd ],
-        pid     => $pid,
+        pid     => MSWin32 ? $pid->{KIDS}[0]{PID} : $pid,
         stdin   => $in,
         stdout  => $out,
         stderr  => $err,
+        MSWin32 ? ( _ipc_run => $pid ) : (),
     }, $class;
 }
 
@@ -205,7 +224,12 @@ sub close {
     $err->opened and $err->close || carp "error closing stderr: $!";
 
     # and wait for the child
-    waitpid $self->{pid}, 0;
+    if (MSWin32) {
+        $self->{_ipc_run}->finish;
+    }
+    else {
+        waitpid $self->{pid}, 0;
+    }
 
     # check $?
     @{$self}{qw( exit signal core )} = ( $? >> 8, $? & 127, $? & 128 );
