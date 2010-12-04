@@ -49,13 +49,17 @@ sub _is_git {
     # - filename (path):     path
     # - absolute path (abs): empty string
     # - relative path (rel): dirname
-    # this relatively complex cache key scheme allows PATH or cwd to change
-    # during the life of a Git::Repository object
     my $path = defined $ENV{PATH} && length( $ENV{PATH} ) ? $ENV{PATH} : '';
     my ( $type, $key )
         = ( File::Spec->splitpath($binary) )[2] eq $binary ? ( 'path', $path )
         : File::Spec->file_name_is_absolute($binary)       ? ( 'abs', '' )
         :                                                    ( 'rel', cwd() );
+
+    # This relatively complex cache key scheme allows PATH or cwd to change
+    # during the life of a program using Git::Repository, which is likely
+    # to happen. On the other hand, it completely ignores the possibility
+    # that any part of the cached path to a git binary could be a symlink
+    # which target may also change during the life of the program.
 
     # check the cache
     return wantarray
