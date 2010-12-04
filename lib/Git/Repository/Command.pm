@@ -84,14 +84,11 @@ sub _is_git {
         if !( defined $git && -x $git );
 
     # try to run it
-    my ( $version, $in, $out );
-    my $err = Symbol::gensym;
-    local *STDIN  = $REAL_STDIN;
-    local *STDOUT = $REAL_STDOUT;
-    local *STDERR = $REAL_STDERR;
-    if ( my $pid = eval { open3( $in, $out, $err, $git, '--version' ) } ) {
-        waitpid $pid, 0;
+    my $version;
+    my ( $pid, $in, $out, $err ) = _spawn( $git, '--version' );
+    if ($pid) {
         $version = <$out>;
+        waitpid $pid, 0;
     }
 
     # does it really look like git?
