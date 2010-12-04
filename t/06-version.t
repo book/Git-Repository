@@ -111,7 +111,7 @@ my $dev;
 
     package Git::Repository::VersionFaker;
     our @ISA = qw( Git::Repository );
-    sub run { return "git version $dev" }
+    sub version { return $dev }
 }
 $r = 'Git::Repository::VersionFaker';
 
