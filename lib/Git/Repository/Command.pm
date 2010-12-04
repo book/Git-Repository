@@ -201,7 +201,8 @@ sub new {
         local $SIG{PIPE}
             = sub { croak "Broken pipe when writing to: $git @cmd" };
         print {$in} $o->{input} if length $o->{input};
-        $in->close;
+        if (MSWin32) { shutdown( $in, 2 ); }
+        else         { $in->close; }
     }
 
     # chdir back to origin
@@ -224,9 +225,16 @@ sub close {
 
     # close all pipes
     my ( $in, $out, $err ) = @{$self}{qw( stdin stdout stderr )};
-    $in->opened  and $in->close  || carp "error closing stdin: $!";
-    $out->opened and $out->close || carp "error closing stdout: $!";
-    $err->opened and $err->close || carp "error closing stderr: $!";
+    if ( MSWin32 ) {
+        $in->opened  and shutdown( $in,  2 ) || carp "error closing stdin: $!";
+        $out->opened and shutdown( $out, 2 ) || carp "error closing stdout: $!";
+        $err->opened and shutdown( $err, 2 ) || carp "error closing stderr: $!";
+    }
+    else {
+        $in->opened  and $in->close  || carp "error closing stdin: $!";
+        $out->opened and $out->close || carp "error closing stdout: $!";
+        $err->opened and $err->close || carp "error closing stderr: $!";
+    }
 
     # and wait for the child
     waitpid $self->{pid}, 0;
