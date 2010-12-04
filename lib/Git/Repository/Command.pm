@@ -14,7 +14,10 @@ use Config;
 
 # MSWin32 support
 use constant MSWin32 => $^O eq 'MSWin32';
-require IPC::Run if MSWin32;
+if ( MSWin32 ) {
+    require Socket;
+    import Socket qw( AF_UNIX SOCK_STREAM PF_UNSPEC );
+}
 
 our $VERSION = '1.09';
 
@@ -165,27 +168,30 @@ sub new {
         if exists $o->{env};
 
     # start the command
-    my ( $in, $out, $err );
-    $err = Symbol::gensym;
-
     local *STDIN  = $REAL_STDIN;
     local *STDOUT = $REAL_STDOUT;
     local *STDERR = $REAL_STDERR;
-    my $pid;
+
+    # code from: http://www.perlmonks.org/?node_id=811650
+    # discussion at: http://www.perlmonks.org/?node_id=811057
+    local ( *IN_R,  *IN_W );
+    local ( *OUT_R, *OUT_W );
+    local ( *ERR_R, *ERR_W );
 
     if (MSWin32) {
-        $in  = Symbol::gensym;
-        $out = Symbol::gensym;
-        $pid = IPC::Run::start(
-            [ $git, @cmd ],
-            '<pipe'  => $in,
-            '>pipe'  => $out,
-            '2>pipe' => $err,
-        );
+        _pipe( *IN_R,  *IN_W )  or croak "input pipe error: $^E";
+        _pipe( *OUT_R, *OUT_W ) or croak "output pipe error: $^E";
+        _pipe( *ERR_R, *ERR_W ) or croak "errput pipe error: $^E";
     }
     else {
-        $pid = eval { open3( $in, $out, $err, $git, @cmd ); };
+        pipe( *IN_R,  *IN_W )  or croak "input pipe error: $!";
+        pipe( *OUT_R, *OUT_W ) or croak "output pipe error: $!";
+        pipe( *ERR_R, *ERR_W ) or croak "errput pipe error: $!";
     }
+
+    # get the handles
+    my $pid = eval { open3( '>&IN_R', '<&OUT_W', '<&ERR_W', $git, @cmd ); };
+    my ( $in, $out, $err ) = ( *IN_W{IO}, *OUT_R{IO}, *ERR_R{IO} );
 
     # FIXME - better check open3 error conditions
     croak $@ if !defined $pid;
@@ -206,11 +212,10 @@ sub new {
     # create the object
     return bless {
         cmdline => [ $git, @cmd ],
-        pid     => MSWin32 ? $pid->{KIDS}[0]{PID} : $pid,
+        pid     => $pid,
         stdin   => $in,
         stdout  => $out,
         stderr  => $err,
-        MSWin32 ? ( _ipc_run => $pid ) : (),
     }, $class;
 }
 
@@ -224,12 +229,7 @@ sub close {
     $err->opened and $err->close || carp "error closing stderr: $!";
 
     # and wait for the child
-    if (MSWin32) {
-        $self->{_ipc_run}->finish;
-    }
-    else {
-        waitpid $self->{pid}, 0;
-    }
+    waitpid $self->{pid}, 0;
 
     # check $?
     @{$self}{qw( exit signal core )} = ( $? >> 8, $? & 127, $? & 128 );
@@ -240,6 +240,14 @@ sub close {
 sub DESTROY {
     my ($self) = @_;
     $self->close if !exists $self->{exit};
+}
+
+sub _pipe {
+    socketpair( $_[0], $_[1], AF_UNIX(), SOCK_STREAM(), PF_UNSPEC() )
+        or return undef;
+    shutdown( $_[0], 1 );    # No more writing for reader
+    shutdown( $_[1], 0 );    # No more reading for writer
+    return 1;
 }
 
 1;
