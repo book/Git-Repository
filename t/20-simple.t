@@ -173,7 +173,7 @@ ok( !eval {
     },
     'Fail with option { cwd => non-existent dir }'
 );
-like( $@, qr/^Can't chdir to \Q$dir/, '... expected error message' );
+like( $@, qr/^Can't chdir to .*not-there/, '... expected error message' );
 
 # now work with GIT_DIR and GIT_WORK_TREE only
 BEGIN { $tests += 1 }
