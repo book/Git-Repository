@@ -58,7 +58,9 @@ sub _is_git {
         :                                                    ( 'rel', cwd() );
 
     # check the cache
-    return $binary{$type}{$key}{$binary}
+    return wantarray
+        ? @{ $binary{$type}{$key}{$binary} }
+        : $binary{$type}{$key}{$binary}[0]
         if exists $binary{$type}{$key}{$binary};
 
     # compute a list of candidate files (look in PATH if needed)
@@ -92,12 +94,16 @@ sub _is_git {
     }
 
     # does it really look like git?
-    return $binary{$type}{$key}{$binary}
-        = $version =~ /^git version \d/
-            ? $type eq 'path'
-                ? $binary    # leave the shell figure it out itself too
-                : $git
-            : undef;
+    # returning $binary leaves the shell figure out the path itself
+    $binary{$type}{$key}{$binary}
+        = $version =~ /^git version (.*)/
+        ? [ $type eq 'path' ? $binary : $git, $1 ]
+        : [];
+
+    # return the requested value
+    return wantarray
+        ? @{ $binary{$type}{$key}{$binary} }
+        : $binary{$type}{$key}{$binary}[0]
 }
 
 sub new {
