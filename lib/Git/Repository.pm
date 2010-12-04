@@ -198,7 +198,9 @@ sub run {
 
     # exit codes: 128 => fatal, 129 => usage
     my $exit = $command->{exit};
-    if ( $exit == 128 || $exit == 129 ) { croak join "\n", @errput; }
+    if ( $exit == 128 || $exit == 129 ) {
+        croak join( "\n", @errput ) || 'fatal: unknown git error';
+    }
 
     # something else's wrong
     if (@errput) { carp join "\n", @errput; }
