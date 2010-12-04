@@ -167,31 +167,8 @@ sub new {
     @ENV{ keys %{ $o->{env} } } = values %{ $o->{env} }
         if exists $o->{env};
 
-    # start the command
-    local *STDIN  = $REAL_STDIN;
-    local *STDOUT = $REAL_STDOUT;
-    local *STDERR = $REAL_STDERR;
-
-    # code from: http://www.perlmonks.org/?node_id=811650
-    # discussion at: http://www.perlmonks.org/?node_id=811057
-    local ( *IN_R,  *IN_W );
-    local ( *OUT_R, *OUT_W );
-    local ( *ERR_R, *ERR_W );
-
-    if (MSWin32) {
-        _pipe( *IN_R,  *IN_W )  or croak "input pipe error: $^E";
-        _pipe( *OUT_R, *OUT_W ) or croak "output pipe error: $^E";
-        _pipe( *ERR_R, *ERR_W ) or croak "errput pipe error: $^E";
-    }
-    else {
-        pipe( *IN_R,  *IN_W )  or croak "input pipe error: $!";
-        pipe( *OUT_R, *OUT_W ) or croak "output pipe error: $!";
-        pipe( *ERR_R, *ERR_W ) or croak "errput pipe error: $!";
-    }
-
-    # get the handles
-    my $pid = eval { open3( '>&IN_R', '<&OUT_W', '<&ERR_W', $git, @cmd ); };
-    my ( $in, $out, $err ) = ( *IN_W{IO}, *OUT_R{IO}, *ERR_R{IO} );
+    # spawn the command
+    my ( $pid, $in, $out, $err ) = _spawn( $git, @cmd );
 
     # FIXME - better check open3 error conditions
     croak $@ if !defined $pid;
@@ -248,6 +225,38 @@ sub close {
 sub DESTROY {
     my ($self) = @_;
     $self->close if !exists $self->{exit};
+}
+
+sub _spawn {
+    my @cmd = @_;
+
+    my ( $pid, $in, $out, $err );
+
+    # save standard handles
+    local *STDIN  = $REAL_STDIN;
+    local *STDOUT = $REAL_STDOUT;
+    local *STDERR = $REAL_STDERR;
+
+    if (MSWin32) {
+
+        # code from: http://www.perlmonks.org/?node_id=811650
+        # discussion at: http://www.perlmonks.org/?node_id=811057
+        local ( *IN_R,  *IN_W );
+        local ( *OUT_R, *OUT_W );
+        local ( *ERR_R, *ERR_W );
+        _pipe( *IN_R,  *IN_W )  or croak "input pipe error: $^E";
+        _pipe( *OUT_R, *OUT_W ) or croak "output pipe error: $^E";
+        _pipe( *ERR_R, *ERR_W ) or croak "errput pipe error: $^E";
+
+        $pid = eval { open3( '>&IN_R', '<&OUT_W', '<&ERR_W', @cmd ); };
+        ( $in, $out, $err ) = ( *IN_W{IO}, *OUT_R{IO}, *ERR_R{IO} );
+    }
+    else {
+        $err = Symbol::gensym;
+        $pid = eval { open3( $in, $out, $err, @cmd ); };
+    }
+
+    return ( $pid, $in, $out, $err );
 }
 
 sub _pipe {
