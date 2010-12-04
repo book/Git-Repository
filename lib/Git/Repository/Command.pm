@@ -201,7 +201,7 @@ sub new {
         local $SIG{PIPE}
             = sub { croak "Broken pipe when writing to: $git @cmd" };
         print {$in} $o->{input} if length $o->{input};
-        if (MSWin32) { shutdown( $in, 2 ); }
+        if (MSWin32) { $in->flush; shutdown( $in, 2 ); }
         else         { $in->close; }
     }
 
