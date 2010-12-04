@@ -422,6 +422,11 @@ The signal, if any, that killed the command.
 
 Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to BinGOs for pointing me towards perlmonks posts by ikegami
+that contained crucial elements to a working MSWin32 implementation.
+
 =head1 COPYRIGHT
 
 Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
