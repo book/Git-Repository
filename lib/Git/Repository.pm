@@ -196,15 +196,12 @@ sub run {
     # done with it
     $command->close;
 
-    # something's wrong
-    if (@errput) {
-        my $errput = join "\n", @errput;
-        my $exit = $command->{exit};
+    # exit codes: 128 => fatal, 129 => usage
+    my $exit = $command->{exit};
+    if ( $exit == 128 || $exit == 129 ) { croak join "\n", @errput; }
 
-        # exit codes: 128 => fatal, 129 => usage
-        if   ( $exit == 128 || $exit == 129 ) { croak $errput; }
-        else                                  { carp $errput; }
-    }
+    # something else's wrong
+    if (@errput) { carp join "\n", @errput; }
 
     # return the output
     return wantarray ? @output : join "\n", @output;
