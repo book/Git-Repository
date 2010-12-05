@@ -686,6 +686,12 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 BUGS
 
+On Win32, in some cases of failure of the underlying Git command,
+the C<run()> method is not able to catch the error output on STDERR.
+In those cases, C<Git::Repository> will croak C<fatal: unknown git error>
+instead of the original Git error message. Bugfixes and explanations
+are very welcome.
+
 Please report any bugs or feature requests to C<bug-git-repository at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Git-Repository>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
