@@ -440,7 +440,10 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to BinGOs for pointing me towards perlmonks posts by ikegami
+The Win32 implementation owes a lot to two people. First, Olivier Raginel
+(BABAR), for providing me with a test platform with Git and Strawberry
+Perl installed, which I could use at any time. Many thanks go also to
+Chris Williams (BINGOS) for pointing me towards perlmonks posts by ikegami
 that contained crucial elements to a working MSWin32 implementation.
 
 =head1 COPYRIGHT
