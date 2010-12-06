@@ -218,18 +218,9 @@ sub run {
 # - the 'git' option allows to change the git binary anytime
 # - version comparison is usually done once anyway
 sub version {
-    my $r = shift;
-    my ($o) = grep { ref eq 'HASH' } @_;
-    my $git_cmd
-        = defined $o->{git} ? $o->{git} : ref $r ? $r->{options}{git} : 'git';
-
-    # however, _is_git() caches the version properly
-    my ( $git, $version ) = Git::Repository::Command::_is_git($git_cmd);
-
-    croak "git binary '$git_cmd' not available or broken"
-        if !defined $git;
-
-    return $version;
+    return (
+        shift->run( '--version', grep { ref eq 'HASH' } @_ )
+            =~ /git version (.*)/g )[0];
 }
 
 sub _version_eq {
