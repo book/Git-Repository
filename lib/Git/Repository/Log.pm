@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 # a few simple accessors
 for my $attr (
@@ -14,7 +14,7 @@ for my $attr (
     committer committer_name committer_email
     author_localtime author_tz author_gmtime
     committer_localtime committer_tz committer_gmtime
-    message subject body
+    raw_message message subject body
     extra
     )
     )
@@ -45,8 +45,9 @@ sub new {
     $self->{commit} = (split /\s/, $self->{commit} )[0];
 
     # compute other keys
-    (my $message = $self->{message} ) =~ s/^    //gm;
-    @{$self}{qw( subject body )} = ( split( /\n/m, $message, 2), '' );
+    $self->{raw_message} = $self->{message};
+    $self->{message} =~ s/^    //gm;
+    @{$self}{qw( subject body )} = ( split( /\n/m, $self->{message}, 2 ), '' );
     $self->{body} =~ s/\A\s//gm;
 
     # author and committer details
@@ -121,7 +122,7 @@ The committer information.
 
 =item message
 
-The log message.
+The log message (including the 4-space indent normally output by B<git log>).
 
 =item extra
 
@@ -131,7 +132,7 @@ Any extra text that might be added by extra options passed to B<git log>.
 
 =head1 ACCESSORS
 
-The following accessors methods are recognized. They all  return scalars,
+The following accessors methods are recognized. They all return scalars,
 except for C<parent()>, which returns a list.
 
 =head2 Commit information
@@ -188,7 +189,13 @@ The original author/committer line
 
 =over 4
 
+=item raw_message
+
+The log message with the 4-space indent output by B<git log>.
+
 =item message
+
+The unindented version of the log message.
 
 =item subject
 
