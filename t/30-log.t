@@ -46,7 +46,8 @@ EXTRA
             committer_gmtime    => '1282408639',
             committer_localtime => '1282415839',
             committer_tz        => '+0200',
-            message             => "    MANIFEST update\n",
+            raw_message         => "    MANIFEST update\n",
+            message             => "MANIFEST update\n",
             subject             => "MANIFEST update",
             body                => '',
             extra               => << 'EXTRA',
@@ -102,11 +103,17 @@ MESSAGE
             committer_gmtime    => '1282050772',
             committer_localtime => '1282043572',
             committer_tz        => '-0200',
-            message             => << 'MESSAGE',
+            raw_message         => << 'MESSAGE',
     Merge branch 'master' into git-log
     
     Conflicts:
         lib/Git/Repository.pm
+MESSAGE
+            message => << 'MESSAGE',
+Merge branch 'master' into git-log
+
+Conflicts:
+    lib/Git/Repository.pm
 MESSAGE
             subject => q{Merge branch 'master' into git-log},
             body    => << 'BODY',
@@ -143,7 +150,8 @@ BODY
             committer_gmtime    => '1282389828',
             committer_localtime => '1282418628',
             committer_tz        => '+0800',
-            message             => "    small POD copyedit\n",
+            raw_message         => "    small POD copyedit\n",
+            message             => "small POD copyedit\n",
             subject             => "small POD copyedit",
             body                => '',
             extra               => '',
