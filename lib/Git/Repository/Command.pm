@@ -263,8 +263,15 @@ sub _spawn {
 sub _pipe {
     socketpair( $_[0], $_[1], AF_UNIX(), SOCK_STREAM(), PF_UNSPEC() )
         or return undef;
+
+    # turn off buffering
+    $_[0]->autoflush(1);
+    $_[1]->autoflush(1);
+
+    # half-duplex
     shutdown( $_[0], 1 );    # No more writing for reader
     shutdown( $_[1], 0 );    # No more reading for writer
+
     return 1;
 }
 
