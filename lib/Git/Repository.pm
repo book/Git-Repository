@@ -189,7 +189,7 @@ sub run {
         = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
     # get output / errput
-    my ( $stdout, $stderr ) = @{$command}{qw(stdout stderr)};
+    my ( undef, $stdout, $stderr ) = $command->handles;
     chomp( my @output = <$stdout> );
     chomp( my @errput = <$stderr> );
 
@@ -197,7 +197,7 @@ sub run {
     $command->close;
 
     # exit codes: 128 => fatal, 129 => usage
-    my $exit = $command->{exit};
+    my $exit = $command->exit;
     if ( $exit == 128 || $exit == 129 ) {
         croak join( "\n", @errput ) || 'fatal: unknown git error';
     }
