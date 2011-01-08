@@ -80,7 +80,7 @@ BEGIN { $tests += 4 }
 {
     ok( my $cmd = $r->command('commit'), 'git commit' );
     isa_ok( $cmd, 'Git::Repository::Command' );
-    my $error = $cmd->{stderr}->getline;
+    my $error = $cmd->stderr->getline;
     is_deeply( [ $cmd->cmdline ], [ qw( git commit ) ], 'command-line' );
     $cmd->close;
     like(
@@ -123,7 +123,7 @@ BEGIN { $tests += 3 }
     my $cmd = $r->command( log => '--pretty=oneline', '--all' );
     isa_ok( $cmd, 'Git::Repository::Command' );
     is_deeply( [ $cmd->cmdline ], [ qw( git log --pretty=oneline --all ) ], 'command-line' );
-    my $log = $cmd->{stdout};
+    my $log = $cmd->stdout;
     while (<$log>) {
         $lines++;
     }
@@ -141,7 +141,7 @@ BEGIN { $tests += 2 }
         '--pretty=format:%H'
     );
     isa_ok( $cmd, 'Git::Repository::Command' );
-    my $line = $cmd->{stdout}->getline();
+    my $line = $cmd->stdout->getline();
     chomp $line;
     is( $line, $commit, 'git log -1' );
 }
@@ -155,7 +155,7 @@ BEGIN { $tests += 2 }
         '--pretty=format:%H'
     );
     isa_ok( $cmd, 'Git::Repository::Command' );
-    my $line = $cmd->{stdout}->getline();
+    my $line = $cmd->stdout->getline();
     chomp $line;
     is( $line, $commit, 'git log -1' );
     $cmd->stdout->close;
