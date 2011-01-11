@@ -218,18 +218,9 @@ sub run {
 # - the 'git' option allows to change the git binary anytime
 # - version comparison is usually done once anyway
 sub version {
-    my $r = shift;
-    my ($o) = grep { ref eq 'HASH' } @_;
-    my $git_cmd
-        = defined $o->{git} ? $o->{git} : ref $r ? $r->{options}{git} : 'git';
-
-    # however, _is_git() caches the version properly
-    my ( $git, $version ) = Git::Repository::Command::_is_git($git_cmd);
-
-    croak "git binary '$git_cmd' not available or broken"
-        if !defined $git;
-
-    return $version;
+    return (
+        shift->run( '--version', grep { ref eq 'HASH' } @_ )
+            =~ /git version (.*)/g )[0];
 }
 
 sub _version_eq {
@@ -685,6 +676,12 @@ Doesn't support streams or bidirectional commands.
 Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 BUGS
+
+On Win32, in some cases of failure of the underlying Git command,
+the C<run()> method is not able to catch the error output on STDERR.
+In those cases, C<Git::Repository> will croak C<fatal: unknown git error>
+instead of the original Git error message. Bugfixes and explanations
+are very welcome.
 
 Please report any bugs or feature requests to C<bug-git-repository at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Git-Repository>.  I will be notified, and then you'll

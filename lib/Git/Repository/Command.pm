@@ -62,9 +62,7 @@ sub _is_git {
     # which target may also change during the life of the program.
 
     # check the cache
-    return wantarray
-        ? @{ $binary{$type}{$key}{$binary} }
-        : $binary{$type}{$key}{$binary}[0]
+    return $binary{$type}{$key}{$binary}
         if exists $binary{$type}{$key}{$binary};
 
     # compute a list of candidate files (look in PATH if needed)
@@ -98,16 +96,12 @@ sub _is_git {
     }
 
     # does it really look like git?
-    # returning $binary leaves the shell figure out the path itself
-    $binary{$type}{$key}{$binary}
-        = $version =~ /^git version (.*)/
-        ? [ $type eq 'path' ? $binary : $git, $1 ]
-        : [];
-
-    # return the requested value
-    return wantarray
-        ? @{ $binary{$type}{$key}{$binary} }
-        : $binary{$type}{$key}{$binary}[0]
+    return $binary{$type}{$key}{$binary}
+        = $version =~ /^git version \d/
+            ? $type eq 'path'
+                ? $binary    # leave the shell figure it out itself too
+                : $git
+            : undef;
 }
 
 sub new {
@@ -269,8 +263,15 @@ sub _spawn {
 sub _pipe {
     socketpair( $_[0], $_[1], AF_UNIX(), SOCK_STREAM(), PF_UNSPEC() )
         or return undef;
+
+    # turn off buffering
+    $_[0]->autoflush(1);
+    $_[1]->autoflush(1);
+
+    # half-duplex
     shutdown( $_[0], 1 );    # No more writing for reader
     shutdown( $_[1], 0 );    # No more reading for writer
+
     return 1;
 }
 
@@ -440,7 +441,10 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to BinGOs for pointing me towards perlmonks posts by ikegami
+The Win32 implementation owes a lot to two people. First, Olivier Raginel
+(BABAR), for providing me with a test platform with Git and Strawberry
+Perl installed, which I could use at any time. Many thanks go also to
+Chris Williams (BINGOS) for pointing me towards perlmonks posts by ikegami
 that contained crucial elements to a working MSWin32 implementation.
 
 =head1 COPYRIGHT
