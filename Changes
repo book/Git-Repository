@@ -1,5 +1,22 @@
 Revision history for Git-Repository
 
+1.15 Tue Jan 11 22:42:35 CET 2011
+        [ENHANCEMENTS]
+        - experimental MSWin32 full support using pipes
+          (thanks to BinGOs for pointing me to a perlmonks post by ikegami,
+          that contained working code)
+        - Git::Repository::Log now has a raw_message() accessor, that
+          returns the message with 4-space indent output by git log
+          (Note that this change is INCOMPATIBLE with previous versions,
+          in which message() returned the indented log message, and you
+          had to make up your own "clean" version).
+        [TESTS]
+        - no more skipping tests under MSWin32, but there are some issues
+          with the win32 code, as sometimes the output or errput of the git
+          command is lost (HELP!)
+        - bundle Test::Git, a module providing a few utility functions
+          for testing code requiring a git repository
+
 1.14 Wed Oct 27 21:49:45 CEST 2010
         [ENHANCEMENTS]
         - complete rewrite of _has_git, which was renamed to _is_git,

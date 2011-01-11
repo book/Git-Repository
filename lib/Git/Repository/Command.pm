@@ -19,7 +19,7 @@ if ( MSWin32 ) {
     import Socket qw( AF_UNIX SOCK_STREAM PF_UNSPEC );
 }
 
-our $VERSION = '1.09';
+our $VERSION = '1.10';
 
 # Trap the real STDIN/ERR/OUT file handles in case someone
 # *COUGH* Catalyst *COUGH* screws with them which breaks open3
@@ -230,7 +230,6 @@ sub DESTROY {
 
 sub _spawn {
     my @cmd = @_;
-
     my ( $pid, $in, $out, $err );
 
     # save standard handles

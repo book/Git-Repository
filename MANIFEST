@@ -6,6 +6,7 @@ lib/Git/Repository/Log.pm
 lib/Git/Repository/Log/Iterator.pm
 lib/Git/Repository/Plugin.pm
 lib/Git/Repository/Plugin/Log.pm
+lib/Test/Git.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
