@@ -5,29 +5,29 @@ use warnings;
 
 use Exporter;
 use Test::Builder;
-use Git::Repository 1.14;
+use Git::Repository 1.15;
 use File::Temp qw( tempdir );
 use Cwd qw( cwd );
 use Carp;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 our @ISA     = qw( Exporter );
 our @EXPORT  = qw( has_git test_repository );
 
 my $Test = Test::Builder->new();
 
 sub has_git {
-    my ($version) = @_;
+    my ( $version, @options ) = ( ( grep !ref, @_ )[0], grep ref, @_ );
 
     # check some git is present
     $Test->skip_all('Default git binary not found in PATH')
         if !Git::Repository::Command::_is_git('git');
 
     # check it's at least some minimum version
-    my $git_version = Git::Repository->version;
+    my $git_version = Git::Repository->version(@options);
     $Test->skip_all(
-        "Test script requires git >= $version (this is only $git_version)" )
-        if $version && Git::Repository->version_lt($version);
+        "Test script requires git >= $version (this is only $git_version)")
+        if $version && Git::Repository->version_lt( $version, @options );
 }
 
 sub test_repository {
@@ -72,6 +72,9 @@ Test::Git - Helper functions for test scripts using Git
     # check there is a minimum version of git available, or skip all
     has_git( '1.6.5' );
     
+    # check the git we want to test has a minimum version, or skip all
+    has_git( '1.6.5', { git => '/path/to/alternative/git' } );
+    
     # normal plan
     plan tests => 2;
     
@@ -90,12 +93,15 @@ scripts that require the creation and management of a Git repository.
 
 =head1 EXPORTED FUNCTIONS
 
-=head2 has_git( $version )
+=head2 has_git( $version, \%options )
 
 Checks if there is a git binary available, or skips all tests.
 
-If the optionanl C<$version> argument is provided, also checks if the
+If the optional C<$version> argument is provided, also checks if the
 available git binary has a version greater or equal to C<$version>.
+
+This function also accepts an option hash of the same kind as those
+accepted by C<Git::Repository> and C<Git::Repository::Command>.
 
 This function must be called before C<plan()>, as it performs a B<skip_all>
 if requirements are not met.
