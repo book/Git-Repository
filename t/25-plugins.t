@@ -68,7 +68,7 @@ my @warnings;
     );
     like(
         $warnings[2],
-        qr/^Subroutine Git::Repository::hello redefined /,
+        qr/^Subroutine (Git::Repository::)?hello redefined /,
         '... redefined method warning'
     );
     @warnings = ();
