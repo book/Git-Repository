@@ -178,7 +178,8 @@ like( $@, qr/^Can't chdir to .*not-there/, '... expected error message' );
 # now work with GIT_DIR and GIT_WORK_TREE only
 BEGIN { $tests += 1 }
 {
-    local $ENV{GIT_DIR} = $gitdir;
+    local %ENV = %ENV;
+    $ENV{GIT_DIR} = $gitdir;
 
     my $got = Git::Repository->run( log => '-1', '--pretty=format:%H' );
     is( $got, $commit, 'git log -1' );
