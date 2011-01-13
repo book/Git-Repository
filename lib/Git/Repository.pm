@@ -261,21 +261,38 @@ sub _version_gt {
 }
 
 # every op is a combination of eq and gt
-sub version_eq { return _version_eq( $_[0]->version, $_[1] ); }
-sub version_ne { return !_version_eq( $_[0]->version, $_[1] ); }
-sub version_gt { return _version_gt( $_[0]->version, $_[1] ); }
-sub version_le { return !_version_gt( $_[0]->version, $_[1] ); }
+sub version_eq {
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return _version_eq( $r->version(@o), $v );
+}
+
+sub version_ne {
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return !_version_eq( $r->version(@o), $v );
+}
+
+sub version_gt {
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return _version_gt( $r->version(@o), $v );
+}
+
+sub version_le {
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return !_version_gt( $r->version(@o), $v );
+}
 
 sub version_lt {
-    my $v;
-    return !_version_eq( $v = $_[0]->version, $_[1] )
-        && !_version_gt( $v, $_[1] );
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    my $V = $r->version(@o);
+    return !_version_eq( $V, $v )
+        && !_version_gt( $V, $v );
 }
 
 sub version_ge {
-    my $v;
-    return _version_eq( $v = $_[0]->version, $_[1] )
-        || _version_gt( $v, $_[1] );
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    my $V = $r->version(@o);
+    return _version_eq( $V, $v )
+        || _version_gt( $V, $v );
 }
 
 1;
@@ -494,6 +511,8 @@ The methods are:
 =item version_ne( $version )
 
 =back
+
+All those methods also accept an option hash, just like the others.
 
 Note that there are a small number of cases where the version comparison
 operators will I<not> compare versions correctly for I<very old> versions of
