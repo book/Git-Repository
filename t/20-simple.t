@@ -219,9 +219,10 @@ BEGIN { $tests += 9 }
       } split $re, ( $ENV{PATH} || '' );
 
     # do not wipe the Windows PATH
-    local $ENV{PATH} = $^O eq 'MSWin32'
-      ? join $path_sep, grep { /\Q$ENV{SYSTEMROOT}\E/ } split $re, $ENV{PATH}
-      : undef;
+    local $ENV{PATH} = join $path_sep,
+        $^O eq 'MSWin32'
+        ? grep { /\Q$ENV{SYSTEMROOT}\E/ }              split $re, $ENV{PATH}
+        : grep { -x File::Spec->catfile( $_, 'pwd' ) } split $re, $ENV{PATH};
 
     $r = Git::Repository->new( git_dir => $gitdir, { git => $abs_git } );
     isa_ok( $r, 'Git::Repository' );
