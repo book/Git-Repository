@@ -15,13 +15,16 @@ README
 t/00-load.t
 t/05-try_git.t
 t/06-version.t
+t/07-version.t
 t/10-new_fail.t
 t/11-create.t
 t/20-simple.t
 t/22-backward.t
+t/23-scope.t
 t/25-plugins.t
 t/30-log.t
 t/40-plugin-log.t
+t/config
 t/Git/Repository/Plugin/Hello.pm
 t/Git/Repository/Plugin/Hello2.pm
 t/MyGit/Hello.pm

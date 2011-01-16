@@ -19,7 +19,7 @@ if ( MSWin32 ) {
     import Socket qw( AF_UNIX SOCK_STREAM PF_UNSPEC );
 }
 
-our $VERSION = '1.10';
+our $VERSION = '1.11';
 
 # Trap the real STDIN/ERR/OUT file handles in case someone
 # *COUGH* Catalyst *COUGH* screws with them which breaks open3
