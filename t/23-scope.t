@@ -23,8 +23,7 @@ my @destroyed;
     no strict 'refs';
     for my $suffix ( '', '::Reaper' ) {
         my $class = "Git::Repository::Command$suffix";
-        my $destroy
-            = exists ${"$class\::"}{DESTROY} && \&{"$class\::DESTROY"};
+        my $destroy = *{"$class\::DESTROY"}{CODE};
         *{"$class\::DESTROY"} = sub {
             diag "DESTROY $_[0]";
             push @destroyed, refaddr $_[0];
