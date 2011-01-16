@@ -94,3 +94,23 @@ Git::Repository::Command->new('--version');
 is( scalar @destroyed, 2, "Destroyed 2 objects (command + reaper)" );
 @destroyed = ();
 
+# test 5
+BEGIN { $tests += 5 }
+{
+    my $fh;
+    {
+        my $cmd = Git::Repository::Command->new('--version');
+        $cmd_addr  = refaddr $cmd;
+        $reap_addr = refaddr $cmd->{reaper};
+        $fh        = $cmd->stdout;
+    }
+    is( scalar @destroyed, 1,         "Destroyed 1 object (command)" );
+    is( shift @destroyed,  $cmd_addr, "... command object was destroyed" );
+    @destroyed = ();
+    my $v = <$fh>;
+    is( $v, $V, 'scope: { $fh = $cmd->fh }; $fh }' );
+}
+is( scalar @destroyed, 1,          "Destroyed 1 objects (reaper)" );
+is( shift @destroyed,  $reap_addr, "... reaper object was destroyed" );
+@destroyed = ();
+
