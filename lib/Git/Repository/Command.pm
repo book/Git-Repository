@@ -40,11 +40,6 @@ for my $attr (qw( cmdline )) {
     *$attr = sub { return @{ $_[0]{$attr} } };
 }
 
-sub handles {
-    my ($self) = @_;
-    return ( $self->stdin, $self->stdout, $self->stderr );
-}
-
 # CAN I HAS GIT?
 my %binary;    # cache calls to _is_git
 sub _is_git {
