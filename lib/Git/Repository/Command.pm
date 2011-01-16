@@ -200,44 +200,23 @@ sub new {
     }
 
     # create the object
-    return bless {
+    my $self = bless {
         cmdline => [ $git, @cmd ],
         pid     => $pid,
         stdin   => $in,
         stdout  => $out,
         stderr  => $err,
     }, $class;
-}
 
-sub close {
-    my ($self) = @_;
-
-    # close all pipes
-    my ( $in, $out, $err ) = @{$self}{qw( stdin stdout stderr )};
-    if ( MSWin32 ) {
-        $in->opened  and shutdown( $in,  2 ) || carp "error closing stdin: $!";
-        $out->opened and shutdown( $out, 2 ) || carp "error closing stdout: $!";
-        $err->opened and shutdown( $err, 2 ) || carp "error closing stderr: $!";
-    }
-    else {
-        $in->opened  and $in->close  || carp "error closing stdin: $!";
-        $out->opened and $out->close || carp "error closing stdout: $!";
-        $err->opened and $err->close || carp "error closing stderr: $!";
-    }
-
-    # and wait for the child
-    waitpid $self->{pid}, 0;
-
-    # check $?
-    @{$self}{qw( exit signal core )} = ( $? >> 8, $? & 127, $? & 128 );
+    # create the subprocess reaper and link the handles and command to it
+    ${*$in} = ${*$out} = ${*$err} = $self->{reaper}    # typeglobs FTW
+        = Git::Repository::Command::Reaper->new($self);
 
     return $self;
 }
 
-sub DESTROY {
-    my ($self) = @_;
-    $self->close if !exists $self->{exit};
-}
+# delegate close() to the reaper
+sub close { $_[0]{reaper}->reap() }
 
 sub _spawn {
     my @cmd = @_;
@@ -277,6 +256,99 @@ sub _pipe {
     shutdown( $_[0], 1 );    # No more writing for reader
     shutdown( $_[1], 0 );    # No more reading for writer
     return 1;
+}
+
+package Git::Repository::Command::Reaper;
+
+use Carp;
+use Scalar::Util qw( weaken );
+
+use constant MSWin32 => $^O eq 'MSWin32';
+use constant HANDLES => qw( stdin stdout stderr );
+use constant STATUS  => qw( exit signal core );
+
+#
+# The Git::Repository::Command objects delegate the reaping of child
+# processes to Git::Repository::Command::Reaper objects. This allows a user
+# to create a Git::Repository::Command and discard it after having obtained
+# one or more references to its handles connected to the child process. The
+# child process is reaped either through a direct call to close() or when
+# the command object and all its handles have been destroyed.
+#
+# This is possible thanks to the following reference graph:
+#
+#     Git::Repository::Command
+#        |      |      |   ^|
+#        v      v      v   !|
+#      input output errput !|
+#       ^|     ^|     ^|   !|
+#       !v     !v     !v   !v
+#     Git::Repository::Command::Reaper
+#
+# Legend:
+#   | normal ref
+#   ! weak ref
+#
+# This scheme owes a lot to Vincent Pit who on #perlfr provided the
+# general idea (use a proxy to delay object destruction and child process
+# reaping) with code examples, which I then adapted to my needs.
+#
+
+sub new {
+    my ($class, $command) = @_;
+    my $self = bless { command => $command }, $class;
+
+    # copy/weaken the important keys
+    @{$self}{ pid => HANDLES } = @{$command}{ pid => HANDLES };
+    weaken $self->{$_} for ( command => HANDLES );
+
+    return $self;
+}
+
+sub reap {
+    my ($self) = @_;
+
+    # close all pipes
+    my ( $in, $out, $err ) = @{$self}{qw( stdin stdout stderr )};
+    if (MSWin32) {
+        $in
+            and $in->opened
+            and shutdown( $in, 2 ) || carp "error closing stdin: $!";
+        $out
+            and $out->opened
+            and shutdown( $out, 2 ) || carp "error closing stdout: $!";
+        $err
+            and $err->opened
+            and shutdown( $err, 2 ) || carp "error closing stderr: $!";
+    }
+    else {
+        $in
+            and $in->opened
+            and $in->close || carp "error closing stdin: $!";
+        $out
+            and $out->opened
+            and $out->close || carp "error closing stdout: $!";
+        $err
+            and $err->opened
+            and $err->close || carp "error closing stderr: $!";
+    }
+
+    # and wait for the child
+    waitpid $self->{pid}, 0;
+
+    # check $?
+    @{$self}{ STATUS() } = ( $? >> 8, $? & 127, $? & 128 );
+
+    # does our creator still exist?
+    @{ $self->{command} }{ STATUS() } = @{$self}{ STATUS() }
+        if defined $self->{command};
+
+    return $self;
+}
+
+sub DESTROY {
+    my ($self) = @_;
+    $self->reap if !exists $self->{exit};
 }
 
 1;
@@ -383,13 +455,6 @@ number of attributes defined (see below).
 Close all pipes to the child process, and collects exit status, etc.
 and defines a number of attributes (see below).
 
-Note that C<close()> is automatically called when the
-C<Git::Repository::Command> object is destroyed.
-Annoyingly, this means that in the following example C<$fh> will be
-closed when you tried to use it:
-
-    my $fh = Git::Repository::Command->new( @cmd )->stdout;
-
 =head2 Accessors
 
 The attributes of a C<Git::Repository::Command> object are also accessible
@@ -420,6 +485,16 @@ A filehandle opened in read mode to the child process' standard output.
 A filehandle opened in read mode to the child process' standard error output.
 
 =back
+
+Regarding the handles to the child git process, note that in the
+following code:
+
+    my $fh = Git::Repository::Command->new( @cmd )->stdout;
+
+C<$fh> is opened and points to the output of the git subcommand, while
+the anonymous C<Git::Repository::Command> object has been destroyed.
+Once C<$fh> is destroyed, the subprocess will be reaped, thus avoiding
+zombies.
 
 After the call to C<close()>, the following attributes will be defined:
 
