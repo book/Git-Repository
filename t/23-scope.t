@@ -123,3 +123,37 @@ is( scalar @destroyed, 1,          "Destroyed 1 objects (reaper)" );
 is( shift @destroyed,  $reap_addr, "... reaper object was destroyed" );
 @destroyed = ();
 
+# test 6
+BEGIN { $tests += 6 }
+SKIP:
+{
+    {
+        skip "these tests require git >= 1.4.2, but we only have $version", 6
+            if Git::Repository::_version_gt( '1.4.2', $version );
+
+        my $cmd = Git::Repository::Command->new( '--version',
+            { env => { GIT_TRACE => 1 } } );
+        $cmd_addr  = refaddr $cmd;
+        $reap_addr = refaddr $cmd->{reaper};
+
+        {
+            my $fh = $cmd->stdout;
+            my $v  = <$fh>;
+            is( $v, $V, 'scope: { $cmd { $fh } { $fh } }' );
+        }
+        {
+            my $fh = $cmd->stderr;
+            my $t  = <$fh>;
+            is( $t,
+                "trace: built-in: git 'version'\n",
+                'scope: { $cmd { $fh } { $fh } }'
+            );
+        }
+        is( scalar @destroyed, 0, "Destroyed no object yet" );
+    }
+    is( scalar @destroyed, 2,          "Destroyed 2 objects" );
+    is( shift @destroyed,  $cmd_addr,  "... command object was destroyed" );
+    is( shift @destroyed,  $reap_addr, "... reaper object was destroyed" );
+    @destroyed = ();
+}
+
