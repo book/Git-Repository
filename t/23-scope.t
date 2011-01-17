@@ -10,8 +10,9 @@ has_git();
 plan tests => my $tests;
 
 # the expected output
-my $V = "git version " . Git::Repository->version . "\n";
-my @C = split /^/m, << 'EOC';
+my $version = Git::Repository->version;
+my $V       = "git version $version\n";
+my @C       = split /^/m, << 'EOC';
 user.name=Philippe Bruhat (BooK)
 user.email=book@cpan.org
 EOC
@@ -22,7 +23,7 @@ my @destroyed;
 {
     no strict 'refs';
     for my $suffix ( '', '::Reaper' ) {
-        my $class = "Git::Repository::Command$suffix";
+        my $class   = "Git::Repository::Command$suffix";
         my $destroy = *{"$class\::DESTROY"}{CODE};
         *{"$class\::DESTROY"} = sub {
             diag "DESTROY $_[0]";
@@ -53,27 +54,36 @@ is( shift @destroyed,  $reap_addr, "... reaper object was destroyed" );
 
 # test 2
 BEGIN { $tests += 6 }
+SKIP:
 {
-    my $cmd
-        = Git::Repository::Command->new( config => "--file=$file", '--list' );
-    $cmd_addr  = refaddr $cmd;
-    $reap_addr = refaddr $cmd->{reaper};
     {
-        my $fh = $cmd->stdout;
-        my $c0 = <$fh>;
-        is( $c0, $C[0], 'scope: { $cmd { $fh } { $fh } }' );
+        skip "these tests require git >= 1.6.3, but we only have $version", 6
+            if Git::Repository::_version_gt('1.6.3', $version);
+
+        my $cmd = Git::Repository::Command->new(
+            config => "--file=$file",
+            '--list'
+        );
+        $cmd_addr  = refaddr $cmd;
+        $reap_addr = refaddr $cmd->{reaper};
+
+        {
+            my $fh = $cmd->stdout;
+            my $c0 = <$fh>;
+            is( $c0, $C[0], 'scope: { $cmd { $fh } { $fh } }' );
+        }
+        {
+            my $fh = $cmd->stdout;
+            my $c1 = <$fh>;
+            is( $c1, $C[1], 'scope: { $cmd { $fh } { $fh } }' );
+        }
+        is( scalar @destroyed, 0, "Destroyed no object yet" );
     }
-    {
-        my $fh = $cmd->stdout;
-        my $c1 = <$fh>;
-        is( $c1, $C[1], 'scope: { $cmd { $fh } { $fh } }' );
-    }
-    is( scalar @destroyed, 0, "Destroyed no object yet" );
+    is( scalar @destroyed, 2,          "Destroyed 2 objects" );
+    is( shift @destroyed,  $cmd_addr,  "... command object was destroyed" );
+    is( shift @destroyed,  $reap_addr, "... reaper object was destroyed" );
+    @destroyed = ();
 }
-is( scalar @destroyed, 2,          "Destroyed 2 objects" );
-is( shift @destroyed,  $cmd_addr,  "... command object was destroyed" );
-is( shift @destroyed,  $reap_addr, "... reaper object was destroyed" );
-@destroyed = ();
 
 # test 3
 BEGIN { $tests += 3 }
