@@ -522,7 +522,7 @@ C<1.4.0-rc1> (June 2006), and only when the compared versions are very close.
 
 Other issues exist when comparing development version numbers with one
 another. For example, C<1.7.1.1> is greater than both C<1.7.1.1.gc8c07>
-and C<1.7.1.1.g5f35a>, and C<1.7.1> is lower than both. Obviously,
+and C<1.7.1.1.g5f35a>, and C<1.7.1> is less than both. Obviously,
 C<1.7.1.1.gc8c07> will compare as greater than C<1.7.1.1.g5f35a>
 (asciibetically), but in fact these two version numbers cannot be
 compared, as they are two siblings children of the commit tagged
@@ -533,7 +533,7 @@ by C<git --version>) for all git versions that can be compiled from each
 commit in the F<git.git> repository, the result would not be a totally ordered
 set. Big deal.
 
-Also, don't be to precise when requiring the minimum version of Git that
+Also, don't be too precise when requiring the minimum version of Git that
 supported a given feature. The precise commit in git.git at which a given
 feature was added doesn't mean as much as the release branch in which that
 commit was merged.
