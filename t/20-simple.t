@@ -60,7 +60,7 @@ TXT
 $r->run( add => 'readme.txt' );
 
 # unset all editors
-delete @ENV{qw( EDITOR VISUAL )};
+delete @ENV{qw( EDITOR VISUAL GIT_EDITOR )};
 
 SKIP: {
     BEGIN { $tests += 2 }
