@@ -273,9 +273,9 @@ TXT
 $r->run(
     commit => '-a',
     '-m', 'Test option hash in run()',
-    { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } },
-    bless( { work_tree => 'TEH FAIL' }, 'Git::Repository' ),  # ignored silently
-    { env => { GIT_AUTHOR_EMAIL => 'fail@fail.com' } },     # ignored silently
+    { env => { GIT_AUTHOR_EMAIL => 'fail@fail.com' } },      # ignored silently
+    bless( { work_tree => 'TEH FAIL' }, 'Git::Repository' ), # ignored silently
+    { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } }  # not ignored
 );
 ($author) = grep {/^Author:/} $r->run( log => '-1', '--pretty=medium' );
 is( $author,
