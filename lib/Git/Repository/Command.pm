@@ -11,24 +11,11 @@ use IPC::Open3 qw( open3 );
 use Scalar::Util qw( blessed );
 use File::Spec;
 use Config;
-
-# MSWin32 support
-use constant MSWin32 => $^O eq 'MSWin32';
-if ( MSWin32 ) {
-    require Socket;
-    import Socket qw( AF_UNIX SOCK_STREAM PF_UNSPEC );
-}
+use System::Command;
 
 our $VERSION = '1.11';
+our @ISA = qw( System::Command );
 
-# Trap the real STDIN/ERR/OUT file handles in case someone
-# *COUGH* Catalyst *COUGH* screws with them which breaks open3
-my ($REAL_STDIN, $REAL_STDOUT, $REAL_STDERR);
-BEGIN {
-    open $REAL_STDIN, "<&=".fileno(*STDIN);
-    open $REAL_STDOUT, ">>&=".fileno(*STDOUT);
-    open $REAL_STDERR, ">>&=".fileno(*STDERR);
-}
 
 # a few simple accessors
 for my $attr (qw( pid stdin stdout stderr exit signal core )) {
@@ -88,12 +75,8 @@ sub _is_git {
         if !( defined $git && -x $git );
 
     # try to run it
-    my $version;
-    my ( $pid, $in, $out, $err ) = _spawn( $git, '--version' );
-    if ($pid) {
-        $version = <$out>;
-        waitpid $pid, 0;
-    }
+    my ( $pid, $in, $out, $err ) = __PACKAGE__->spawn( $git, '--version' );
+    my $version = <$out>;
 
     # does it really look like git?
     return $binary{$type}{$key}{$binary}
@@ -108,34 +91,23 @@ sub new {
     my ( $class, @cmd ) = @_;
 
     # split the args
-    my ($r, $o);
-    @cmd = grep {
-     !( ref eq 'HASH'                            ? $o ||= $_
-      : blessed $_ && $_->isa('Git::Repository') ? $r ||= $_
-      :                                          0 )
-    } @cmd;
-    $o ||= {};    # no options
+    my ($r) = grep { blessed $_ && $_->isa('Git::Repository') } @cmd;
+    my @o = grep { ref eq 'HASH' } @cmd;
+    @cmd = grep { !ref } @cmd;
 
     # keep changes to the environment local
     local %ENV = %ENV;
 
-    # possibly useful paths
-    my ( $git_dir, $work_tree );
-
     # a Git::Repository object will give more context
     if ($r) {
 
-        # get some useful paths
-        ( $git_dir, $work_tree, my $repo_o )
-            = ( $r->git_dir, $r->work_tree, $r->options );
+        # pick up repository options
+        unshift @o, $r->options;
 
-        # merge the option hashes
-        $o = {
-            %$repo_o, %$o,
-            exists $repo_o->{env} && exists $o->{env}
-            ? ( env => { %{ $repo_o->{env} }, %{ $o->{env} } } )
-            : ()
-        };
+        # get some useful paths
+        my ( $git_dir, $work_tree ) = ( $r->git_dir, $r->work_tree );
+        unshift @o, { cwd => $work_tree }
+            if defined $work_tree && length $work_tree;
 
         # setup our %ENV
         delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
@@ -145,205 +117,18 @@ sub new {
     }
 
     # get and check the git command
-    my $git_cmd = defined $o->{git} ? $o->{git} : 'git';
+    my $git_cmd = ( map { exists $_->{git} ? $_->{git} : () } @o )[-1];
+    $git_cmd = 'git' if !defined $git_cmd;
     my $git = _is_git($git_cmd);
 
     croak "git binary '$git_cmd' not available or broken"
         if !defined $git;
 
-    # chdir to the expected directory
-    my $orig = cwd;
-    my $dest
-        = defined $o->{cwd}                       ? $o->{cwd}
-        : defined $work_tree && length $work_tree ? $work_tree
-        :                                           undef;
-    if ( defined $dest ) {
-        chdir $dest or croak "Can't chdir to $dest: $!";
-    }
-
     # turn us into a dumb terminal
     delete $ENV{TERM};
 
-    # update the environment
-    @ENV{ keys %{ $o->{env} } } = values %{ $o->{env} }
-        if exists $o->{env};
-
-    # spawn the command
-    my ( $pid, $in, $out, $err ) = _spawn( $git, @cmd );
-
-    # FIXME - better check open3 error conditions
-    croak $@ if !defined $pid;
-
-    # some input was provided
-    if ( defined $o->{input} ) {
-        local $SIG{PIPE}
-            = sub { croak "Broken pipe when writing to: $git @cmd" };
-        print {$in} $o->{input} if length $o->{input};
-        if (MSWin32) { $in->flush; shutdown( $in, 2 ); }
-        else         { $in->close; }
-    }
-
-    # chdir back to origin
-    if ( defined $dest ) {
-        chdir $orig or croak "Can't chdir back to $orig: $!";
-    }
-
-    # create the object
-    my $self = bless {
-        cmdline => [ $git, @cmd ],
-        pid     => $pid,
-        stdin   => $in,
-        stdout  => $out,
-        stderr  => $err,
-    }, $class;
-
-    # create the subprocess reaper and link the handles and command to it
-    ${*$in} = ${*$out} = ${*$err} = $self->{reaper}    # typeglobs FTW
-        = Git::Repository::Command::Reaper->new($self);
-
-    return $self;
-}
-
-# delegate close() to the reaper
-sub close { $_[0]{reaper}->reap() }
-
-sub _spawn {
-    my @cmd = @_;
-    my ( $pid, $in, $out, $err );
-
-    # save standard handles
-    local *STDIN  = $REAL_STDIN;
-    local *STDOUT = $REAL_STDOUT;
-    local *STDERR = $REAL_STDERR;
-
-    if (MSWin32) {
-
-        # code from: http://www.perlmonks.org/?node_id=811650
-        # discussion at: http://www.perlmonks.org/?node_id=811057
-        local ( *IN_R,  *IN_W );
-        local ( *OUT_R, *OUT_W );
-        local ( *ERR_R, *ERR_W );
-        _pipe( *IN_R,  *IN_W )  or croak "input pipe error: $^E";
-        _pipe( *OUT_R, *OUT_W ) or croak "output pipe error: $^E";
-        _pipe( *ERR_R, *ERR_W ) or croak "errput pipe error: $^E";
-
-        $pid = eval { open3( '>&IN_R', '<&OUT_W', '<&ERR_W', @cmd ); };
-        ( $in, $out, $err ) = ( *IN_W{IO}, *OUT_R{IO}, *ERR_R{IO} );
-    }
-    else {
-        $err = Symbol::gensym;
-        $pid = eval { open3( $in, $out, $err, @cmd ); };
-    }
-
-    return ( $pid, $in, $out, $err );
-}
-
-sub _pipe {
-    socketpair( $_[0], $_[1], AF_UNIX(), SOCK_STREAM(), PF_UNSPEC() )
-        or return undef;
-
-    # turn off buffering
-    $_[0]->autoflush(1);
-    $_[1]->autoflush(1);
-
-    # half-duplex
-    shutdown( $_[0], 1 );    # No more writing for reader
-    shutdown( $_[1], 0 );    # No more reading for writer
-
-    return 1;
-}
-
-package Git::Repository::Command::Reaper;
-
-use Carp;
-use Scalar::Util qw( weaken );
-
-use constant MSWin32 => $^O eq 'MSWin32';
-use constant HANDLES => qw( stdin stdout stderr );
-use constant STATUS  => qw( exit signal core );
-
-#
-# The Git::Repository::Command objects delegate the reaping of child
-# processes to Git::Repository::Command::Reaper objects. This allows a user
-# to create a Git::Repository::Command and discard it after having obtained
-# one or more references to its handles connected to the child process. The
-# child process is reaped either through a direct call to close() or when
-# the command object and all its handles have been destroyed.
-#
-# This is possible thanks to the following reference graph:
-#
-#     Git::Repository::Command
-#        |      |      |   ^|
-#        v      v      v   !|
-#      input output errput !|
-#       ^|     ^|     ^|   !|
-#       !v     !v     !v   !v
-#     Git::Repository::Command::Reaper
-#
-# Legend:
-#   | normal ref
-#   ! weak ref
-#
-# This scheme owes a lot to Vincent Pit who on #perlfr provided the
-# general idea (use a proxy to delay object destruction and child process
-# reaping) with code examples, which I then adapted to my needs.
-#
-
-sub new {
-    my ($class, $command) = @_;
-    my $self = bless { command => $command }, $class;
-
-    # copy/weaken the important keys
-    @{$self}{ pid => HANDLES } = @{$command}{ pid => HANDLES };
-    weaken $self->{$_} for ( command => HANDLES );
-
-    return $self;
-}
-
-sub reap {
-    my ($self) = @_;
-
-    # close all pipes
-    my ( $in, $out, $err ) = @{$self}{qw( stdin stdout stderr )};
-    if (MSWin32) {
-        $in
-            and $in->opened
-            and shutdown( $in, 2 ) || carp "error closing stdin: $!";
-        $out
-            and $out->opened
-            and shutdown( $out, 2 ) || carp "error closing stdout: $!";
-        $err
-            and $err->opened
-            and shutdown( $err, 2 ) || carp "error closing stderr: $!";
-    }
-    else {
-        $in
-            and $in->opened
-            and $in->close || carp "error closing stdin: $!";
-        $out
-            and $out->opened
-            and $out->close || carp "error closing stdout: $!";
-        $err
-            and $err->opened
-            and $err->close || carp "error closing stderr: $!";
-    }
-
-    # and wait for the child
-    waitpid $self->{pid}, 0;
-
-    # check $?
-    @{$self}{ STATUS() } = ( $? >> 8, $? & 127, $? & 128 );
-
-    # does our creator still exist?
-    @{ $self->{command} }{ STATUS() } = @{$self}{ STATUS() }
-        if defined $self->{command};
-
-    return $self;
-}
-
-sub DESTROY {
-    my ($self) = @_;
-    $self->reap if !exists $self->{exit};
+    # spawn the command and re-bless the object in our class
+    return bless System::Command->new( $git, @cmd, @o ), $class;
 }
 
 1;
@@ -381,16 +166,22 @@ Git::Repository::Command - Command objects for running git
     $cmd->signal();    # signal
     $cmd->core();      # core dumped? (boolean)
 
+    # cut to the chase
+    my ( $pid, $in, $out, $err ) = Git::Repository::Command->spawn(@cmd);
+
+
 =head1 DESCRIPTION
 
 C<Git::Repository::Command> is a class that actually launches a B<git>
 commands, allowing to interact with it through its C<STDIN>, C<STDOUT>
 and C<STDERR>.
 
-This module is meant to be invoked through C<Git::Repository>.
+This class is a subclass of C<System::Command>, meant to be invoked
+through C<Git::Repository>.
 
 =head1 METHODS
 
+As a subclass of C<System::Command>,
 C<Git::Repository::Command> supports the following methods:
 
 =head2 new( @cmd )
@@ -400,8 +191,8 @@ Runs a B<git> command with the parameters in C<@cmd>.
 If C<@cmd> contains a C<Git::Repository> object, it is used to provide
 context to the B<git> command.
 
-If C<@cmd> contains a hash reference, it is taken as an I<option> hash.
-The recognized keys are:
+If C<@cmd> contains one or more hash reference, they are taken as
+I<option> hashes. The recognized keys are:
 
 =over 4
 
@@ -438,8 +229,8 @@ If the C<Git::Repository> object has its own option hash, it will be used
 to provide default values that can be overriden by the actual option hash
 passed to C<new()>.
 
-If several option hashes are passed to C<new()>, only the first one will
-be used.
+If several option hashes are passed to C<new()>, they will all be merged,
+keys in later hashes taking precedence over keys in earlier hashes.
 
 The C<Git::Repository::Command> object returned by C<new()> has a
 number of attributes defined (see below).
@@ -515,15 +306,20 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 ACKNOWLEDGEMENTS
 
-The Win32 implementation owes a lot to two people. First, Olivier Raginel
-(BABAR), for providing me with a test platform with Git and Strawberry
-Perl installed, which I could use at any time. Many thanks go also to
-Chris Williams (BINGOS) for pointing me towards perlmonks posts by ikegami
-that contained crucial elements to a working MSWin32 implementation.
+The core of C<Git::Repository::Command> has been moved into its own
+distribution: C<System::Command>. Proper Win32 support is now delegated
+to that module.
+
+Before that, the Win32 implementation owed a lot to two people.
+First, Olivier Raginel (BABAR), who provided me with a test platform
+with Git and Strawberry Perl installed, which I could use at any time.
+Many thanks go also to Chris Williams (BINGOS) for pointing me towards
+perlmonks posts by ikegami that contained crucial elements to a working
+MSWin32 implementation.
 
 =head1 COPYRIGHT
 
-Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2011 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
