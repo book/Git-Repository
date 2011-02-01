@@ -15,12 +15,10 @@ name: Git-Repository
 provides:
   Git::Repository:
     file: lib/Git/Repository.pm
-    version: 1.16
+    version: 1.17
   Git::Repository::Command:
     file: lib/Git/Repository/Command.pm
-    version: 1.11
-  Git::Repository::Command::Reaper:
-    file: lib/Git/Repository/Command.pm
+    version: 1.12
   Git::Repository::Log:
     file: lib/Git/Repository/Log.pm
     version: 1.01
@@ -42,7 +40,8 @@ requires:
   File::Spec: 0
   IPC::Open3: 0
   List::Util: 0
+  System::Command: 1.01
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/book/Git-Repository
-version: 1.16
+version: 1.17

@@ -13,7 +13,7 @@ use File::Spec;
 use Config;
 use System::Command;
 
-our $VERSION = '1.11';
+our $VERSION = '1.12';
 our @ISA = qw( System::Command );
 
 

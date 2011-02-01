@@ -138,7 +138,7 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 COPYRIGHT
 
-Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2011 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

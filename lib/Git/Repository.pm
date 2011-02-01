@@ -11,7 +11,7 @@ use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
 
-our $VERSION = '1.16';
+our $VERSION = '1.17';
 
 # a few simple accessors
 for my $attr (qw( git_dir work_tree options )) {
@@ -745,7 +745,7 @@ I came up with.
 
 =head1 COPYRIGHT
 
-Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2011 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

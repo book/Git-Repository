@@ -20,7 +20,6 @@ t/10-new_fail.t
 t/11-create.t
 t/20-simple.t
 t/22-backward.t
-t/23-scope.t
 t/25-plugins.t
 t/30-log.t
 t/40-plugin-log.t

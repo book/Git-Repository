@@ -1,5 +1,15 @@
 Revision history for Git-Repository
 
+1.17 Tue Feb  1 01:01:10 CET 2011
+        [ENHANCEMENTS]
+        - Git::Repository::Command now uses System::Command internally
+        [TESTS]
+        - skip some tests that needed a specific version of git
+        - delete GIT_EDITOR in tests that check it (Nigel Metheringham)
+        [BUGS]
+        - getting a working Win32 implementation is now delegated
+          to System::Command
+
 1.16 Sun Jan 16 12:23:42 CET 2011
         [ENHANCEMENTS]
         - the reaping of the child process is now delegated to a special
