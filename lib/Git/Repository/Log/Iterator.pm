@@ -46,7 +46,11 @@ sub next {
     }
 
     # EOF
-    return if !@records;
+    if (!@records)
+    {
+        $self->_check_error;
+        return;
+    }
 
     # the first two records are always the same, with --pretty=raw
     my ( $header, $message, $extra ) = ( @records, '' );
@@ -59,6 +63,26 @@ sub next {
         message => $message,
         extra   => $extra,
     );
+}
+
+sub _check_error
+{
+    my ($self)  = @_;
+    my $command = $self->{cmd};
+    my $stderr  = $command->stderr;
+    chomp( my @errput = <$stderr> );
+
+    # done with it
+    $command->close;
+
+    # exit codes: 128 => fatal, 129 => usage
+    my $exit = $command->{exit};
+    if ( $exit == 128 || $exit == 129 ) {
+        croak join( "\n", @errput ) || 'fatal: unknown git error';
+    }
+
+    # something else's wrong
+    if (@errput) { carp join "\n", @errput; }
 }
 
 1;
