@@ -621,21 +621,21 @@ B<git shortlog> behaves differently when it detects it's not attached
 to a terminal. In that case, it just tries to read some B<git log>
 output from its standard input.
 
-So this oneliner will hang, because B<git shortlog> is waiting for
-some input:
+So this oneliner will hang, because B<git shortlog> is waiting for some
+data from the program connected to its standard input (the oneliner):
 
     perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => -5 )'
 
-This one will "work" (as in "immediately return no output"):
+Whereas this one will "work" (as in "immediately return with no output"):
 
     perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => -5, { input => "" } )'
 
-So, you need to give B<git shortlog> some input:
+So, you need to give B<git shortlog> I<some> input (from B<git log>):
 
     perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => { input => scalar Git::Repository->run( log => -5 ) } )'
 
 If the log output is large, you'll probably be better off with something
-like this:
+like the following:
 
     use Git::Repository;
 
@@ -644,11 +644,11 @@ like this:
     my $cmd = Git::Repository->command( shortlog => -ens );
 
     # feed one with the output of the other
-    my $in  = $cmd->stdin;
+    my $in = $cmd->stdin;
     print {$in} $_ while <$log>;
     close $in;
 
-    # print results
+    # and do something with the output
     print $cmd->stdout->getlines;
 
 =head1 PLUGIN SUPPORT
