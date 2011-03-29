@@ -615,6 +615,41 @@ Assuming B<git log> will output the default format will eventually
 lead to problems, for example when the user's git configuration defines
 C<format.pretty> to be something else than the default of C<medium>.
 
+=head2 Process the output of B<git shortlog>
+
+B<git shortlog> behaves differently when it detects it's not attached
+to a terminal. In that case, it just tries to read some B<git log>
+output from its standard input.
+
+So this oneliner will hang, because B<git shortlog> is waiting for
+some input:
+
+    perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => -5 )'
+
+This one will "work" (as in "immediately return no output"):
+
+    perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => -5, { input => "" } )'
+
+So, you need to give B<git shortlog> some input:
+
+    perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => { input => scalar Git::Repository->run( log => -5 ) } )'
+
+If the log output is large, you'll probably be better off with something
+like this:
+
+    use Git::Repository;
+
+    # start both git commands
+    my $log = Git::Repository->command('log')->stdout;
+    my $cmd = Git::Repository->command( shortlog => -ens );
+
+    # feed one with the output of the other
+    my $in  = $cmd->stdin;
+    print {$in} $_ while <$log>;
+    close $in;
+
+    # print results
+    print $cmd->stdout->getlines;
 
 =head1 PLUGIN SUPPORT
 
