@@ -1,5 +1,12 @@
 Revision history for Git-Repository
 
+1.18 Sat Apr 16 13:47:26 CEST 2011
+        [ENHANCEMENTS]
+        - the create() method was fragile (parsing the output of
+          porcelain commands) and is now obsolete
+        [DOCUMENTATION]
+        - added an example for running git shortlog (RT #66783)
+
 1.17 Tue Feb  1 01:01:10 CET 2011
         [ENHANCEMENTS]
         - Git::Repository::Command now uses System::Command internally
