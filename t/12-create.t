@@ -8,7 +8,7 @@ use File::Path;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-has_git();
+has_git('1.5.0');
 
 my $version = Git::Repository->version;
 
@@ -25,7 +25,7 @@ my $dir = realpath( tempdir( CLEANUP => 1 ) );
 my @warnings;
 local $SIG{__WARN__} = sub { push @warnings, shift };
 
-BEGIN { $tests += 3 }
+BEGIN { $tests += 4 }
 mkpath $dir;
 chdir $dir;
 
@@ -33,6 +33,7 @@ chdir $dir;
 ok( my $r = eval { Git::Repository->create('init'); },
     "Git::Repository->create()" );
 diag $@ if $@;
+isa_ok( $r, 'Git::Repository' );
 
 is( scalar @warnings, 1, "create() outputs a single warning" );
 like(
