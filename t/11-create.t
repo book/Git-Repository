@@ -108,12 +108,6 @@ ok( $r = eval {
 diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 chdir $home;
-# FAIL - command doesn't initialize a git repository
-BEGIN { $tests += 2 }
-ok( !( $r = eval { Git::Repository->create('--version'); } ),
-    "create( --version ) FAILED" );
-diag $@ if $@;
-is( $r, undef, 'create( --version ) did not create a repository' );
 
 SKIP: {
     skip "git clone is quiet for 1.7.1 < git < 1.7.1.1, we have $version",
