@@ -153,6 +153,9 @@ sub create {
     my @output = $class->run(@args);
     my $gitdir;
 
+    # create() is now deprecated
+    carp "create() is deprecated, please use run() or command() instead";
+
     # git init or clone until v1.7.1 (inclusive)
     if ( $output[0] =~ /^(?:Reinitialized existing|Initialized empty) Git repository in (.*)/ ) {
         $gitdir = $1;
