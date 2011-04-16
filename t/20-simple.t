@@ -35,7 +35,8 @@ my $dir = abs_path( tempdir( CLEANUP => 1 ) );
 # PASS - non-existent directory
 BEGIN { $tests += 3 }
 chdir $dir;
-my $r = Git::Repository->create( 'init' );
+Git::Repository->run('init');
+my $r = Git::Repository->new();
 isa_ok( $r, 'Git::Repository' );
 chdir $home;
 
