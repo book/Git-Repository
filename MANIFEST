@@ -18,6 +18,7 @@ t/06-version.t
 t/07-version.t
 t/10-new_fail.t
 t/11-create.t
+t/12-create.t
 t/20-simple.t
 t/22-backward.t
 t/25-plugins.t
