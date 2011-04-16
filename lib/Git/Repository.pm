@@ -316,11 +316,13 @@ Git::Repository - Perl interface to Git repositories
     # start from an existing working copy
     $r = Git::Repository->new( work_tree => $dir );
 
-    # or init our own repository
-    $r = Git::Repository->create( init => $dir, ... );
+    # or init our own repository first
+    Git::Repository->run( init => $dir, ... );
+    $r = Git::Repository->new( work_tree => $dir );
 
-    # or clone from a URL
-    $r = Git::Repository->create( clone => $url, ... );
+    # or clone from a URL first
+    Git::Repository->run( clone => $url, $dir, ... );
+    $r = Git::Repository->new( work_tree => $dir );
 
     # run commands
     # - get the full output (no errput)
@@ -417,13 +419,15 @@ So this:
 is equivalent to explicitly passing the option hash to each
 C<run()> or C<command()>.
 
-It probably makes no sense to set the C<input> option in C<new()> or
-C<create()>, but L<Git::Repository> won't stop you.
+It probably makes no sense to set the C<input> option in C<new()>,
+but L<Git::Repository> won't stop you.
 Note that on some systems, some git commands may close standard input
 on startup, which will cause a C<SIGPIPE>. L<Git::Repository::Command>
 will raise an exception.
 
 =head2 create( @cmd )
+
+B<The C<create()> method is deprecated, and will go away in the future.>
 
 Runs a repository initialization command (like C<init> or C<clone>) and
 returns a C<Git::Repository> object pointing to it. C<@cmd> may contain
@@ -434,6 +438,16 @@ their output to find the path to the repository.
 
 C<create()> also accepts a reference to an option hash which will be
 used to set up the returned C<Git::Repository> instance.
+
+Now that C<create()> is deprecated, instead of:
+
+    $r = Git::Repository->create( ... );
+
+simply do it in two steps:
+
+    Git::Repository->run( ... );
+    $r = Git::Repository->new( ... );
+
 
 =head1 METHODS
 
