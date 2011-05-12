@@ -364,8 +364,8 @@ object, they will be overriden by the object's C<git_dir> and
 C<work_tree> attributes, respectively. It is however still possible to
 override them if necessary, using the C<env> option.
 
-C<Git::Repository> is expected to work with any Git version greater
-than 1.5.0.
+C<Git::Repository> requires at least Git 1.5.0, and is expected to support
+any later version.
 
 =head1 CONSTRUCTORS
 
