@@ -109,7 +109,7 @@ sub new {
         $self->{git_dir} = $git_dir if defined $git_dir;
 
         # in a non-bare repository, the work tree is just above the gitdir
-        if ( $self->run(qw( config core.bare )) ne 'true' ) {
+        if ( $self->run(qw( config --bool core.bare )) ne 'true' ) {
             $self->{work_tree}
                 = _abs_path( File::Spec->updir, $self->{git_dir} );
         }
