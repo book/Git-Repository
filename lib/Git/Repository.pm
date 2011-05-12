@@ -735,7 +735,8 @@ L<http://kerneltrap.org/mailarchive/git/2008/10/24/3789584>
 Depends on Moose, which seems an unnecessary dependency for a simple
 wrapper around Git.
 
-Although it supports C<git init> and C<git clone>, it is mostly aimed at
+Although it supports C<git init> and C<git clone>
+(and has methods to call any Git command), it is mostly aimed at
 porcelain commands, and provides no way to control bidirectional commands
 (such as C<git commit-tree>).
 
