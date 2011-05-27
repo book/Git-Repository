@@ -49,12 +49,13 @@ for my $t (@true) {
 # helper routine to build a fake fit binary
 sub fake_git {
     my ($version) = @_;
-    my ( $fh, $filename ) = tempfile( MSWin32 ? ( SUFFIX => '.bat' ) : () );
+    my ( $fh, $filename ) =
+      tempfile( UNLINK => 1, MSWin32 ? ( SUFFIX => '.bat' ) : () );
     print {$fh} MSWin32 ? << "WIN32" : << "UNIX";
 \@echo git version $version
 WIN32
-#!/bin/sh
-$^X -le 'print "git version $version"'
+#!$^X
+print "git version $version\\n"
 UNIX
     close $fh;
     chmod 0755, $filename;
