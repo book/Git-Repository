@@ -98,6 +98,16 @@ check_commit( 2 => $log[0] );
 
 chdir $home;
 
+# try a command that returns no commits
+BEGIN { $tests += 1 }
+@log = Git::Repository->log('zlonk');
+is( scalar @log, 0, '0 commits' );
+
+# try a command that returns an git error
+BEGIN { $tests += 1 }
+@log = Git::Repository->log('--zlonk');
+is( scalar @log, 0, '0 commits' );
+
 # various options combinations
 my @options;
 
