@@ -98,15 +98,23 @@ check_commit( 2 => $log[0] );
 
 chdir $home;
 
-# try a command that returns no commits
-BEGIN { $tests += 1 }
-@log = Git::Repository->log('zlonk');
-is( scalar @log, 0, '0 commits' );
+# try a command that fails (fatal)
+BEGIN { $tests += 2 }
+ok( !eval { @log = Git::Repository->log('zlonk') }, q{log('zlonk') failed} );
+like(
+    $@,
+    qr/^fatal: ambiguous argument 'zlonk': unknown revision or path not in/,
+    'unknown revision or path'
+);
 
-# try a command that returns an git error
-BEGIN { $tests += 1 }
-@log = Git::Repository->log('--zlonk');
-is( scalar @log, 0, '0 commits' );
+# try a command that returns a git error (usage)
+BEGIN { $tests += 2 }
+ok( !eval { @log = Git::Repository->log('--bam') }, q{log('--bam') failed} );
+like(
+    $@,
+    qr/^fatal: unrecognized argument: --bam at/,
+    'unknown revision or path'
+);
 
 # various options combinations
 my @options;
