@@ -701,6 +701,20 @@ revision history of a project. A lot of those commands can output
 huge amounts of data, which I need to be able to process in chunks.
 Some of these commands also expect to receive input.
 
+What follows is a short list of "missing features" that I was looking
+for when I looked at the existing Git wrappers on CPAN. They are the
+"rational" reason for writing my own (the real reason being of course
+"I thought it would be fun, and I enjoyed doing it").
+
+Even though it works well for me and others, C<Git::Repository> has its
+own shortcomings: it I<is> a I<low-level interface to Git commands>,
+anything complex requires you to deal with input/output handles,
+it provides no high-level interface to generate actual Git commands
+or process the output of commands (but have a look at the plugins),
+it doesn't fully work under Win32 yet, etc. One the following modules
+may therefore be better suited for your needs, depending on what you're
+trying to achieve.
+
 =head2 Git.pm
 
 Git.pm is not on CPAN. It is usually packaged with Git, and installed with
@@ -716,7 +730,8 @@ L<http://kerneltrap.org/mailarchive/git/2008/10/24/3789584>
 =head2 Git::Class
 
 Depends on Moose, which seems an unnecessary dependency for a simple
-wrapper around Git.
+wrapper around Git. The startup penalty could become significant for
+command-line tools.
 
 Although it supports C<git init> and C<git clone>
 (and has methods to call any Git command), it is mostly aimed at
