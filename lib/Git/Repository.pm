@@ -191,25 +191,8 @@ sub run {
     my $command
         = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
-    # get output / errput
-    my ( $stdout, $stderr ) = @{$command}{qw(stdout stderr)};
-    chomp( my @output = <$stdout> );
-    chomp( my @errput = <$stderr> );
-
-    # done with it
-    $command->close;
-
-    # exit codes: 128 => fatal, 129 => usage
-    my $exit = $command->{exit};
-    if ( $exit == 128 || $exit == 129 ) {
-        croak join( "\n", @errput ) || 'fatal: unknown git error';
-    }
-
-    # something else's wrong
-    if (@errput) { carp join "\n", @errput; }
-
-    # return the output
-    return wantarray ? @output : join "\n", @output;
+    # return the output or die
+    return $command->final_output;
 }
 
 #
@@ -473,7 +456,7 @@ Lines are automatically C<chomp>ed.
 
 If the git command printed anything on stderr, it will be printed as
 warnings. If the git sub-process exited with status C<128> (fatal error),
-C<run()> will C<die()>.
+or C<129> (usage message), C<run()> will C<die()>.
 
 =head2 git_dir()
 

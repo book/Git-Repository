@@ -131,6 +131,30 @@ sub new {
     return bless System::Command->new( $git, @cmd, @o ), $class;
 }
 
+sub final_output {
+    my ($self) = @_;
+
+    # get output / errput
+    my ( $stdout, $stderr ) = @{$self}{qw(stdout stderr)};
+    chomp( my @output = <$stdout> );
+    chomp( my @errput = <$stderr> );
+
+    # done with it
+    $self->close;
+
+    # exit codes: 128 => fatal, 129 => usage
+    my $exit = $self->{exit};
+    if ( $exit == 128 || $exit == 129 ) {
+        croak join( "\n", @errput ) || 'fatal: unknown git error';
+    }
+
+    # something else's wrong
+    if (@errput) { carp join "\n", @errput; }
+
+    # return the output
+    return wantarray ? @output : join "\n", @output;
+}
+
 1;
 
 __END__
@@ -240,6 +264,20 @@ number of attributes defined (see below).
 
 Close all pipes to the child process, and collects exit status, etc.
 and defines a number of attributes (see below).
+
+=head2 final_output()
+
+Collect all the output, and terminate the command.
+
+Returns the output as a string in scalar context,
+or as a list of lines in list context. Also accepts a hashref of options.
+
+Lines are automatically C<chomp>ed.
+
+If the Git command printed anything on stderr, it will be printed as
+warnings. If the git sub-process exited with status C<128> (fatal error),
+or C<129> (usage message), it will C<die()>.
+
 
 =head2 Accessors
 
