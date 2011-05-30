@@ -1,0 +1,140 @@
+=head1 NAME
+
+Git::Repository::Tutorial - Control git from Perl using Git::Repository
+
+=head1 SYNOPSIS
+
+    FIXME
+
+=head1 HOW-TO
+
+A C<Git::Repository> object represents an actual Git repository,
+against which you can I<run> commands.
+
+=head2 Create a new repository
+
+    # git version 1.6.5 and above
+    my $r = Git::Repository->create( init => $dir );
+
+    # any older git will need two steps
+    chdir $dir;
+    my $r = Git::Repository->create( 'init' );
+
+=head2 Clone a repository
+
+    my $r = Git::Repository->create( clone => $url => $dir );
+
+=head2 Run a simple command
+
+    $r->run( add => '.' );
+    $r->run( commit => '-m', 'my commit message' );
+
+=head2 Process normal and error output
+
+The C<run()> command doesn't capture stderr: it only warns (or dies)
+if something was printed on it. To be able to actually capture error
+output, C<command()> must be used.
+
+    my $cmd = $r->command( @cmd );
+    my @errput = $cmd->stderr->getlines();
+    $cmd->close;
+
+C<run()> also captures all output at once, which can lead to unnecessary
+memory consumption when capturing the output of some really verbose
+commands.
+
+    my $cmd = $r->command( log => '--pretty=oneline', '--all' );
+    my $log = $cmd->stdout;
+    while (<$log>) {
+        ...;
+    }
+    $cmd->close;
+
+Of course, as soon as one starts reading and writing to an external
+process' communication handles, a risk of blocking exists.
+I<Caveat emptor>.
+
+=head2 Provide input on standard input
+
+Use the C<input> option:
+
+    my $commit = $r->run( 'commit-tree', $tree, '-p', $parent,
+        { input => $message } );
+
+=head2 Change the environment of a command
+
+Use the C<env> option:
+
+    $r->run(
+        'commit', '-m', 'log message',
+        {   env => {
+                GIT_COMMITTER_NAME  => 'Git::Repository',
+                GIT_COMMITTER_EMAIL => 'book@cpan.org',
+            },
+        },
+    );
+
+See L<Git::Repository::Command> for other available options.
+
+=head2 Process the output of B<git log>
+
+When creating a tool that needs to process the output of B<git log>,
+you should always define precisely the expected format using the
+I<--pretty> option, and choose a format that is easy to parse.
+
+Assuming B<git log> will output the default format will eventually
+lead to problems, for example when the user's git configuration defines
+C<format.pretty> to be something else than the default of C<medium>.
+
+=head2 Process the output of B<git shortlog>
+
+B<git shortlog> behaves differently when it detects it's not attached
+to a terminal. In that case, it just tries to read some B<git log>
+output from its standard input.
+
+So this oneliner will hang, because B<git shortlog> is waiting for some
+data from the program connected to its standard input (the oneliner):
+
+    perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => -5 )'
+
+Whereas this one will "work" (as in "immediately return with no output"):
+
+    perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => -5, { input => "" } )'
+
+So, you need to give B<git shortlog> I<some> input (from B<git log>):
+
+    perl -MGit::Repository -le 'print scalar Git::Repository->run( shortlog => { input => scalar Git::Repository->run( log => -5 ) } )'
+
+If the log output is large, you'll probably be better off with something
+like the following:
+
+    use Git::Repository;
+
+    # start both git commands
+    my $log = Git::Repository->command('log')->stdout;
+    my $cmd = Git::Repository->command( shortlog => -ens );
+
+    # feed one with the output of the other
+    my $in = $cmd->stdin;
+    print {$in} $_ while <$log>;
+    close $in;
+
+    # and do something with the output
+    print $cmd->stdout->getlines;
+
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK), C<< <book at cpan.org> >>
+
+=head1 COPYRIGHT
+
+Copyright 2010-2011 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This documenation is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
+
