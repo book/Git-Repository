@@ -30,7 +30,10 @@ for my $attr (qw( cmdline )) {
 # CAN I HAS GIT?
 my %binary;    # cache calls to _is_git
 sub _is_git {
-    my ($binary) = @_;
+    my ( $binary, @args ) = @_;
+
+    # git option might be an arrayref containing an executable with arguments
+    # Best that can be done is to check if the first part is executable
 
     # compute cache key:
     # - filename (path):     path
@@ -70,18 +73,13 @@ sub _is_git {
         $git = File::Spec->rel2abs($binary);
     }
 
-    # $git might be an executable with arguments (e.g. /usr/bin/sudo -u foo /usr/bin/git)
-    # Best that can be done is to check if the first part is executable, for now
-    # Version will catch things after that
-    my ($command) = ($git||'') =~ /^([^\s]+)/;
-
     # if we can't find any, we're done
     return $binary{$type}{$key}{$binary} = undef
-        if !( defined $git && -x $command );
+        if !( defined $git && -x $git );
 
     # try to run it
-    my @git = split / /, $git;
-    my ( $pid, $in, $out, $err ) = __PACKAGE__->spawn( @git, '--version' );
+    my ( $pid, $in, $out, $err )
+        = __PACKAGE__->spawn( $git, @args, '--version' );
     my $version = <$out>;
 
     # does it really look like git?
@@ -124,8 +122,12 @@ sub new {
 
     # get and check the git command
     my $git_cmd = ( map { exists $_->{git} ? $_->{git} : () } @o )[-1];
-    $git_cmd = 'git' if !defined $git_cmd;
-    my $git = _is_git($git_cmd);
+
+    # git option might be an arrayref containing an executable with arguments
+    # (e.g. [ qw( /usr/bin/sudo -u nobody git ) ] )
+    ( $git_cmd, my @args )
+        = defined $git_cmd ? ref $git_cmd ? @$git_cmd : ($git_cmd) : ('git');
+    my $git = _is_git($git_cmd, @args);
 
     croak "git binary '$git_cmd' not available or broken"
         if !defined $git;
@@ -134,8 +136,7 @@ sub new {
     delete $ENV{TERM};
 
     # spawn the command and re-bless the object in our class
-    my @git = split / /, $git;
-    return bless System::Command->new( @git, @cmd, @o ), $class;
+    return bless System::Command->new( $git, @args, @cmd, @o ), $class;
 }
 
 sub final_output {
@@ -230,6 +231,12 @@ I<option> hashes. The recognized keys are:
 =item C<git>
 
 The actual git binary to run. By default, it is just C<git>.
+
+In case the C<git> to be run is actually a command with parameters
+(e.g. when using B<sudo> or another command executer), the option value
+should be an array reference with the command and parameters, like this:
+
+    { git => [qw( sudo -u nobody git )] }
 
 =item C<cwd>
 
