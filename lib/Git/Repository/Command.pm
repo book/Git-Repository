@@ -70,12 +70,18 @@ sub _is_git {
         $git = File::Spec->rel2abs($binary);
     }
 
+    # $git might be an executable with arguments (e.g. /usr/bin/sudo -u foo /usr/bin/git)
+    # Best that can be done is to check if the first part is executable, for now
+    # Version will catch things after that
+    my ($command) = ($git||'') =~ /^([^\s]+)/;
+
     # if we can't find any, we're done
     return $binary{$type}{$key}{$binary} = undef
-        if !( defined $git && -x $git );
+        if !( defined $git && -x $command );
 
     # try to run it
-    my ( $pid, $in, $out, $err ) = __PACKAGE__->spawn( $git, '--version' );
+    my @git = split / /, $git;
+    my ( $pid, $in, $out, $err ) = __PACKAGE__->spawn( @git, '--version' );
     my $version = <$out>;
 
     # does it really look like git?
@@ -128,7 +134,8 @@ sub new {
     delete $ENV{TERM};
 
     # spawn the command and re-bless the object in our class
-    return bless System::Command->new( $git, @cmd, @o ), $class;
+    my @git = split / /, $git;
+    return bless System::Command->new( @git, @cmd, @o ), $class;
 }
 
 sub final_output {
