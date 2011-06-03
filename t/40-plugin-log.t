@@ -143,10 +143,10 @@ DIFF
 
 for my $o (@options) {
     my ( $args, $extra, $minver ) = @$o;
-    @log = $r->log(@$args);
 SKIP: {
         skip "git log @$args needs $minver, we only have $version", 13
             if $minver && Git::Repository->version_lt($minver);
+        @log = $r->log(@$args);
         is( scalar @log, 2, "2 commits for @$args" );
         isa_ok( $_, 'Git::Repository::Log' ) for @log;
         check_commit( 2 => $log[0], extra => $extra->[0] );
