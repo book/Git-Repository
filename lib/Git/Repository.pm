@@ -333,7 +333,7 @@ command, whether I<porcelain> or I<plumbing>, including bidirectional
 commands such as C<git commit-tree>.
 
 A C<Git::Repository> object simply provides context to the git commands
-being run. Is it possible to call the  C<command()>and C<run()> methods
+being run. It is possible to call the  C<command()> and C<run()> methods
 against the class itself, and the context (typically I<current working
 directory>) will be obtained from the options and environment.
 
