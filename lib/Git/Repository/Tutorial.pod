@@ -77,8 +77,14 @@ Cloning works the same way:
 
 =head2 Run a simple command
 
+When you don't really care about the output of the command, just call
+it:
+
     $r->run( add => '.' );
     $r->run( commit => '-m', 'my commit message' );
+
+In case of an error or warning, C<Git::Repository> will C<croak()> or
+C<carp()> appropriately.
 
 =head2 Process normal and error output
 
