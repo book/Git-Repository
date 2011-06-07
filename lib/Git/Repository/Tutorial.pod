@@ -189,6 +189,29 @@ call, you can use the C<git> option with an array ref:
 In this case, every call to git from C<$r> will actually call
 C<sudo -u nobody git>.
 
+=head2 Use submodules
+
+Because C<Git::Repository> automatically sets the C<GIT_DIR> and
+C<GIT_WORK_TREE> environment variables, some C<submodule> sub-commands
+may fail. For example:
+
+    $r->run( submodule => add => $repository => 'sub' );
+
+will give the following error:
+
+    error: pathspec 'sub' did not match any file(s) known to git.
+
+To avoid this error, you should enforce the removal of the C<GIT_WORK_TREE>
+variable from the environment in which the command is run:
+
+    $r->run(
+        submodule => add => $repository => 'sub',
+        { env => { GIT_WORK_TREE => undef } }
+    );
+
+Note that C<System::Command> version 1.04 is required to be able to remove
+variables from the environment.
+
 
 =head1 AUTHOR
 
