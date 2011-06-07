@@ -212,6 +212,16 @@ variable from the environment in which the command is run:
 Note that C<System::Command> version 1.04 is required to be able to remove
 variables from the environment.
 
+=head2 Sort git versions
+
+Basically, you need to recreate the C<cmp> operator for Git versions,
+using the I<private> C<_version_gt()> method (which accepts two parameters):
+
+    @sorted_versions = sort {
+        Git::Repository::_version_gt( $a, $b )
+            || -Git::Repository::_version_gt( $b, $a )
+    } @versions;
+
 
 =head1 AUTHOR
 
