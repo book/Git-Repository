@@ -350,6 +350,8 @@ override them if necessary, using the C<env> option.
 C<Git::Repository> requires at least Git 1.5.0, and is expected to support
 any later version.
 
+See C<Git::Repository::Tutorial> for more code examples.
+
 =head1 CONSTRUCTORS
 
 There are two ways to create C<Git::Repository> objects:
