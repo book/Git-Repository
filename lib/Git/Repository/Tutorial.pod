@@ -4,12 +4,53 @@ Git::Repository::Tutorial - Control git from Perl using Git::Repository
 
 =head1 SYNOPSIS
 
-    FIXME
+    use Git::Repository;
+
+    # do cool stuff with Git, using the following advice
 
 =head1 HOW-TO
 
 A C<Git::Repository> object represents an actual Git repository,
 against which you can I<run> commands.
+
+=head2 Obtain a Git::Repository object from an existing repository
+
+If your script is expected to run against a repository in the current
+directory (like most Git commands), let C<Git::Repository> handle
+the magic:
+
+    $r = Git::Repository->new();
+
+If the repository has a working copy (work tree):
+
+    $r = Git::Repository->new( work_tree => $dir );
+
+If the repository is a bare repository, or you prefer to provide
+the F<.git> directory location:
+
+    $r = Git::Repository->new( git_dir => $gitdir );
+
+If the work tree and the git directory are in unrelated locations,
+you can also provide both:
+
+    $r = Git::Repository->new( work_tree => $dir, git_dir => $gitdir );
+
+The constructor also accepts an option hash. The various options
+are detailed in the manual page for C<Git::Repository::Command>.
+
+=head2 Run any git command
+
+Git commands can be run against an existing C<Git::Repository> object,
+or against the class itself (in which case, git will try to deduce its
+context from the current directory and the environment).
+
+The pattern for running commands is always the same:
+
+    $r->run( $command => @arguments, \%options );
+
+The C<$command> and C<@arguments> are identical to those you'd pass to
+the C<git> command-line tool. The options hash contains options, as
+described in the manual page for C<Git::Repository::Command>.
 
 =head2 Create a new repository
 
