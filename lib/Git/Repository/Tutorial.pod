@@ -179,6 +179,16 @@ like the following:
     # and do something with the output
     print $cmd->stdout->getlines;
 
+=head2 Wrap git in a sudo call
+
+If for a given repository you want to wrap all calls to git in a C<sudo>
+call, you can use the C<git> option with an array ref:
+
+    my $r = Git::Repository->new( { git => [qw( sudo -u nobody git )] } );
+
+In this case, every call to git from C<$r> will actually call
+C<sudo -u nobody git>.
+
 
 =head1 AUTHOR
 
