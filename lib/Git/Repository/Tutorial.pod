@@ -54,16 +54,26 @@ described in the manual page for C<Git::Repository::Command>.
 
 =head2 Create a new repository
 
-    # git version 1.6.5 and above
-    my $r = Git::Repository->create( init => $dir );
+Sometime, you'll need to create the Git repository from scratch:
 
-    # any older git will need two steps
-    chdir $dir;
-    my $r = Git::Repository->create( 'init' );
+    # git version 1.6.5 and above
+    Git::Repository->run( init => $dir );
+    $r = Git::Repository->new( work_tree => $dir );
+
+    # any older git requires the command to be run in the work tree,
+    # so we use the cwd option
+    Git::Repository->run( init => { cwd => $dir } );
+    $r = Git::Repository->new( work_tree => $dir );
+
+Note that the old C<create()> method is obsolete, warns and will be removed
+in a future version.
 
 =head2 Clone a repository
 
-    my $r = Git::Repository->create( clone => $url => $dir );
+Cloning works the same way:
+
+    Git::Repository->run( clone => $url => $dir );
+    $r = Git::Repository->new( $dir );
 
 =head2 Run a simple command
 
