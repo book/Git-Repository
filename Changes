@@ -1,5 +1,19 @@
 Revision history for Git-Repository
 
+1.19 Wed Jun  8 23:39:22 CEST 2011
+        [ENHANCEMENTS]
+        - new final_output() method to Git::Repository::Command,
+          that does the git-specific error checking when collecting
+          the final output
+        - Git::Repository::Log::Iterator will now properly die/warn
+          when the log command is incorrect (thanks to Lasse Makholm
+          for the bug report and proposed patch)
+        - Git::Repository::Command now supports an arrayref as the 'git'
+          option value, thus allowing calling wrappers like sudo
+          (thanks to Dominic Humphries for the initial patch)
+        [DOCUMENTATION]
+        - moved the HOWTO part of the doc to Git::Repository::Tutorial
+
 1.18 Sat Apr 16 13:47:26 CEST 2011
         [ENHANCEMENTS]
         - the create() method was fragile (parsing the output of
