@@ -11,7 +11,7 @@ use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
 
-our $VERSION = '1.19';
+our $VERSION = '1.20';
 
 # a few simple accessors
 for my $attr (qw( git_dir work_tree options )) {

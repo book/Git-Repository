@@ -1,5 +1,13 @@
 Revision history for Git-Repository
 
+1.20 Thu Jun  9 14:08:43 CEST 2011
+        [ENHANCEMENTS]
+        - None. It's as good as 1.19, without the stupid test fail.
+        [TESTS]
+        - one test always failed if run outside of a git repository,
+          so I didn't detect it, but all testers did :-(
+          Kazuhiro Shibuya provided a patch!
+
 1.19 Wed Jun  8 23:39:22 CEST 2011
         [ENHANCEMENTS]
         - new final_output() method to Git::Repository::Command,
