@@ -100,7 +100,7 @@ chdir $home;
 
 # try a command that fails (fatal)
 BEGIN { $tests += 2 }
-ok( !eval { @log = Git::Repository->log('zlonk') }, q{log('zlonk') failed} );
+ok( !eval { @log = $r->log('zlonk') }, q{log('zlonk') failed} );
 like(
     $@,
     qr/^fatal: ambiguous argument 'zlonk': unknown revision or path not in/,
@@ -109,7 +109,7 @@ like(
 
 # try a command that returns a git error (usage)
 BEGIN { $tests += 2 }
-ok( !eval { @log = Git::Repository->log('--bam') }, q{log('--bam') failed} );
+ok( !eval { @log = $r->log('--bam') }, q{log('--bam') failed} );
 like(
     $@,
     qr/^fatal: unrecognized argument: --bam at/,
