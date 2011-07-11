@@ -4,6 +4,8 @@ use Test::More;
 use Test::Git;
 use Git::Repository;
 
+has_git;
+
 plan skip_all =>
     "Removing environment variables requires System::Command 1.04, this is only $System::Command::VERSION"
     if $System::Command::VERSION < 1.04;
