@@ -15,10 +15,10 @@ name: Git-Repository
 provides:
   Git::Repository:
     file: lib/Git/Repository.pm
-    version: 1.20
+    version: 1.21
   Git::Repository::Command:
     file: lib/Git/Repository/Command.pm
-    version: 1.13
+    version: 1.14
   Git::Repository::Log:
     file: lib/Git/Repository/Log.pm
     version: 1.01
@@ -44,4 +44,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/book/Git-Repository
-version: 1.20
+version: 1.21

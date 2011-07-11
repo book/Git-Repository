@@ -1,5 +1,13 @@
 Revision history for Git-Repository
 
+1.21 Mon Jul 11 23:34:47 CEST 2011
+        [ENHANCEMENTS]
+        - fix a deep recursion caused by a change in System::Command 1.05
+          (thanks to Thomas Klausner)
+        [TESTS]
+        - made t/21-submodule.t pass when git is not available or too old
+          or no identity is configured
+
 1.20 Thu Jun  9 14:08:43 CEST 2011
         [ENHANCEMENTS]
         - None. It's as good as 1.19, without the stupid test fail.
