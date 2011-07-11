@@ -79,7 +79,7 @@ sub _is_git {
 
     # try to run it
     my ( $pid, $in, $out, $err )
-        = __PACKAGE__->spawn( $git, @args, '--version' );
+        = System::Command->spawn( $git, @args, '--version' );
     my $version = <$out>;
 
     # does it really look like git?
