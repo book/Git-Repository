@@ -1,5 +1,10 @@
 Revision history for Git-Repository
 
+1.22 Tue Sep  6 23:39:54 CEST 2011
+        [TESTS]
+        - made t/21-submodule.t pass with git > 1.7.6.0 (RT #70585)
+        - made t/21-submodule.t pass with git < 1.5.4.4
+
 1.21 Mon Jul 11 23:34:47 CEST 2011
         [ENHANCEMENTS]
         - fix a deep recursion caused by a change in System::Command 1.05
