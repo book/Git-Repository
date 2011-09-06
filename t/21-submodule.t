@@ -4,7 +4,7 @@ use Test::More;
 use Test::Git;
 use Git::Repository;
 
-has_git( '1.5.0' );
+has_git( '1.5.3.rc0' ); # first git submodule appearance
 
 plan skip_all =>
     "Removing environment variables requires System::Command 1.04, this is only $System::Command::VERSION"
@@ -32,10 +32,14 @@ $r->run(
     { env => { GIT_WORK_TREE => undef } }
 );
 
+# the result of git submodule add has changed over time
+my $expected
+    = $r->version_lt('1.5.3.rc1') ? " $commit sub"
+    : $r->version_lt('1.5.4.4')   ? " $commit sub (undefined)"
+    : $r->version_lt('1.7.6.1')   ? "-$commit sub"
+    :                               " $commit sub (heads/master)";
+
 # do the test
 my $status = $r->run('submodule', 'status', 'sub' );
-is( $status,
-    $r->version_ge('1.7.6.1') ? " $commit sub (heads/master)" : "-$commit sub",
-    'git submodule status'
-);
+is( $status, $expected, 'git submodule status' );
 
