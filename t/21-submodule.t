@@ -34,5 +34,8 @@ $r->run(
 
 # do the test
 my $status = $r->run('submodule', 'status', 'sub' );
-is( $status, "-$commit sub", 'git submodule status' );
+is( $status,
+    $r->version_ge('1.7.6.1') ? " $commit sub (heads/master)" : "-$commit sub",
+    'git submodule status'
+);
 
