@@ -343,7 +343,7 @@ individual Git commands may need or use.
 
 However, the C<GIT_DIR> and C<GIT_WORK_TREE> environment variables are
 special: if the command is run in the context of a C<Git::Repository>
-object, they will be overriden by the object's C<git_dir> and
+object, they will be overridden by the object's C<git_dir> and
 C<work_tree> attributes, respectively. It is however still possible to
 override them if necessary, using the C<env> option.
 

@@ -264,7 +264,7 @@ an exception.
 =back
 
 If the C<Git::Repository> object has its own option hash, it will be used
-to provide default values that can be overriden by the actual option hash
+to provide default values that can be overridden by the actual option hash
 passed to C<new()>.
 
 If several option hashes are passed to C<new()>, they will all be merged,

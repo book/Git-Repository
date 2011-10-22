@@ -102,7 +102,7 @@ C<Git::Repository::Log::Iterator> expects the output to look like that
 of C<--pretty=raw>, and so will force the the C<--pretty> option
 (in case C<format.pretty> is defined in the Git configuration).
 
-Extra ouput (like patches) will be stored in the C<extra> parameter of
+Extra output (like patches) will be stored in the C<extra> parameter of
 the C<Git::Repository::Log> object. Decorations will be lost.
 
 When unsupported options are recognized in the parameter list, C<new()>
