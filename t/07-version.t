@@ -50,7 +50,7 @@ for my $t (@true) {
 sub fake_git {
     my ($version) = @_;
     my ( $fh, $filename ) =
-      tempfile( UNLINK => 1, MSWin32 ? ( SUFFIX => '.bat' ) : () );
+      tempfile( DIR => 't', UNLINK => 1, MSWin32 ? ( SUFFIX => '.bat' ) : () );
     print {$fh} MSWin32 ? << "WIN32" : << "UNIX";
 \@echo git version $version
 WIN32
