@@ -129,7 +129,8 @@ sub new {
         = defined $git_cmd ? ref $git_cmd ? @$git_cmd : ($git_cmd) : ('git');
     my $git = _is_git($git_cmd, @args);
 
-    croak "git binary '$git_cmd' not available or broken"
+    croak sprintf "git binary '%s' not available or broken",
+        join( ' ', $git_cmd, @args )    # show the full command given
         if !defined $git;
 
     # turn us into a dumb terminal
