@@ -31,9 +31,11 @@ for my $attr (qw( cmdline )) {
 my %binary;    # cache calls to _is_git
 sub _is_git {
     my ( $binary, @args ) = @_;
+    my $args = join "\0", @args;
 
     # git option might be an arrayref containing an executable with arguments
     # Best that can be done is to check if the first part is executable
+    # and use the arguments as part of the cache key
 
     # compute cache key:
     # - filename (path):     path
@@ -52,8 +54,8 @@ sub _is_git {
     # which target may also change during the life of the program.
 
     # check the cache
-    return $binary{$type}{$key}{$binary}
-        if exists $binary{$type}{$key}{$binary};
+    return $binary{$type}{$key}{$binary}{$args}
+        if exists $binary{$type}{$key}{$binary}{$args};
 
     # compute a list of candidate files (look in PATH if needed)
     my $git;
@@ -83,7 +85,7 @@ sub _is_git {
     my $version = <$out>;
 
     # does it really look like git?
-    return $binary{$type}{$key}{$binary}
+    return $binary{$type}{$key}{$binary}{$args}
         = $version =~ /^git version \d/
             ? $type eq 'path'
                 ? $binary    # leave the shell figure it out itself too
