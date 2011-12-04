@@ -1,5 +1,9 @@
 Revision history for Git-Repository
 
+1.23 Sun Dec  4 16:06:08 CET 2011
+        [TESTS]
+        - made t/07-version.t pass when /tmp is mounted noexec (RT #72610)
+
 1.22 Tue Sep  6 23:39:54 CEST 2011
         [TESTS]
         - made t/21-submodule.t pass with git > 1.7.6.0 (RT #70585)

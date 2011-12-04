@@ -34,3 +34,4 @@ t/MyGit/Hello.pm
 t/pod-coverage.t
 t/pod.t
 t/sudo.pl
+META.json
