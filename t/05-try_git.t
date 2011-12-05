@@ -12,7 +12,7 @@ my @not_git = ( map ( {
             File::Spec->catfile( File::Spec->updir, $_ )
         )
     } 'this-command-unlikely-to-even-exist-or-be-git' ),
-    $^X, '' );
+    $^X, '', 't' );
 
 plan tests => 3 * @not_git + 2;
 
