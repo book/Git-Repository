@@ -82,7 +82,7 @@ sub _is_git {
     # try to run it
     my ( $pid, $in, $out, $err )
         = System::Command->spawn( $git, @args, '--version' );
-    my $version = <$out>;
+    my $version = do { local $/ = "\n"; <$out>; };
 
     # does it really look like git?
     return $binary{$type}{$key}{$binary}{$args}
@@ -147,8 +147,12 @@ sub final_output {
 
     # get output / errput
     my ( $stdout, $stderr ) = @{$self}{qw(stdout stderr)};
-    chomp( my @output = <$stdout> );
-    chomp( my @errput = <$stderr> );
+    my ( @output, @errput );
+    {
+        local $/ = "\n";
+        chomp( @output = <$stdout> );
+        chomp( @errput = <$stderr> );
+    }
 
     # done with it
     $self->close;
