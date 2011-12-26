@@ -1,0 +1,78 @@
+{
+   "abstract" : "Perl interface to Git repositories",
+   "author" : [
+      "Philippe Bruhat (BooK) <book@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Git-Repository",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : 0
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.38"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Cwd" : 0,
+            "File::Path" : 0,
+            "File::Spec" : 0,
+            "IPC::Open3" : 0,
+            "List::Util" : 0,
+            "System::Command" : "1.01"
+         }
+      }
+   },
+   "provides" : {
+      "Git::Repository" : {
+         "file" : "lib/Git/Repository.pm",
+         "version" : "1.23"
+      },
+      "Git::Repository::Command" : {
+         "file" : "lib/Git/Repository/Command.pm",
+         "version" : "1.14"
+      },
+      "Git::Repository::Log" : {
+         "file" : "lib/Git/Repository/Log.pm",
+         "version" : "1.01"
+      },
+      "Git::Repository::Log::Iterator" : {
+         "file" : "lib/Git/Repository/Log/Iterator.pm",
+         "version" : "1.01"
+      },
+      "Git::Repository::Plugin" : {
+         "file" : "lib/Git/Repository/Plugin.pm",
+         "version" : "1.01"
+      },
+      "Git::Repository::Plugin::Log" : {
+         "file" : "lib/Git/Repository/Plugin/Log.pm",
+         "version" : "1.01"
+      },
+      "Test::Git" : {
+         "file" : "lib/Test/Git.pm",
+         "version" : "1.01"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "url" : "http://github.com/book/Git-Repository"
+      }
+   },
+   "version" : "1.23"
+}

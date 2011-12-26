@@ -1,5 +1,14 @@
 Revision history for Git-Repository
 
+1.24 Mon Dec 26 14:51:36 CET 2011
+        [ENHANCEMENTS]
+        - the command cache for _is_git() is now properly populated
+          when the git option is a command with options (e.g. sudo)
+        - _is_git() still finds git when the PATH contains a directory
+          named git in a better position (RT #72154)
+        - Fix spelling errors fixed in Debian (RT #73079)
+        - Defend against changes to $/ (RT #71621)
+
 1.23 Sun Dec  4 16:06:08 CET 2011
         [TESTS]
         - made t/07-version.t pass when /tmp is mounted noexec (RT #72610)
