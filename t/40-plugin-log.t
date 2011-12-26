@@ -54,6 +54,8 @@ sub check_commit {
     is( $log->extra,   $commit->{extra},   "commit $id extra" );
 }
 
+local $/ = chr rand 128;
+
 # no log method yet
 BEGIN { $tests += 3 }
 ok( !eval { $r->log('-1') }, 'no log() method' );

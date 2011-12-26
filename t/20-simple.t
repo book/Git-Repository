@@ -21,6 +21,8 @@ $ENV{GIT_COMMITTER_NAME}  = 'Test Committer';
 $ENV{GIT_COMMITTER_EMAIL} = 'test.committer@example.com';
 my $home = cwd;
 
+local $/ = chr rand 128;
+
 # small helper sub
 sub update_file {
     my ( $file, $content ) = @_;
@@ -87,6 +89,7 @@ SKIP: {
 
     ok( my $cmd = $r->command('commit'), 'git commit' );
     isa_ok( $cmd, 'Git::Repository::Command' );
+    local $/ = "\n";
     my $error = $cmd->stderr->getline;
     is_deeply( [ $cmd->cmdline ], [ qw( git commit ) ], 'command-line' );
     $cmd->close;
@@ -131,6 +134,7 @@ BEGIN { $tests += 3 }
     isa_ok( $cmd, 'Git::Repository::Command' );
     is_deeply( [ $cmd->cmdline ], [ qw( git log --pretty=oneline --all ) ], 'command-line' );
     my $log = $cmd->stdout;
+    local $/ = "\n";
     while (<$log>) {
         $lines++;
     }
@@ -148,6 +152,7 @@ BEGIN { $tests += 2 }
         '--pretty=format:%H'
     );
     isa_ok( $cmd, 'Git::Repository::Command' );
+    local $/ = "\n";
     my $line = $cmd->stdout->getline();
     chomp $line;
     is( $line, $commit, 'git log -1' );
@@ -162,6 +167,7 @@ BEGIN { $tests += 2 }
         '--pretty=format:%H'
     );
     isa_ok( $cmd, 'Git::Repository::Command' );
+    local $/ = "\n";
     my $line = $cmd->stdout->getline();
     chomp $line;
     is( $line, $commit, 'git log -1' );
