@@ -47,7 +47,7 @@ for my $not_git (@not_git) {
 # more tests if git is available
 SKIP:
 {
-    skip 'Default git binary not found in PATH', 2
+    skip 'Default git binary not found in PATH', 10
         if !Git::Repository::Command::_is_git('git');
 
     my $path_sep = $Config::Config{path_sep} || ';';
