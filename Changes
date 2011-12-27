@@ -1,5 +1,11 @@
 Revision history for Git-Repository
 
+1.25 Tue Dec 27 23:07:11 CET 2011
+        [ENHANCEMENTS]
+        - None. It's as good as 1.24, without the stupid test fail.
+        [TESTS]
+        - fixed a test plan when a git binary is not available
+
 1.24 Mon Dec 26 14:51:36 CET 2011
         [ENHANCEMENTS]
         - the command cache for _is_git() is now properly populated
