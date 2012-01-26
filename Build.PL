@@ -14,7 +14,7 @@ my $builder = Module::Build->new(
         'File::Path' => 0,
         'IPC::Open3' => 0,
         'Cwd' => 0,
-        'System::Command' => '1.01',
+        'System::Command' => '1.05',
     },
     build_requires => {
         'Test::More' => 0,

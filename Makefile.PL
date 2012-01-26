@@ -16,7 +16,7 @@ WriteMakefile(
         'File::Path' => 0,
         'IPC::Open3' => 0,
         'Cwd' => 0,
-        'System::Command' => '1.01',
+        'System::Command' => '1.05',
     },
     META_MERGE => {
         resources => {
