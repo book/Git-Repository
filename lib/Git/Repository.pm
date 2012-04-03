@@ -582,6 +582,9 @@ See L<Git::Repository::Plugin> about how to create a new plugin.
 
 =head1 OTHER PERL GIT WRAPPERS
 
+(This section was written in June 2010. The other Git wrappers have
+probably evolved since that time.)
+
 A number of Perl git wrappers already exist. Why create a new one?
 
 I have a lot of ideas of nice things to do with Git as a tool to
