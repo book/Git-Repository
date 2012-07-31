@@ -10,7 +10,7 @@ use File::Temp qw( tempdir );
 use Cwd qw( cwd );
 use Carp;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 our @ISA     = qw( Exporter );
 our @EXPORT  = qw( has_git test_repository );
 
@@ -37,6 +37,11 @@ sub test_repository {
     my $temp = $args{temp} || [ CLEANUP => 1 ];    # File::Temp options
     my $init = $args{init} || [];                  # git init options
     my $opts = $args{git}  || {};                  # Git::Repository options
+
+    # git init requires at least Git 1.5.0
+    my $git_version = Git::Repository->version($opts);
+    croak "test_repository() requires git >= 1.5.0 (this is only $git_version)"
+      if Git::Repository->version_lt( '1.5.0', $opts );
 
     # create a temporary directory to host our repository
     my $dir = tempdir(@$temp);
@@ -131,6 +136,8 @@ To leave the repository in its location after the end of the test:
 
     test_repository( temp => [ CLEANUP => 0 ] );
 
+Note that since C<test_repository()> uses C<git init> to create the test
+repository, it requires at least Git version C<1.5.0>.
 
 =head1 AUTHOR
 
