@@ -17,8 +17,8 @@ my @tests = (
     [ [ qw( mktree ),           { input => '' } ] ],
     [ [ qw( commit-tree PREV ), { input => 'empty tree' } ] ],
     [ [qw( update-ref refs/heads/master PREV )] ],
-    [ [qw( checkout -b slave )], qr/^Switched to a new branch 'slave' at / ],
-    [ [qw( checkout master )], qr/^Switched to branch 'master' at / ],
+    [ [qw( checkout -b slave )], qr/^Switched to a new branch ['"]slave['"] at / ],
+    [ [qw( checkout master )], qr/^Switched to branch ['"]master['"] at / ],
     [ [ qw( checkout slave ), { quiet => 1 } ] ],
     [ [ qw( checkout master ), { quiet => 1 } ] ],
 );
