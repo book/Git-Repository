@@ -117,7 +117,7 @@ This is not recommended, as it might hide important information from you.
 
 =head2 Process normal and error output
 
-The C<run()> command doesn't capture stderr: it only warns (or dies)
+The C<run()> command doesn't capture C<STDERR>: it only warns (or dies)
 if something was printed on it. To be able to actually capture error
 output, C<command()> must be used.
 
