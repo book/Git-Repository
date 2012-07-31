@@ -4,7 +4,7 @@ use Test::More;
 use Test::Git;
 use Git::Repository;
 
-has_git();    # TODO check git version
+has_git('1.5.0');
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
