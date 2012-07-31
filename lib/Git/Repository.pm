@@ -192,6 +192,7 @@ sub run {
         = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
     # return the output or die
+    local $Carp::CarpLevel = 1;
     return $command->final_output;
 }
 
