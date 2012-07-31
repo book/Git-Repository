@@ -24,6 +24,7 @@ t/13-sudo.t
 t/20-simple.t
 t/21-submodule.t
 t/22-backward.t
+t/23-quiet.t
 t/25-plugins.t
 t/30-log.t
 t/40-plugin-log.t

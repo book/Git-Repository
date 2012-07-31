@@ -31,14 +31,14 @@
             "File::Spec" : 0,
             "IPC::Open3" : 0,
             "List::Util" : 0,
-            "System::Command" : "1.01"
+            "System::Command" : "1.05"
          }
       }
    },
    "provides" : {
       "Git::Repository" : {
          "file" : "lib/Git/Repository.pm",
-         "version" : "1.25"
+         "version" : "1.26"
       },
       "Git::Repository::Command" : {
          "file" : "lib/Git/Repository/Command.pm",
@@ -62,7 +62,7 @@
       },
       "Test::Git" : {
          "file" : "lib/Test/Git.pm",
-         "version" : "1.01"
+         "version" : "1.02"
       }
    },
    "release_status" : "stable",
@@ -74,5 +74,5 @@
          "url" : "http://github.com/book/Git-Repository"
       }
    },
-   "version" : "1.25"
+   "version" : "1.26"
 }
