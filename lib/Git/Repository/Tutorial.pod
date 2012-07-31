@@ -86,6 +86,35 @@ it:
 In case of an error or warning, C<Git::Repository> will C<croak()> or
 C<carp()> appropriately.
 
+=head2 Silence warnings for some Git commands
+
+Some Git porcelain commands provide additional information on C<STDERR>.
+One typical example is C<git checkout>:
+
+    $ git checkout mybranch
+    Switched to branch 'mybranch'
+
+The C<run()> method of L<Git::Repository> treats all output on C<STDERR>
+as a warning. Therefore, the following code:
+
+    $r->run( checkout => 'mybranch' );
+
+will output a warning like this one:
+
+    Switched to branch 'mybranch' at myscript.pl line 10.
+
+In such a case, you can use the C<quiet> option to silence the warning
+for a single command:
+
+    $r->run( checkout => 'mybranch', { quiet => 1 } );
+
+To silence I<all> warnings, you can pass the C<quiet> option during the
+creation of the original repository object:
+
+    my $r = Git::Repository->new( { quiet => 1 } );
+
+This is not recommended, as it might hide important information from you.
+
 =head2 Process normal and error output
 
 The C<run()> command doesn't capture stderr: it only warns (or dies)
