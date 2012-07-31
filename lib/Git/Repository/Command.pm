@@ -265,7 +265,7 @@ a way to modify options inherited from C<new()> or a hash populated by
 some other part of the program.
 
 On some systems, some git commands may close standard input on startup,
-which will cause a SIGPIPE when trying to write to it. This will raise
+which will cause a C<SIGPIPE> when trying to write to it. This will raise
 an exception.
 
 =item C<quiet>
