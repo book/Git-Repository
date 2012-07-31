@@ -692,7 +692,7 @@ I came up with.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2011 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
