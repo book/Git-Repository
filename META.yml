@@ -7,7 +7,7 @@ build_requires:
 configure_requires:
   Module::Build: 0.38
 dynamic_config: 1
-generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110930'
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.112621'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -16,10 +16,10 @@ name: Git-Repository
 provides:
   Git::Repository:
     file: lib/Git/Repository.pm
-    version: 1.26
+    version: 1.27
   Git::Repository::Command:
     file: lib/Git/Repository/Command.pm
-    version: 1.15
+    version: 1.16
   Git::Repository::Log:
     file: lib/Git/Repository/Log.pm
     version: 1.01
@@ -45,4 +45,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://github.com/book/Git-Repository
-version: 1.26
+version: 1.27

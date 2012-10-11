@@ -1,5 +1,12 @@
 Revision history for Git-Repository
 
+1.27 Thu Oct 11 2012
+        [ENHANCEMENTS]
+        - Git::Repository::Command skips non-executable files when searching
+          for a git command in the PATH
+        [TEST]
+        - Fixed tests failing with a directory named git in the PATH (RT #80117)
+
 1.26 Tue Aug  1 2012
         [ENHANCEMENTS]
         - added a 'quiet' option to silence warnings

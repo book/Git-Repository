@@ -13,7 +13,7 @@ use File::Spec;
 use Config;
 use System::Command;
 
-our $VERSION = '1.15';
+our $VERSION = '1.16';
 our @ISA = qw( System::Command );
 
 
@@ -385,7 +385,7 @@ MSWin32 implementation.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2011 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

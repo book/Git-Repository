@@ -4,7 +4,7 @@
       "Philippe Bruhat (BooK) <book@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112621",
    "license" : [
       "perl_5"
    ],
@@ -38,11 +38,11 @@
    "provides" : {
       "Git::Repository" : {
          "file" : "lib/Git/Repository.pm",
-         "version" : "1.26"
+         "version" : "1.27"
       },
       "Git::Repository::Command" : {
          "file" : "lib/Git/Repository/Command.pm",
-         "version" : "1.15"
+         "version" : "1.16"
       },
       "Git::Repository::Log" : {
          "file" : "lib/Git/Repository/Log.pm",
@@ -74,5 +74,5 @@
          "url" : "http://github.com/book/Git-Repository"
       }
    },
-   "version" : "1.26"
+   "version" : "1.27"
 }
