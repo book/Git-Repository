@@ -262,7 +262,7 @@ Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
-This documenation is free software; you can redistribute it and/or modify it
+This documentation is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
