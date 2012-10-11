@@ -225,7 +225,7 @@ BEGIN { $tests += 9 }
     my $re = qr/\Q$path_sep\E/;
     my @ext =
       ( '', $^O eq 'MSWin32' ? ( split $re, $ENV{PATHEXT} ) : () );
-    my ($abs_git) = grep { -e }
+    my ($abs_git) = grep { -x && !-d }
       map {
         my $path = $_;
         map { File::Spec->catfile( $path, $_ ) } map { "git$_" } @ext

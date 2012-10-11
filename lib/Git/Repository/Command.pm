@@ -64,7 +64,7 @@ sub _is_git {
         my @ext = (
             '', $^O eq 'MSWin32' ? ( split /\Q$path_sep\E/, $ENV{PATHEXT} ) : ()
         );
-        ($git) = grep { -e && !-d }
+        ($git) = grep { -x && !-d }
             map {
             my $path = $_;
             map { File::Spec->catfile( $path, $_ ) } map {"$binary$_"} @ext

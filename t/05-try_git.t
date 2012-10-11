@@ -51,7 +51,7 @@ SKIP:
         if !Git::Repository::Command::_is_git('git');
 
     my $path_sep = $Config::Config{path_sep} || ';';
-    my ($abs_git) = grep {-e}
+    my ($abs_git) = grep { -x && !-d }
         map {
         my $path = $_;
         map { File::Spec->catfile( $path, $_ ) }
