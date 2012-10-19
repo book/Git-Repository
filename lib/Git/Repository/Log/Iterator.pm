@@ -25,7 +25,7 @@ sub new {
         if @badopts;
 
     # enforce the format
-    @cmd = ( 'log', '--pretty=raw', @cmd );
+    @cmd = ( 'log', '--pretty=raw', '--color=never', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
     bless { cmd => Git::Repository::Command->new(@cmd) }, $class;
@@ -102,6 +102,7 @@ C<new()> will happily accept any parameters, but note that
 C<Git::Repository::Log::Iterator> expects the output to look like that
 of C<--pretty=raw>, and so will force the the C<--pretty> option
 (in case C<format.pretty> is defined in the Git configuration).
+It will also forcibly remove colored output (using C<--color=never>).
 
 Extra output (like patches) will be stored in the C<extra> parameter of
 the C<Git::Repository::Log> object. Decorations will be lost.
