@@ -21,12 +21,10 @@ for my $attr (qw( git_dir work_tree options )) {
 
 # backward compatible aliases
 sub repo_path {
-    carp "repo_path is obsolete, please use git_dir() instead";
-    goto &git_dir;
+    croak "repo_path is obsolete, please use git_dir() instead";
 }
 sub wc_path {
-    carp "wc_path is obsolete, please use work_tree() instead";
-    goto &work_tree;
+    croak "wc_path is obsolete, please use work_tree() instead";
 }
 
 # helper function
