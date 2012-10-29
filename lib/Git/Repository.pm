@@ -20,8 +20,14 @@ for my $attr (qw( git_dir work_tree options )) {
 }
 
 # backward compatible aliases
-*repo_path = \&git_dir;
-*wc_path   = \&work_tree;
+sub repo_path {
+    carp "repo_path is obsolete, please use git_dir() instead";
+    goto &git_dir;
+}
+sub wc_path {
+    carp "wc_path is obsolete, please use work_tree() instead";
+    goto &work_tree;
+}
 
 # helper function
 sub _abs_path {
@@ -473,7 +479,8 @@ Returns the repository path.
 =head2 repo_path()
 
 For backward compatibility with versions 1.06 and before, C<repo_path()>
-it provided as an alias to C<git_dir()>.
+it provided as an alias to C<git_dir()>. It will be removed in a future
+version.
 
 =head2 work_tree()
 
@@ -483,7 +490,8 @@ Used as current working directory by L<Git::Repository::Command>.
 =head2 wc_path()
 
 For backward compatibility with versions 1.06 and before, C<wc_path()>
-it provided as an alias to C<work_tree()>.
+it provided as an alias to C<work_tree()>. It will be removed in a future
+version.
 
 =head2 options()
 
