@@ -50,8 +50,8 @@ Git::Repository::Plugin - Base class for Git::Repository plugins
 
 =head1 DESCRIPTION
 
-C<Git::Repository::Plugin> allows one to define new methods for
-C<Git::Repository>, that will be imported in the C<Git::Repository>
+L<Git::Repository::Plugin> allows one to define new methods for
+L<Git::Repository>, that will be imported in the L<Git::Repository>
 namespace.
 
 The L<SYNOPSIS> provides a full example.
@@ -61,18 +61,18 @@ with all the methods they provide, or only a selection of them.
 
 =head1 METHODS
 
-C<Git::Repository::Plugin> provides a single method:
+L<Git::Repository::Plugin> provides a single method:
 
 =head2 install( @keywords )
 
-Install all keywords provided in the C<Git::Repository> namespace.
+Install all keywords provided in the L<Git::Repository> namespace.
 
 If called with an empty list, will install all available keywords.
 
 =head1 SUBCLASSING
 
 When creating a plugin, the new keywords that are added by the plugin
-to C<Git::Repository> must be returned by a C<_keywords()> method.
+to L<Git::Repository> must be returned by a C<_keywords()> method.
 
 =head1 AUTHOR
 
@@ -81,10 +81,10 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Todd Rinalo, who wanted to add more methods to
-C<Git::Repository>, which made me look for a solution that would preserve
-the minimalism of C<Git::Repository>.
+L<Git::Repository>, which made me look for a solution that would preserve
+the minimalism of L<Git::Repository>.
 
-After a not-so-good design using @ISA (so C<Git::Repository> would
+After a not-so-good design using @ISA (so L<Git::Repository> would
 I<inherit> the extra methods), further discussions with Aristotle
 Pagaltzis and a quick peek at Dancer's plugin management helped me
 come up with the current design. Thank you Aristotle and the Dancer

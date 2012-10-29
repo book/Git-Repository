@@ -57,7 +57,7 @@ Git::Repository::Plugin::Log - Add a log() method to Git::Repository
 
 =head1 DESCRIPTION
 
-This module adds a new method to C<Git::Repository>.
+This module adds a new method to L<Git::Repository>.
 
 =head1 METHOD
 
@@ -65,10 +65,10 @@ This module adds a new method to C<Git::Repository>.
 
 Run C<git log> with the given arguments.
 
-In scalar context, returns a C<Git::Repository::Log::Iterator> object,
-which can return C<Git::Repository::Log> objects on demand.
+In scalar context, returns a L<Git::Repository::Log::Iterator> object,
+which can return L<Git::Repository::Log> objects on demand.
 
-In list context, returns the full list C<Git::Repository::Log> objects.
+In list context, returns the full list L<Git::Repository::Log> objects.
 Note that this can be very memory-intensive.
 
 See L<Git::Repository::Log::Iterator>'s documentation for details about

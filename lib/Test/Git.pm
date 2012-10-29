@@ -92,7 +92,7 @@ Test::Git - Helper functions for test scripts using Git
 
 =head1 DESCRIPTION
 
-C<Test::Git> provides a number of helpful functions when running test
+L<Test::Git> provides a number of helpful functions when running test
 scripts that require the creation and management of a Git repository.
 
 
@@ -102,11 +102,11 @@ scripts that require the creation and management of a Git repository.
 
 Checks if there is a git binary available, or skips all tests.
 
-If the optional C<$version> argument is provided, also checks if the
+If the optional L<$version> argument is provided, also checks if the
 available git binary has a version greater or equal to C<$version>.
 
 This function also accepts an option hash of the same kind as those
-accepted by C<Git::Repository> and C<Git::Repository::Command>.
+accepted by L<Git::Repository> and L<Git::Repository::Command>.
 
 This function must be called before C<plan()>, as it performs a B<skip_all>
 if requirements are not met.
@@ -115,7 +115,7 @@ if requirements are not met.
 =head2 test_repository( %options )
 
 Creates a new empty git repository in a temporary location, and returns
-a C<Git::Repository> object pointing to it.
+a L<Git::Repository> object pointing to it.
 
 This function takes options as a hash. Each key will influence a
 different part of the creation process.

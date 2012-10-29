@@ -10,13 +10,13 @@ Git::Repository::Tutorial - Control git from Perl using Git::Repository
 
 =head1 HOW-TO
 
-A C<Git::Repository> object represents an actual Git repository,
+A L<Git::Repository> object represents an actual Git repository,
 against which you can I<run> commands.
 
 =head2 Obtain a Git::Repository object from an existing repository
 
 If your script is expected to run against a repository in the current
-directory (like most Git commands), let C<Git::Repository> handle
+directory (like most Git commands), let L<Git::Repository> handle
 the magic:
 
     $r = Git::Repository->new();
@@ -36,11 +36,11 @@ you can also provide both:
     $r = Git::Repository->new( work_tree => $dir, git_dir => $gitdir );
 
 The constructor also accepts an option hash. The various options
-are detailed in the manual page for C<Git::Repository::Command>.
+are detailed in the manual page for L<Git::Repository::Command>.
 
 =head2 Run any git command
 
-Git commands can be run against an existing C<Git::Repository> object,
+Git commands can be run against an existing L<Git::Repository> object,
 or against the class itself (in which case, git will try to deduce its
 context from the current directory and the environment).
 
@@ -50,7 +50,7 @@ The pattern for running commands is always the same:
 
 The C<$command> and C<@arguments> are identical to those you'd pass to
 the C<git> command-line tool. The options hash contains options, as
-described in the manual page for C<Git::Repository::Command>.
+described in the manual page for L<Git::Repository::Command>.
 
 =head2 Create a new repository
 
@@ -83,7 +83,7 @@ it:
     $r->run( add => '.' );
     $r->run( commit => '-m', 'my commit message' );
 
-In case of an error or warning, C<Git::Repository> will C<croak()> or
+In case of an error or warning, L<Git::Repository> will C<croak()> or
 C<carp()> appropriately.
 
 =head2 Silence warnings for some Git commands
@@ -220,7 +220,7 @@ C<sudo -u nobody git>.
 
 =head2 Use submodules
 
-Because C<Git::Repository> automatically sets the C<GIT_DIR> and
+Because L<Git::Repository> automatically sets the C<GIT_DIR> and
 C<GIT_WORK_TREE> environment variables, some C<submodule> sub-commands
 may fail. For example:
 
@@ -238,7 +238,7 @@ variable from the environment in which the command is run:
         { env => { GIT_WORK_TREE => undef } }
     );
 
-Note that C<System::Command> version 1.04 is required to be able to remove
+Note that L<System::Command> version 1.04 is required to be able to remove
 variables from the environment.
 
 =head2 Sort git versions

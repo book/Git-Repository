@@ -87,9 +87,9 @@ Git::Repository::Log::Iterator - Split a git log stream into records
 
 =head1 DESCRIPTION
 
-C<Git::Repository::Log::Iterator> initiates a B<git log> command
+L<Git::Repository::Log::Iterator> initiates a B<git log> command
 from a list of paramaters and parses its output to produce
-C<Git::Repository::Log> objects represening each log item.
+L<Git::Repository::Log> objects represening each log item.
 
 =head1 METHODS
 
@@ -99,13 +99,13 @@ Create a new B<git log> stream from the parameter list in C<@args>
 and return a iterator on it.
 
 C<new()> will happily accept any parameters, but note that
-C<Git::Repository::Log::Iterator> expects the output to look like that
+L<Git::Repository::Log::Iterator> expects the output to look like that
 of C<--pretty=raw>, and so will force the the C<--pretty> option
 (in case C<format.pretty> is defined in the Git configuration).
 It will also forcibly remove colored output (using C<--color=never>).
 
 Extra output (like patches) will be stored in the C<extra> parameter of
-the C<Git::Repository::Log> object. Decorations will be lost.
+the L<Git::Repository::Log> object. Decorations will be lost.
 
 When unsupported options are recognized in the parameter list, C<new()>
 will C<croak()> with a message advising to use C<< run( 'log' => ... ) >>
@@ -113,7 +113,7 @@ to parse the output yourself.
 
 =head2 next()
 
-Return the next log item as a C<Git::Repository::Log> object,
+Return the next log item as a L<Git::Repository::Log> object,
 or nothing if the stream has ended.
 
 =head1 AUTHOR

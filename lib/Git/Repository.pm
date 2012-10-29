@@ -328,12 +328,12 @@ Git::Repository - Perl interface to Git repositories
 
 =head1 DESCRIPTION
 
-C<Git::Repository> is a Perl interface to Git, for scripted interactions
+L<Git::Repository> is a Perl interface to Git, for scripted interactions
 with repositories. It's a low-level interface that allows calling any Git
 command, whether I<porcelain> or I<plumbing>, including bidirectional
 commands such as C<git commit-tree>.
 
-A C<Git::Repository> object simply provides context to the git commands
+A L<Git::Repository> object simply provides context to the git commands
 being run. It is possible to call the  C<command()> and C<run()> methods
 against the class itself, and the context (typically I<current working
 directory>) will be obtained from the options and environment.
@@ -343,23 +343,23 @@ commands. Specifically, it will not prepare environment variables that
 individual Git commands may need or use.
 
 However, the C<GIT_DIR> and C<GIT_WORK_TREE> environment variables are
-special: if the command is run in the context of a C<Git::Repository>
+special: if the command is run in the context of a L<Git::Repository>
 object, they will be overridden by the object's C<git_dir> and
 C<work_tree> attributes, respectively. It is however still possible to
 override them if necessary, using the C<env> option.
 
-C<Git::Repository> requires at least Git 1.5.0, and is expected to support
+L<Git::Repository> requires at least Git 1.5.0, and is expected to support
 any later version.
 
-See C<Git::Repository::Tutorial> for more code examples.
+See L<Git::Repository::Tutorial> for more code examples.
 
 =head1 CONSTRUCTORS
 
-There are two ways to create C<Git::Repository> objects:
+There are two ways to create L<Git::Repository> objects:
 
 =head2 new( %args, $options )
 
-Create a new C<Git::Repository> object, based on an existing Git repository.
+Create a new L<Git::Repository> object, based on an existing Git repository.
 
 Parameters are:
 
@@ -377,7 +377,7 @@ is accepted in place of C<git_dir> (but the newer name takes precedence).
 The location of the git working copy (for a non-bare repository).
 
 If C<work_tree> actually points to a subdirectory of the work tree,
-C<Git::Repository> will automatically recompute the proper value.
+L<Git::Repository> will automatically recompute the proper value.
 
 For backward compatibility with versions 1.06 and before, C<working_copy>
 is accepted in place of C<work_tree> (but the newer name takes precedence).
@@ -385,11 +385,11 @@ is accepted in place of C<work_tree> (but the newer name takes precedence).
 =back
 
 At least one of the two parameters is required. Usually, one is enough,
-as C<Git::Repository> can work out where the other directory (if any) is.
+as L<Git::Repository> can work out where the other directory (if any) is.
 
 C<new()> also accepts a reference to an option hash which will be used
-as the default by C<Git::Repository::Command> when working with the
-corresponding C<Git::Repository> instance.
+as the default by L<Git::Repository::Command> when working with the
+corresponding L<Git::Repository> instance.
 
 So this:
 
@@ -419,14 +419,14 @@ will raise an exception.
 B<The C<create()> method is deprecated, and will go away in the future.>
 
 Runs a repository initialization command (like C<init> or C<clone>) and
-returns a C<Git::Repository> object pointing to it. C<@cmd> may contain
+returns a L<Git::Repository> object pointing to it. C<@cmd> may contain
 a hashref with options (see L<Git::Repository::Command>.
 
 Do not use the I<-q> option on such commands. C<create()> needs to parse
 their output to find the path to the repository.
 
 C<create()> also accepts a reference to an option hash which will be
-used to set up the returned C<Git::Repository> instance.
+used to set up the returned L<Git::Repository> instance.
 
 Now that C<create()> is deprecated, instead of:
 
@@ -440,11 +440,11 @@ simply do it in two steps:
 
 =head1 METHODS
 
-C<Git::Repository> supports the following methods:
+L<Git::Repository> supports the following methods:
 
 =head2 command( @cmd )
 
-Runs the git sub-command and options, and returns a C<Git::Repository::Command>
+Runs the git sub-command and options, and returns a L<Git::Repository::Command>
 object pointing to the sub-process running the command.
 
 As described in the L<Git::Repository::Command> documentation, C<@cmd>
@@ -473,7 +473,7 @@ it provided as an alias to C<git_dir()>.
 =head2 work_tree()
 
 Returns the working copy path.
-Used as current working directory by C<Git::Repository::Command>.
+Used as current working directory by L<Git::Repository::Command>.
 
 =head2 wc_path()
 
@@ -546,11 +546,11 @@ commit was merged.
 
 =head1 PLUGIN SUPPORT
 
-C<Git::Repository> intentionally has only few methods.
+L<Git::Repository> intentionally has only few methods.
 The idea is to provide a lightweight wrapper around git, to be used
 to create interesting tools based on Git.
 
-However, people will want to add extra functionality to C<Git::Repository>,
+However, people will want to add extra functionality to L<Git::Repository>,
 the obvious example being a C<log()> method that returns simple objects
 with useful attributes.
 
@@ -599,7 +599,7 @@ for when I looked at the existing Git wrappers on CPAN. They are the
 "rational" reason for writing my own (the real reason being of course
 "I thought it would be fun, and I enjoyed doing it").
 
-Even though it works well for me and others, C<Git::Repository> has its
+Even though it works well for me and others, L<Git::Repository> has its
 own shortcomings: it I<is> a I<low-level interface to Git commands>,
 anything complex requires you to deal with input/output handles,
 it provides no high-level interface to generate actual Git commands
@@ -643,11 +643,11 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 BUGS
 
-Since version 1.17, C<Git::Repository> delegates the actual command
-execution to C<System::Command>. Win32 support for that module is
+Since version 1.17, L<Git::Repository> delegates the actual command
+execution to L<System::Command>. Win32 support for that module is
 currently very bad (the test suite hangs in a few places).
-If you'd like better Win32 support for C<Git::Repository>, help me improve
-C<System::Command>!
+If you'd like better Win32 support for L<Git::Repository>, help me improve
+L<System::Command>!
 
 Please report any bugs or feature requests to C<bug-git-repository at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Git-Repository>.  I will be notified, and then you'll
@@ -686,8 +686,8 @@ L<http://search.cpan.org/dist/Git-Repository>
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Todd Rinalo, who wanted to add more methods to
-C<Git::Repository>, which made me look for a solution that would preserve
-the minimalism of C<Git::Repository>. The C<::Plugin> interface is what
+L<Git::Repository>, which made me look for a solution that would preserve
+the minimalism of L<Git::Repository>. The C<::Plugin> interface is what
 I came up with.
 
 =head1 COPYRIGHT

@@ -211,23 +211,23 @@ Git::Repository::Command - Command objects for running git
 
 =head1 DESCRIPTION
 
-C<Git::Repository::Command> is a class that actually launches a B<git>
+L<Git::Repository::Command> is a class that actually launches a B<git>
 commands, allowing to interact with it through its C<STDIN>, C<STDOUT>
 and C<STDERR>.
 
-This class is a subclass of C<System::Command>, meant to be invoked
-through C<Git::Repository>.
+This class is a subclass of L<System::Command>, meant to be invoked
+through L<Git::Repository>.
 
 =head1 METHODS
 
-As a subclass of C<System::Command>,
-C<Git::Repository::Command> supports the following methods:
+As a subclass of L<System::Command>,
+L<Git::Repository::Command> supports the following methods:
 
 =head2 new( @cmd )
 
 Runs a B<git> command with the parameters in C<@cmd>.
 
-If C<@cmd> contains a C<Git::Repository> object, it is used to provide
+If C<@cmd> contains a L<Git::Repository> object, it is used to provide
 context to the B<git> command.
 
 If C<@cmd> contains one or more hash reference, they are taken as
@@ -277,14 +277,14 @@ messages on C<STDERR>.
 
 =back
 
-If the C<Git::Repository> object has its own option hash, it will be used
+If the L<Git::Repository> object has its own option hash, it will be used
 to provide default values that can be overridden by the actual option hash
 passed to C<new()>.
 
 If several option hashes are passed to C<new()>, they will all be merged,
 keys in later hashes taking precedence over keys in earlier hashes.
 
-The C<Git::Repository::Command> object returned by C<new()> has a
+The L<Git::Repository::Command> object returned by C<new()> has a
 number of attributes defined (see below).
 
 
@@ -309,7 +309,7 @@ or C<129> (usage message), it will C<die()>.
 
 =head2 Accessors
 
-The attributes of a C<Git::Repository::Command> object are also accessible
+The attributes of a L<Git::Repository::Command> object are also accessible
 through a number of accessors.
 
 The object returned by C<new()> will have the following attributes defined:
@@ -344,7 +344,7 @@ following code:
     my $fh = Git::Repository::Command->new( @cmd )->stdout;
 
 C<$fh> is opened and points to the output of the git subcommand, while
-the anonymous C<Git::Repository::Command> object has been destroyed.
+the anonymous L<Git::Repository::Command> object has been destroyed.
 Once C<$fh> is destroyed, the subprocess will be reaped, thus avoiding
 zombies.
 
@@ -372,8 +372,8 @@ Philippe Bruhat (BooK), C<< <book at cpan.org> >>
 
 =head1 ACKNOWLEDGEMENTS
 
-The core of C<Git::Repository::Command> has been moved into its own
-distribution: C<System::Command>. Proper Win32 support is now delegated
+The core of L<Git::Repository::Command> has been moved into its own
+distribution: L<System::Command>. Proper Win32 support is now delegated
 to that module.
 
 Before that, the Win32 implementation owed a lot to two people.
