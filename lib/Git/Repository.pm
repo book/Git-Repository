@@ -300,6 +300,9 @@ Git::Repository - Perl interface to Git repositories
     # start from an existing working copy
     $r = Git::Repository->new( work_tree => $dir );
 
+    # start from a repository reachable from the current directory
+    $r = Git::Repository->new();
+
     # or init our own repository first
     Git::Repository->run( init => $dir, ... );
     $r = Git::Repository->new( work_tree => $dir );
@@ -384,7 +387,9 @@ is accepted in place of C<work_tree> (but the newer name takes precedence).
 
 =back
 
-At least one of the two parameters is required. Usually, one is enough,
+If none of the parameter is given, L<Git::Repository> will find the
+appropriate repository just like Git itself does. Otherwise, one of
+the parameters is usually enough,
 as L<Git::Repository> can work out where the other directory (if any) is.
 
 C<new()> also accepts a reference to an option hash which will be used
