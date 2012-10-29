@@ -154,28 +154,9 @@ sub new {
     return $self;
 }
 
+# create() is now fully deprecated
 sub create {
-    my ( $class, @args ) = @_;
-    my @output = $class->run(@args);
-    my $gitdir;
-
-    # create() is now deprecated
-    carp "create() is deprecated, please use run() instead";
-
-    # git init or clone until v1.7.1 (inclusive)
-    if ( $output[0] =~ /^(?:Reinitialized existing|Initialized empty) Git repository in (.*)/ ) {
-        $gitdir = $1;
-    }
-
-    # git clone after v1.7.1
-    elsif ( $output[0] =~ /Cloning into (bare repository )?(.*)\.\.\./ ) {
-        $gitdir = $1 ? $2 : File::Spec->catdir( $2, '.git' );
-    }
-
-    # some other command (no git repository created)
-    else {return}
-
-    return $class->new( git_dir => $gitdir, grep { ref eq 'HASH' } @args );
+    croak "create() is deprecated, see Git::Repository::Tutorial for better alternatives";
 }
 
 #
@@ -362,9 +343,7 @@ any later version.
 
 See L<Git::Repository::Tutorial> for more code examples.
 
-=head1 CONSTRUCTORS
-
-There are two ways to create L<Git::Repository> objects:
+=head1 CONSTRUCTOR
 
 =head2 new( %args, $options )
 
@@ -425,27 +404,15 @@ Note that on some systems, some git commands may close standard input
 on startup, which will cause a C<SIGPIPE>. L<Git::Repository::Command>
 will raise an exception.
 
-=head2 create( @cmd )
+To create a Git repository and obtain a L<Git::Repository> object
+pointing to it, simply do it in two steps:
 
-B<The C<create()> method is deprecated, and will go away in the future.>
-
-Runs a repository initialization command (like C<init> or C<clone>) and
-returns a L<Git::Repository> object pointing to it. C<@cmd> may contain
-a hashref with options (see L<Git::Repository::Command>.
-
-Do not use the I<-q> option on such commands. C<create()> needs to parse
-their output to find the path to the repository.
-
-C<create()> also accepts a reference to an option hash which will be
-used to set up the returned L<Git::Repository> instance.
-
-Now that C<create()> is deprecated, instead of:
-
-    $r = Git::Repository->create( ... );
-
-simply do it in two steps:
-
+    # run a clone or init command without an instance,
+    # using options like cwd
     Git::Repository->run( ... );
+    
+    # obtain a Git::Repository instance
+    # on the resulting repository
     $r = Git::Repository->new( ... );
 
 
