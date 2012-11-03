@@ -20,18 +20,20 @@ my $dir    = $r->work_tree;
 my $gitdir = $r->git_dir;
 
 # use new with various options
+my $re_wc = qr/^working_copy is obsolete, please use work_tree instead /;
+my $re_re = qr/^repository is obsolete, please use git_dir instead /;
 my @tests = (
-    [ $dir  => [] ],
-    [ $home => [ working_copy => $dir ] ],
-    [ $home => [ work_tree => $dir, working_copy => $fake ] ],
-    [ $home => [ repository => $gitdir ] ],
-    [ $home => [ git_dir    => $gitdir, repository => $fake ] ],
+    [ $home => [ working_copy => $dir ], $re_wc ],
+    [ $home => [ work_tree => $dir, working_copy => $fake ], $re_wc ],
+    [ $home => [ repository => $gitdir ], $re_re ],
+    [ $home => [ git_dir    => $gitdir, repository => $fake ], $re_re ],
     [   $home => [
             git_dir      => $gitdir,
             repository   => $fake,
             work_tree    => $dir,
             working_copy => $fake,
-        ]
+        ],
+        $re_re
     ],
 
     # order doesn't matter
@@ -40,26 +42,22 @@ my @tests = (
             working_copy => $fake,
             work_tree    => $dir,
             git_dir      => $gitdir,
-        ]
+        ],
+        $re_re
     ],
 );
 
 # test backward compatibility
-plan tests => 6 * @tests;
+plan tests => 2 * @tests;
 
 # now test most possible cases for backward compatibility
 for my $t (@tests) {
-    my ( $cwd, $args ) = @$t;
+    my ( $cwd, $args, $re ) = @$t;
     chdir $cwd;
     my $i;
     my @args = grep { ++$i % 2 } @$args;
-    ok( $r = eval { Git::Repository->new(@$args) },
-        "Git::Repository->new( @args )" );
-    diag $@ if !$r;
-    isa_ok( $r, 'Git::Repository' ) or next;
-    is( $r->git_dir,   realpath($gitdir), '... correct git_dir' );
-    is( $r->work_tree, realpath($dir),    '... correct work_tree' );
-    is( $r->repo_path, $r->git_dir,       '... repo_path == git_dir' );
-    is( $r->wc_path,   $r->work_tree,     '... wc_path == work_tree' );
+    $r = eval { Git::Repository->new(@$args) };
+    ok( !$r, "Git::Repository->new( @args ) fails" );
+    like( $@, $re, '... with expected error message' );
 }
 
