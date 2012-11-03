@@ -71,10 +71,15 @@ sub new {
     # ignore 'input' option during object creation
     my $input = delete $options->{input};
 
+    # die if deprecated parameters are given
+    croak "repository is obsolete, please use git_dir instead"
+        if defined delete $arg{repository};
+    croak "working_copy is obsolete, please use work_tree instead"
+        if defined delete $arg{working_copy};
+
     # setup default options
-    # accept older for backward compatibility
-    my ($git_dir) = grep {defined} delete @arg{qw( git_dir repository )};
-    my ($work_tree) = grep {defined} delete @arg{qw( work_tree working_copy )};
+    my $git_dir   = delete $arg{git_dir};
+    my $work_tree = delete $arg{work_tree};
 
     croak "Unknown parameters: @{[keys %arg]}" if keys %arg;
 
