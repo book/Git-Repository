@@ -446,22 +446,10 @@ or C<129> (usage message), C<run()> will C<die()>.
 
 Returns the repository path.
 
-=head2 repo_path()
-
-For backward compatibility with versions 1.06 and before, C<repo_path()>
-it provided as an alias to C<git_dir()>. It will be removed in a future
-version.
-
 =head2 work_tree()
 
 Returns the working copy path.
 Used as current working directory by L<Git::Repository::Command>.
-
-=head2 wc_path()
-
-For backward compatibility with versions 1.06 and before, C<wc_path()>
-it provided as an alias to C<work_tree()>. It will be removed in a future
-version.
 
 =head2 options()
 
