@@ -26,6 +26,10 @@ my $r      = test_repository;
 my $dir    = $r->work_tree;
 my $gitdir = $r->git_dir;
 
+# extra options to the commit command:
+# - skip commit hooks that might be included in the template
+my @opts = qw( --no-verify );
+
 # some test data
 my %commit = (
     1 => {
@@ -69,7 +73,7 @@ BEGIN { $tests += 2 }
 my $file = File::Spec->catfile( $dir, 'file' );
 do { open my $fh, '>', $file; };
 $r->run( add => 'file' );
-$r->run( commit => '-m', $commit{1}{subject} );
+$r->run( commit => @opts, '-m', $commit{1}{subject} );
 my @log = $r->log();
 is( scalar @log, 1, '1 commit' );
 isa_ok( $_, 'Git::Repository::Log' ) for @log;
@@ -83,7 +87,7 @@ push @{ $commit{2}{parent} }, $log[0]->commit;
 BEGIN { $tests += 3 }
 do { open my $fh, '>', $file; print $fh 'line 1'; };
 $r->run( add => 'file' );
-$r->run( commit => '-m', "$commit{2}{subject}\n\n$commit{2}{body}" );
+$r->run( commit => @opts, '-m', "$commit{2}{subject}\n\n$commit{2}{body}" );
 @log = $r->log();
 is( scalar @log, 2, '2 commits' );
 isa_ok( $_, 'Git::Repository::Log' ) for @log;
