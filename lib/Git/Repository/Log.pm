@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 # a few simple accessors
 for my $attr (

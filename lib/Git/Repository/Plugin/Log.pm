@@ -10,7 +10,7 @@ sub _keywords { qw( log ) }
 
 use Git::Repository::Log::Iterator;
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 sub log {
 
