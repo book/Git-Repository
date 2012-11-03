@@ -19,6 +19,10 @@ my $r      = test_repository;
 my $dir    = $r->work_tree;
 my $gitdir = $r->git_dir;
 
+# capture warnings
+my @warnings;
+local $SIG{__WARN__} = sub { push @warnings, shift };
+
 # use new with various options
 my @tests = (
     [ $dir  => [] ],
@@ -45,21 +49,23 @@ my @tests = (
 );
 
 # test backward compatibility
-plan tests => 6 * @tests;
+plan tests => 8 * @tests;
 
 # now test most possible cases for backward compatibility
 for my $t (@tests) {
-    my ( $cwd, $args ) = @$t;
+    my ( $cwd, $args, $re ) = @$t;
     chdir $cwd;
     my $i;
     my @args = grep { ++$i % 2 } @$args;
     ok( $r = eval { Git::Repository->new(@$args) },
         "Git::Repository->new( @args )" );
-    diag $@ if !$r;
     isa_ok( $r, 'Git::Repository' ) or next;
+
     is( $r->git_dir,   realpath($gitdir), '... correct git_dir' );
     is( $r->work_tree, realpath($dir),    '... correct work_tree' );
     is( $r->repo_path, $r->git_dir,       '... repo_path == git_dir' );
+    like( shift @warnings, qr/^repo_path\(\) is obsolete, please use git_dir\(\) instead /, "repo_path() outputs the expected warning");
     is( $r->wc_path,   $r->work_tree,     '... wc_path == work_tree' );
+    like( shift @warnings, qr/^wc_path\(\) is obsolete, please use work_tree\(\) instead /, "wc_path() outputs the expected warning");
 }
 
