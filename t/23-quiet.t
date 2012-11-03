@@ -8,6 +8,10 @@ has_git('1.5.0');
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+$ENV{GIT_AUTHOR_NAME}     = 'Test Author';
+$ENV{GIT_AUTHOR_EMAIL}    = 'test.author@example.com';
+$ENV{GIT_COMMITTER_NAME}  = 'Test Committer';
+$ENV{GIT_COMMITTER_EMAIL} = 'test.committer@example.com';
 
 # a place to put a git repository
 my $r = test_repository;
