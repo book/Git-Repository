@@ -21,25 +21,17 @@ my $home = cwd();
 # a place to put a git repository
 my $dir = realpath( tempdir( CLEANUP => 1 ) );
 
-# capture warnings
-my @warnings;
-local $SIG{__WARN__} = sub { push @warnings, shift };
-
-BEGIN { $tests += 4 }
+BEGIN { $tests += 2 }
 mkpath $dir;
 chdir $dir;
 
-# check that create() does warn
-ok( my $r = eval { Git::Repository->create('init'); },
-    "Git::Repository->create()" );
-diag $@ if $@;
-isa_ok( $r, 'Git::Repository' );
-
-is( scalar @warnings, 1, "create() outputs a single warning" );
+# check that create() dies
+my $r = eval { Git::Repository->create('init'); };
+ok( !$r, "Git::Repository->create() fails " );
 like(
-    $warnings[0],
-    qr/^create\(\) is deprecated, please use run\(\) instead at /,
-    "Git::Repository->create() warns"
+    $@,
+    qr/^create\(\) is deprecated, see Git::Repository::Tutorial for better alternatives at /,
+    "... with expected error message"
 );
 chdir $home;
 
