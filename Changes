@@ -1,5 +1,14 @@
 Revision history for Git-Repository
 
+1.28 Sun Nov  4 2012
+        [ENHANCEMENTS]
+        - disabled colored output from logs in Git::Repository::Log::Iterator
+        - wc_path() and repo_path() accessors are deprecated and now warn
+        - improved the inter-documentation links by liberal use of L<>
+        [TESTS]
+        - ignore commit hooks that may be included with templates (RT #80593)
+        - test for quiet won't fail if no identity is defined (RT #80321)
+
 1.27 Thu Oct 11 2012
         [ENHANCEMENTS]
         - Git::Repository::Command skips non-executable files when searching
