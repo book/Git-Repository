@@ -4,7 +4,7 @@
       "Philippe Bruhat (BooK) <book@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112621",
+   "generated_by" : "Module::Build version 0.4003, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -16,21 +16,23 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Test::More" : 0
+            "Test::More" : "0"
          }
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "Module::Build" : "0.40"
          }
       },
       "runtime" : {
          "requires" : {
-            "Cwd" : 0,
-            "File::Path" : 0,
-            "File::Spec" : 0,
-            "IPC::Open3" : 0,
-            "List::Util" : 0,
+            "Carp" : "0",
+            "Cwd" : "0",
+            "File::Path" : "0",
+            "File::Spec" : "0",
+            "IO::Handle" : "0",
+            "List::Util" : "0",
+            "Scalar::Util" : "0",
             "System::Command" : "1.05"
          }
       }

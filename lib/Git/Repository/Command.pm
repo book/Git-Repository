@@ -7,7 +7,6 @@ use 5.006;
 use Carp;
 use Cwd qw( cwd );
 use IO::Handle;
-use IPC::Open3 qw( open3 );
 use Scalar::Util qw( blessed );
 use File::Spec;
 use Config;

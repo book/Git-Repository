@@ -14,8 +14,10 @@ WriteMakefile(
         'List::Util' => 0,
         'File::Spec' => 0,
         'File::Path' => 0,
-        'IPC::Open3' => 0,
         'Cwd' => 0,
+        'Carp'       => 0,
+        'IO::Handle' => 0,
+        'Scalar::Util' => 0,
         'System::Command' => '1.05',
     },
     META_MERGE => {
