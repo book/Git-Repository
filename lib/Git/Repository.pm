@@ -193,13 +193,17 @@ sub command {
 sub run {
     my ( $self, @cmd ) = @_;
 
+    # split the args to get the optional callbacks
+    my @c;
+    @cmd = grep { ref eq 'CODE' ? !push @c, $_ : 1 } @cmd;
+
     # run the command (pass the instance if called as an instance method)
     my $command
         = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
     # return the output or die
     local $Carp::CarpLevel = 1;
-    return $command->final_output;
+    return $command->final_output(@c);
 }
 
 #
@@ -467,6 +471,11 @@ Runs the command and returns the output as a string in scalar context,
 or as a list of lines in list context. Also accepts a hashref of options.
 
 Lines are automatically C<chomp>ed.
+
+In addition to the options hashref supported by L<Git::Repository::Command>,
+the parameter list can also contain code references, that will be applied
+successively to each line of output. The line being processed is in C<$_>,
+but the coderef must still return the result string.
 
 If the git command printed anything on stderr, it will be printed as
 warnings. If the git sub-process exited with status C<128> (fatal error),
