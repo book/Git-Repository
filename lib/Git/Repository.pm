@@ -328,7 +328,12 @@ Git::Repository - Perl interface to Git repositories
     # - get the full output as a list of lines (no errput)
     @output = $r->run(@cmd);
 
+    # - process the output with callbacks
+    $output = $r->run( @cmd, sub {...} );
+    @output = $r->run( @cmd, sub {...} );
+
     # - obtain a Git::Repository::Command object
+    #   (see Git::Repository::Command for details)
     $cmd = $r->command(@cmd);
 
     # obtain version information
