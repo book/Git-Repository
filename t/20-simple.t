@@ -108,6 +108,15 @@ $r->run( commit => '-m', $message );
 my @log = $r->run( log => '--pretty=format:%s' );
 is_deeply( \@log, [$message], 'git commit ; git log' );
 
+# test callbacks
+BEGIN { $tests += 2 }
+@log = $r->run( log => '--pretty=format:%s', sub { ~~ reverse } );
+is_deeply( \@log, [ ~~ reverse $message ], 'run() with 1 callback' );
+
+sub rot13 { $_[0] =~ y/a-z/n-za-m/; $_[0] }
+@log = $r->run( log => '--pretty=format:%s', \&rot13, sub { ~~ reverse } );
+is_deeply( \@log, [ ~~ reverse rot13 $message ], 'run() with 2 callback' );
+
 # use commit-tree with input option
 BEGIN { $tests += 4 }
 my $parent = $r->run( log => '--pretty=format:%H' );
