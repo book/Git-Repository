@@ -172,6 +172,10 @@ Assuming B<git log> will output the default format will eventually
 lead to problems, for example when the user's git configuration defines
 C<format.pretty> to be something else than the default of C<medium>.
 
+See also L<Git::Repository::Plugin::Log> for adding to your
+L<Git::Repository> objects a C<log()> method that will parse the log
+output for you.
+
 =head2 Process the output of B<git shortlog>
 
 B<git shortlog> behaves differently when it detects it's not attached
@@ -251,6 +255,11 @@ using the I<private> C<_version_gt()> method (which accepts two parameters):
             || -Git::Repository::_version_gt( $b, $a )
     } @versions;
 
+
+=head2 Add specialized methods to your Git::Repository objects
+
+Have a look at L<Git::Repository::Plugin> and L<Git::Repository::Plugin::Log>,
+to learn how to add your own methods to L<Git::Repository>.
 
 =head1 AUTHOR
 
