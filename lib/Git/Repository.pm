@@ -480,7 +480,7 @@ Lines are automatically C<chomp>ed.
 In addition to the options hashref supported by L<Git::Repository::Command>,
 the parameter list can also contain code references, that will be applied
 successively to each line of output. The line being processed is in C<$_>,
-but the coderef must still return the result string.
+but the coderef must still return the result string (like C<map>).
 
 If the git command printed anything on stderr, it will be printed as
 warnings. If the git sub-process exited with status C<128> (fatal error),
