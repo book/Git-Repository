@@ -1,5 +1,11 @@
 Revision history for Git-Repository
 
+1.29 Tue Dec 4 2012
+        [ENHANCEMENTS]
+        - added support for callbacks in run()
+        [DOCUMENTATION]
+        - minor documentation improvements
+
 1.28 Sun Nov  4 2012
         [ENHANCEMENTS]
         - disabled colored output from logs in Git::Repository::Log::Iterator

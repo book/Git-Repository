@@ -26,11 +26,13 @@
       },
       "runtime" : {
          "requires" : {
+            "Carp" : 0,
             "Cwd" : 0,
             "File::Path" : 0,
             "File::Spec" : 0,
-            "IPC::Open3" : 0,
+            "IO::Handle" : 0,
             "List::Util" : 0,
+            "Scalar::Util" : 0,
             "System::Command" : "1.05"
          }
       }
@@ -38,7 +40,7 @@
    "provides" : {
       "Git::Repository" : {
          "file" : "lib/Git/Repository.pm",
-         "version" : "1.28"
+         "version" : "1.29"
       },
       "Git::Repository::Command" : {
          "file" : "lib/Git/Repository/Command.pm",
@@ -74,5 +76,5 @@
          "url" : "http://github.com/book/Git-Repository"
       }
    },
-   "version" : "1.28"
+   "version" : "1.29"
 }
