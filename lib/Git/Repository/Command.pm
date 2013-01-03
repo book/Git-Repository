@@ -96,10 +96,11 @@ sub new {
     my ( $class, @cmd ) = @_;
 
     # split the args
-    my $r;    # pick the first Git::Repository object (if any) as the context
-    @cmd = grep !( blessed $_ && $_->isa('Git::Repository') ? $r ||= $_ : 0 ),
+    my ($r, @o);
+    @cmd =    # take out the first Git::Repository in $r, and options in @o
+        grep !( blessed $_ && $_->isa('Git::Repository') ? $r ||= $_   : 0 ),
+        grep !( ref eq 'HASH'                            ? push @o, $_ : 0 ),
         @cmd;
-    my @o = grep { ref eq 'HASH' } @cmd;
 
     # keep changes to the environment local
     local %ENV = %ENV;
