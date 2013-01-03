@@ -197,6 +197,20 @@ ok( !eval {
 );
 like( $@, qr/^Can't chdir to .*not-there/, '... expected error message' );
 
+# FAIL - pass more than one Git::Repository to Git::Repository::Command
+BEGIN { $tests += 2 }
+ok( !eval {
+        $r->run( 'version',
+            bless( { work_tree => 'TEH FAIL' }, 'Git::Repository' ) );
+    },
+    'Fail with more than one Git::Repository object'
+);
+like(
+    $@,
+    qr/^Too many Git::Repository objects given: /,
+    '... expected error message'
+);
+
 # now work with GIT_DIR and GIT_WORK_TREE only
 BEGIN { $tests += 1 }
 {
@@ -296,7 +310,6 @@ $r->run(
     commit => '-a',
     '-m', 'Test option hash in run()',
     { env => { GIT_AUTHOR_EMAIL => 'fail@fail.com' } },      # ignored silently
-    bless( { work_tree => 'TEH FAIL' }, 'Git::Repository' ), # ignored silently
     { env => { GIT_AUTHOR_EMAIL => 'example@author.com' } }  # not ignored
 );
 ($author) = grep {/^Author:/} $r->run( log => '-1', '--pretty=medium' );
