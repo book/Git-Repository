@@ -92,13 +92,32 @@ sub _is_git {
             : undef;
 }
 
+
+sub _extract_special_from_list (&;@) {
+    my $filter = shift;
+
+    my @specials;
+    my @things;
+    for my $thing (@_) {
+        if( $filter->($thing) ) {
+            push @specials, $thing;
+        }
+        else {
+            push @things, $thing;
+        }
+    }
+
+    # Current behavior silently ignores any additional items
+    return($specials[0], @things);
+}
+
 sub new {
     my ( $class, @cmd ) = @_;
 
     # split the args
-    my ($r) = grep { blessed $_ && $_->isa('Git::Repository') } @cmd;
+    my $r;
+    ($r, @cmd) = _extract_special_from_list { blessed $_[0] && $_[0]->isa('Git::Repository') } @cmd;
     my @o = grep { ref eq 'HASH' } @cmd;
-    @cmd = grep { !ref } @cmd;
 
     # keep changes to the environment local
     local %ENV = %ENV;
