@@ -26,6 +26,7 @@ t/21-submodule.t
 t/22-backward.t
 t/23-quiet.t
 t/25-plugins.t
+t/26-overloaded_objects.t
 t/30-log.t
 t/40-plugin-log.t
 t/config
