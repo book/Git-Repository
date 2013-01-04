@@ -7,7 +7,7 @@ use Test::Git;
 use File::Temp qw(tempdir);
 use Cwd qw(realpath);
 
-has_git('1.5.0');
+has_git('1.6.5');
 
 plan tests => 3;
 
