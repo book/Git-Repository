@@ -25,7 +25,7 @@ sub new {
         if @badopts;
 
     # enforce the format
-    @cmd = ( 'log', '--pretty=raw', '--color=never', @cmd );
+    @cmd = ( 'log', '--pretty=raw', '--no-color', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
     bless { cmd => Git::Repository::Command->new(@cmd) }, $class;
