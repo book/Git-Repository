@@ -288,7 +288,6 @@ $r = Git::Repository->new(
             GIT_AUTHOR_EMAIL => 'author@example.com'
         }
     },
-    { git => '/bin/false' },    # second option hash will be ignored silently
 );
 update_file( my $file = File::Spec->catfile( $dir, 'other.txt' ), << 'TXT' );
 Some other text
@@ -317,6 +316,19 @@ is( $author,
     'Author: Example author <example@author.com>',
     'Option hash in new() and run()'
 );
+
+# FAIL - use more than one option HASH
+BEGIN { $tests += 2 }
+ok( !eval {
+        $r = Git::Repository->new(
+            work_tree => $dir,
+            { env => { GIT_AUTHOR_NAME => 'Example author' } },
+            { git => '/bin/false' }
+        );
+    },
+    'new() dies when given more than one option HASH'
+);
+like( $@, qr/^Too many option hashes given: /, '... expected error message' );
 
 # PASS - use an option HASH (no env key)
 BEGIN { $tests += 2 }
