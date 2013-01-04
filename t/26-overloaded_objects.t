@@ -1,11 +1,6 @@
-#!/usr/bin/perl
-
 # Test that we work with stringified path objects like Path::Class.
-
 use strict;
 use warnings;
-
-use lib 't';
 
 use Test::More;
 use Test::Git;
@@ -39,4 +34,4 @@ note( Git::Repository->run( init => $repo_dir ) );
 ok -d "$repo_dir/.git", "git repo initialized";
 my $r = eval { Git::Repository->new( work_tree => $repo_dir ); };
 isa_ok $r, "Git::Repository";
-is $r->work_tree, realpath($repo_dir);
+is $r->work_tree, realpath($repo_dir), $repo_dir;
