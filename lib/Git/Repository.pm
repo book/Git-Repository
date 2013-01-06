@@ -11,8 +11,6 @@ use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
 
-our $VERSION = '1.29';
-
 # a few simple accessors
 for my $attr (qw( git_dir work_tree options )) {
     no strict 'refs';
@@ -299,11 +297,9 @@ sub version_ge {
 
 1;
 
-__END__
+# ABSTRACT: Perl interface to Git repositories
 
-=head1 NAME
-
-Git::Repository - Perl interface to Git repositories
+=pod
 
 =head1 SYNOPSIS
 
@@ -613,6 +609,13 @@ just prefix the fully qualified class name with a C<+>. For example:
 
 See L<Git::Repository::Plugin> about how to create a new plugin.
 
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to Todd Rinalo, who wanted to add more methods to
+L<Git::Repository>, which made me look for a solution that would preserve
+the minimalism of L<Git::Repository>. The C<::Plugin> interface is what
+I came up with.
+
 =head1 OTHER PERL GIT WRAPPERS
 
 (This section was written in June 2010. The other Git wrappers have
@@ -669,10 +672,6 @@ porcelain commands, and provides no way to control bidirectional commands
 Doesn't support streams or bidirectional commands.
 
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
 =head1 BUGS
 
 Since version 1.17, L<Git::Repository> delegates the actual command
@@ -714,22 +713,4 @@ L<http://search.cpan.org/dist/Git-Repository>
 
 =back
 
-
-=head1 ACKNOWLEDGEMENTS
-
-Thanks to Todd Rinalo, who wanted to add more methods to
-L<Git::Repository>, which made me look for a solution that would preserve
-the minimalism of L<Git::Repository>. The C<::Plugin> interface is what
-I came up with.
-
-=head1 COPYRIGHT
-
-Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-

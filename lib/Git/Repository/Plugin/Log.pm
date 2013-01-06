@@ -10,8 +10,6 @@ sub _keywords { qw( log ) }
 
 use Git::Repository::Log::Iterator;
 
-our $VERSION = '1.02';
-
 sub log {
 
     # skip the invocant when invoked as a class method
@@ -33,11 +31,9 @@ sub log {
 
 1;
 
-__END__
+# ABSTRACT: Add a log() method to Git::Repository
 
-=head1 NAME
-
-Git::Repository::Plugin::Log - Add a log() method to Git::Repository
+=pod
 
 =head1 SYNOPSIS
 
@@ -74,10 +70,6 @@ Note that this can be very memory-intensive.
 See L<Git::Repository::Log::Iterator>'s documentation for details about
 how parameters are handled.
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
 =head1 ACKNOWLEDGEMENTS
 
 Many thanks to Aristotle Pagaltzis who requested a C<log()> method in
@@ -89,14 +81,4 @@ L<Git::Repository::Plugin>,
 L<Git::Repository::Log::Iterator>,
 L<Git::Repository::Log>.
 
-=head1 COPYRIGHT
-
-Copyright 2010 Philippe Bruhat (BooK).
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-

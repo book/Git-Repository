@@ -12,7 +12,6 @@ use File::Spec;
 use Config;
 use System::Command;
 
-our $VERSION = '1.17';
 our @ISA = qw( System::Command );
 
 
@@ -182,11 +181,9 @@ sub final_output {
 
 1;
 
-__END__
+# ABSTRACT: Command objects for running git
 
-=head1 NAME
-
-Git::Repository::Command - Command objects for running git
+=pod
 
 =head1 SYNOPSIS
 
@@ -380,10 +377,6 @@ The signal, if any, that killed the command.
 
 =back
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
 =head1 ACKNOWLEDGEMENTS
 
 The core of L<Git::Repository::Command> has been moved into its own
@@ -397,14 +390,4 @@ Many thanks go also to Chris Williams (BINGOS) for pointing me towards
 perlmonks posts by ikegami that contained crucial elements to a working
 MSWin32 implementation.
 
-=head1 COPYRIGHT
-
-Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-

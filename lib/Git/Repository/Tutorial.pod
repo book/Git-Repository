@@ -1,6 +1,5 @@
-=head1 NAME
-
-Git::Repository::Tutorial - Control git from Perl using Git::Repository
+# ABSTRACT: Control git from Perl using Git::Repository
+# PODNAME: Git::Repository::Tutorial
 
 =head1 SYNOPSIS
 
@@ -261,18 +260,4 @@ using the I<private> C<_version_gt()> method (which accepts two parameters):
 Have a look at L<Git::Repository::Plugin> and L<Git::Repository::Plugin::Log>,
 to learn how to add your own methods to L<Git::Repository>.
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
-=head1 COPYRIGHT
-
-Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
-
-=head1 LICENSE
-
-This documentation is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-
