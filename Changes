@@ -1,5 +1,9 @@
 Revision history for Git-Repository
 
+{{$NEXT}}
+        [PACKAGING]
+        - switch to Dist::Zilla for maintaining the distribution
+
 1.29 Tue Dec 4 2012
         [ENHANCEMENTS]
         - added support for callbacks in run()
