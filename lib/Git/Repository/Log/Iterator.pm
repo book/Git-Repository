@@ -25,6 +25,7 @@ sub new {
         if @badopts;
 
     # enforce the format
+    # note: there is no --color option before 1.5.3.3
     @cmd = ( 'log', '--pretty=raw', '--no-color', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
@@ -90,6 +91,9 @@ Git::Repository::Log::Iterator - Split a git log stream into records
 L<Git::Repository::Log::Iterator> initiates a B<git log> command
 from a list of paramaters and parses its output to produce
 L<Git::Repository::Log> objects represening each log item.
+
+Note that L<Git::Repository::Log::Iterator> will fail on Git versions
+prior to 1.5.3.3.
 
 =head1 METHODS
 
