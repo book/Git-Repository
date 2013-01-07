@@ -1,5 +1,16 @@
 Revision history for Git-Repository
 
+1.300 Mon Jan  7 2012
+        [ENHANCEMENTS]
+        - fixed support for overloaded objects (e.g. Path::Class objects)
+          in Git::Repository::Command (RT #82373)
+        - fixed Git::Repository::Log::Iterator to work with older gits
+          when disabling colored output (thanks to Dominic Humphries)
+        - fixed some cases where Git::Repository::Command and Git::Repository
+          new() methods ignored some of their parameters. They now die when
+          passed ambiguous or unexpected parameters.
+          (follow-up of RT #82373, thanks to Michael G. Schwern)
+
 1.29 Tue Dec 4 2012
         [ENHANCEMENTS]
         - added support for callbacks in run()

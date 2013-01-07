@@ -10,7 +10,7 @@ use Git::Repository;
 use Git::Repository::Command;
 use Git::Repository::Log;
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 sub new {
     my ( $class, @cmd ) = @_;

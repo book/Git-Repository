@@ -40,11 +40,11 @@
    "provides" : {
       "Git::Repository" : {
          "file" : "lib/Git/Repository.pm",
-         "version" : "1.29"
+         "version" : "1.300"
       },
       "Git::Repository::Command" : {
          "file" : "lib/Git/Repository/Command.pm",
-         "version" : "1.17"
+         "version" : "1.18"
       },
       "Git::Repository::Log" : {
          "file" : "lib/Git/Repository/Log.pm",
@@ -52,7 +52,7 @@
       },
       "Git::Repository::Log::Iterator" : {
          "file" : "lib/Git/Repository/Log/Iterator.pm",
-         "version" : "1.03"
+         "version" : "1.04"
       },
       "Git::Repository::Plugin" : {
          "file" : "lib/Git/Repository/Plugin.pm",
@@ -76,5 +76,5 @@
          "url" : "http://github.com/book/Git-Repository"
       }
    },
-   "version" : "1.29"
+   "version" : "1.300"
 }
