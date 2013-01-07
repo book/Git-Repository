@@ -10,7 +10,6 @@ use File::Temp qw( tempdir );
 use Cwd qw( cwd );
 use Carp;
 
-our $VERSION = '1.02';
 our @ISA     = qw( Exporter );
 our @EXPORT  = qw( has_git test_repository );
 
@@ -60,11 +59,9 @@ sub test_repository {
 
 1;
 
-__END__
+# ABSTRACT: Helper functions for test scripts using Git
 
-=head1 NAME
-
-Test::Git - Helper functions for test scripts using Git
+=pod
 
 =head1 SYNOPSIS
 
@@ -139,18 +136,4 @@ To leave the repository in its location after the end of the test:
 Note that since C<test_repository()> uses C<git init> to create the test
 repository, it requires at least Git version C<1.5.0>.
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
-=head1 COPYRIGHT
-
-Copyright 2010-2012 Philippe Bruhat (BooK), all rights reserved.
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-

@@ -10,8 +10,6 @@ use Git::Repository;
 use Git::Repository::Command;
 use Git::Repository::Log;
 
-our $VERSION = '1.04';
-
 sub new {
     my ( $class, @cmd ) = @_;
 
@@ -70,11 +68,9 @@ sub next {
 
 1;
 
-__END__
+# ABSTRACT: Split a git log stream into records
 
-=head1 NAME
-
-Git::Repository::Log::Iterator - Split a git log stream into records
+=pod
 
 =head1 SYNOPSIS
 
@@ -122,18 +118,4 @@ to parse the output yourself.
 Return the next log item as a L<Git::Repository::Log> object,
 or nothing if the stream has ended.
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
-=head1 COPYRIGHT
-
-Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-

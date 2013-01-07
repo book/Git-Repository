@@ -5,8 +5,6 @@ use warnings;
 use 5.006;
 use Carp;
 
-our $VERSION = '1.02';
-
 sub install {
     my ( $class, @keywords ) = @_;
     no strict 'refs';
@@ -28,11 +26,9 @@ sub _keywords {
 
 1;
 
-__END__
+# ABSTRACT: Base class for Git::Repository plugins
 
-=head1 NAME
-
-Git::Repository::Plugin - Base class for Git::Repository plugins
+=pod
 
 =head1 SYNOPSIS
 
@@ -74,10 +70,6 @@ If called with an empty list, will install all available keywords.
 When creating a plugin, the new keywords that are added by the plugin
 to L<Git::Repository> must be returned by a C<_keywords()> method.
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Todd Rinalo, who wanted to add more methods to
@@ -86,20 +78,10 @@ the minimalism of L<Git::Repository>.
 
 After a not-so-good design using @ISA (so L<Git::Repository> would
 I<inherit> the extra methods), further discussions with Aristotle
-Pagaltzis and a quick peek at Dancer's plugin management helped me
-come up with the current design. Thank you Aristotle and the Dancer
+Pagaltzis and a quick peek at L<Dancer>'s plugin management helped me
+come up with the current design. Thank you Aristotle and the L<Dancer>
 team.
 
 Further improvements to the plugin system proposed by Aristotle Pagaltzis.
 
-=head1 COPYRIGHT
-
-Copyright 2010 Philippe Bruhat (BooK).
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-

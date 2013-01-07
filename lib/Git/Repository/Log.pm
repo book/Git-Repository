@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '1.02';
-
 # a few simple accessors
 for my $attr (
     qw(
@@ -65,11 +63,9 @@ sub new {
 
 1;
 
-__END__
+# ABSTRACT: Class representing git log data
 
-=head1 NAME
-
-Git::Repository::Log - Class representing git log data
+=pod
 
 =head1 SYNOPSIS
 
@@ -211,18 +207,4 @@ The unindented version of the log message.
 
 =back
 
-=head1 AUTHOR
-
-Philippe Bruhat (BooK), C<< <book at cpan.org> >>
-
-=head1 COPYRIGHT
-
-Copyright 2010 Philippe Bruhat (BooK), all rights reserved.
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 =cut
-
