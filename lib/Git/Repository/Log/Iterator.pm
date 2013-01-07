@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use 5.006;
 use Carp;
+use Scalar::Util qw( blessed );
 
 use Git::Repository;
 use Git::Repository::Command;
@@ -24,9 +25,13 @@ sub new {
         . 'Use run( log => ... ) to parse the output yourself'
         if @badopts;
 
+    # note: there is no --color option to git log  before 1.5.3.3
+    my ($r) = grep blessed $_ && $_->isa('Git::Repository'), @cmd;
+    $r ||= 'Git::Repository';    # no Git::Repository object given
+    unshift @cmd, '--no-color' if $r->version_ge('1.5.3.3');
+
     # enforce the format
-    # note: there is no --color option before 1.5.3.3
-    @cmd = ( 'log', '--pretty=raw', '--no-color', @cmd );
+    @cmd = ( 'log', '--pretty=raw', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
     bless { cmd => Git::Repository::Command->new(@cmd) }, $class;
@@ -91,9 +96,6 @@ Git::Repository::Log::Iterator - Split a git log stream into records
 L<Git::Repository::Log::Iterator> initiates a B<git log> command
 from a list of paramaters and parses its output to produce
 L<Git::Repository::Log> objects represening each log item.
-
-Note that L<Git::Repository::Log::Iterator> will fail on Git versions
-prior to 1.5.3.3.
 
 =head1 METHODS
 
