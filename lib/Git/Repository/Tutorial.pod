@@ -65,8 +65,7 @@ Sometime, you'll need to create the Git repository from scratch:
     Git::Repository->run( init => { cwd => $dir } );
     $r = Git::Repository->new( work_tree => $dir );
 
-Note that the old C<create()> method is obsolete, warns and will be removed
-in a future version.
+Note that the old C<create()> method is obsolete and has been removed.
 
 =head2 Clone a repository
 
