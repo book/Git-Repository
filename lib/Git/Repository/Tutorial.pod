@@ -401,6 +401,23 @@ using the I<private> C<_version_gt()> method (which accepts two parameters):
 Have a look at L<Git::Repository::Plugin> and L<Git::Repository::Plugin::Log>,
 to learn how to add your own methods to L<Git::Repository>.
 
+=head2 Run code on the output of a git command, and get the results
+
+Sometimes you need to process the output of a command, by running a
+callback on each line of the output.
+
+    # code inspiration:
+    # https://github.com/dolmen/github-keygen/blob/24c501072ba7d890810de3008434c1fe1f757286/release.pl#L178
+
+    my %tree;
+    $r->run( 'ls-tree' => $commit, sub {
+        my ($mode, $type, $object, $file) = split;
+        $tree{$file} = [ $mode, $type, $object ];
+    } );
+
+Note that the value returned by the callback will be returned as part of
+the C<run()> output, instead of the original line.
+
 =head1 COPYRIGHT
 
 Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
