@@ -11,7 +11,7 @@ Revision history for Git-Repository
         [PACKAGING]
         - switch to Dist::Zilla for maintaining the distribution
 
-1.300 Mon Jan  7 2012
+1.300 Mon Jan  7 2013
         [ENHANCEMENTS]
         - fixed support for overloaded objects (e.g. Path::Class objects)
           in Git::Repository::Command (RT #82373)
