@@ -45,7 +45,8 @@ sub new {
     # compute other keys
     $self->{raw_message} = $self->{message};
     $self->{message} =~ s/^    //gm;
-    @{$self}{qw( subject body )} = ( split( /\n/m, $self->{message}, 2 ), '' );
+    @{$self}{qw( subject body )}
+        = ( split( /\n/m, $self->{message}, 2 ), '', '' );
     $self->{body} =~ s/\A\s//gm;
 
     # author and committer details
