@@ -54,13 +54,14 @@ sub next {
 
     # the first two records are always the same, with --pretty=raw
     local $/ = "\n";
-    my ( $header, $message, $extra ) = ( @records, '' );
-    my @headers = map { chomp; split / /, $_, 2 } split /^/m, $header;
+    my ( $header, $message, $extra ) = ( @records, '', '' );
+    my %headers = map { chomp; split / /, $_, 2 } split /^(?=\S)/m, $header;
+    s/^ //gm for values %headers;
     chomp( $message, $extra ) if exists $self->{record};
 
     # create the log object
     return Git::Repository::Log->new(
-        @headers,
+        %headers,
         message => $message,
         extra   => $extra,
     );
