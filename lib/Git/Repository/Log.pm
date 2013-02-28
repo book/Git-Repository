@@ -100,7 +100,7 @@ C<git log --pretty=raw>):
 
 =item commit
 
-The commit id (ignore the extra information added by I<--decorate>).
+The commit id (ignoring the extra information added by I<--decorate>).
 
 =item tree
 
@@ -135,6 +135,10 @@ The mergetag information.
 Any extra text that might be added by extra options passed to B<git log>.
 
 =back
+
+Note that since C<git tag --pretty=raw> does not provide the C<encoding>
+header (and provides the message properly decoded), this information
+will not be available via L<Git::Repository::Plugin::Log>.
 
 =head1 ACCESSORS
 
