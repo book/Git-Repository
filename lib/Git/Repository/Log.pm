@@ -13,6 +13,7 @@ for my $attr (
     author_localtime author_tz author_gmtime
     committer_localtime committer_tz committer_gmtime
     raw_message message subject body
+    gpgsig mergetag
     extra
     )
     )
@@ -121,6 +122,14 @@ The committer information.
 
 The log message (including the 4-space indent normally output by B<git log>).
 
+=item gpgsig
+
+The commit signature.
+
+=item mergetag
+
+The mergetag information.
+
 =item extra
 
 Any extra text that might be added by extra options passed to B<git log>.
@@ -197,6 +206,16 @@ The unindented version of the log message.
 =item subject
 
 =item body
+
+=back
+
+=head2 Signature-related information
+
+=over 4
+
+=item gpgsig
+
+=item mergetag
 
 =back
 
