@@ -184,12 +184,13 @@ sub run {
     my @c;
     @cmd = grep { ref eq 'CODE' ? !push @c, $_ : 1 } @cmd;
 
+    local $Carp::CarpLevel = 1;
+
     # run the command (pass the instance if called as an instance method)
     my $command
         = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
     # return the output or die
-    local $Carp::CarpLevel = 1;
     return $command->final_output(@c);
 }
 
