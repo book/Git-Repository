@@ -73,6 +73,9 @@ SKIP: {
     skip "editor defined directly in .gitconfig", 2
         if $r->run( config => 'core.editor' );
 
+    skip "this test does not work with msysgit on Win32", 2
+        if $^O eq 'MSWin32';
+
     ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
     like(
         $@,
@@ -86,6 +89,9 @@ BEGIN { $tests += 4 }
 SKIP: {
     skip "editor defined directly in .gitconfig", 4
         if $r->run( config => 'core.editor' );
+
+    skip "this test does not work with msysgit on Win32", 4
+        if $^O eq 'MSWin32';
 
     ok( my $cmd = $r->command('commit'), 'git commit' );
     isa_ok( $cmd, 'Git::Repository::Command' );
