@@ -2,6 +2,13 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.303 Sun Apr 28 2013
+        [ENHANCEMENTS]
+        - now depends on System::Command 1.100 for proper Win32 support
+        - thanks to a lot of testing help from Christian Walde (MITHALDU)
+          the test suite passes on Win32 (by skipping tests of little
+          importance)
+
 1.302 Fri Mar 1 2013
         [ENHANCEMENTS]
         - Git::Repository::Plugin::Log is now able to parse commits
