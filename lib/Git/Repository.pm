@@ -632,6 +632,17 @@ porcelain commands, and provides no way to control bidirectional commands
 
 Doesn't support streams or bidirectional commands.
 
+=head2 Git::Sub
+
+(This description was added for completeness in May 2013.)
+
+L<Git::Sub> appeared in 2013, as a set of Git-specific L<System::Sub>
+functions. It provide a nice set of C<git::> functions, and has some
+limitations (due to the way L<System::Sub> itself works) which don't
+impact most Git commands.
+
+L<Git::Sub> doesn't support working with streams.
+
 =head1 BUGS
 
 Since version 1.17, L<Git::Repository> delegates the actual command
