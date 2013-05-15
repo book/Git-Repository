@@ -455,8 +455,11 @@ successively to each line of output. The line being processed is in C<$_>,
 but the coderef must still return the result string (like C<map>).
 
 If the git command printed anything on stderr, it will be printed as
-warnings. If the git sub-process exited with status C<128> (fatal error),
-or C<129> (usage message), C<run()> will C<die()>.
+warnings. For convenience, if the git sub-process exited with status
+C<128> (fatal error), or C<129> (usage message), C<run()> will C<die()>.
+
+The exit status of the command that was just run is accessible as usual
+using C<<< $? >> 8 >>>. See L<perlvar> for details about C<$?>.
 
 =head2 git_dir()
 
