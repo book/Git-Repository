@@ -618,7 +618,8 @@ L<http://kerneltrap.org/mailarchive/git/2008/10/24/3789584>
 
 =head2 Git::Class
 
-Depends on Moose, which seems an unnecessary dependency for a simple
+L<Git::Class>
+depends on Moose, which seems an unnecessary dependency for a simple
 wrapper around Git. The startup penalty could become significant for
 command-line tools.
 
@@ -630,7 +631,8 @@ porcelain commands, and provides no way to control bidirectional commands
 
 =head2 Git::Wrapper
 
-Doesn't support streams or bidirectional commands.
+L<Git::Wrapper>
+doesn't support streams or bidirectional commands.
 
 =head2 Git::Sub
 
