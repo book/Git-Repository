@@ -114,7 +114,7 @@ BEGIN { $between += 5 }
 my $old = $dir;
 $dir = next_dir;
 ok( $r = eval {
-        Git::Repository->run( clone => $old => $dir );
+        Git::Repository->run( clone => $old => $dir, { quiet => 1 } );
         Git::Repository->new( work_tree => $dir );
     },
     "clone => @{[ $i - 1 ]} => $i"
@@ -129,7 +129,7 @@ $old = $dir;
 $dir = next_dir;
 chdir $tmp;
 ok( $r = eval {
-        Git::Repository->run( clone => '--bare', $old => $i );
+        Git::Repository->run( clone => '--bare', $old => $i, { quiet => 1} );
         Git::Repository->new( git_dir => $i );
     },
     "clone => --bare, @{[ $i - 1 ]} => $i"
@@ -147,7 +147,7 @@ SKIP: {
     skip 'git clone --bare fails with absolute target path', 5
         if $^O eq 'MSWin32';
     ok( $r = eval {
-            Git::Repository->run( clone => '--bare', $old => $dir );
+            Git::Repository->run( clone => '--bare', $old => $dir, { quiet => 1 } );
             Git::Repository->new( git_dir => $dir );
         },
         "clone => --bare, @{[ $i - 1 ]} => $i"
