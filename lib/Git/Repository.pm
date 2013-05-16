@@ -181,8 +181,8 @@ sub run {
     my ( $self, @cmd ) = @_;
 
     # split the args to get the optional callbacks
-    my @c;
-    @cmd = grep { ref eq 'CODE' ? !push @c, $_ : 1 } @cmd;
+    my @cb;
+    @cmd = grep { ref eq 'CODE' ? !push @cb, $_ : 1 } @cmd;
 
     local $Carp::CarpLevel = 1;
 
@@ -191,7 +191,7 @@ sub run {
         = Git::Repository::Command->new( ref $self ? $self : (), @cmd );
 
     # return the output or die
-    return $command->final_output(@c);
+    return $command->final_output(@cb);
 }
 
 #
