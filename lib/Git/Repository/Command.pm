@@ -125,6 +125,16 @@ sub new {
             if defined $work_tree;
     }
 
+    # extract and process the 'fatal' option
+    push @o, {
+        fatal => {
+            128 => 1,    # fatal
+            129 => 1,    # usage
+            map s/^-// ? ( $_ => '' ) : ( $_ => 1 ),
+            map ref() ? @$_ : $_, grep defined, map delete $_->{fatal}, @o
+        }
+    };
+
     # get and check the git command
     my $git_cmd = ( map { exists $_->{git} ? $_->{git} : () } @o )[-1];
 
@@ -161,8 +171,7 @@ sub final_output {
     $self->close;
 
     # exit codes: 128 => fatal, 129 => usage
-    my $exit = $self->{exit};
-    if ( $exit == 128 || $exit == 129 ) {
+    if ( $self->options->{fatal}{ $self->exit } ) {
         croak join( "\n", @errput ) || 'fatal: unknown git error';
     }
 
