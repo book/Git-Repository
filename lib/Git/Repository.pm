@@ -71,8 +71,9 @@ sub new {
         $options = $self->{options} = shift @o || {};
     }
 
-    # ignore 'input' option during object creation
+    # ignore 'input' and 'fatal' options during object creation
     my $input = delete $options->{input};
+    my $fatal = delete $options->{fatal};
 
     # die if deprecated parameters are given
     croak "repository is obsolete, please use git_dir instead"
@@ -156,6 +157,7 @@ sub new {
 
     # put back the ignored option
     $options->{input} = $input if defined $input;
+    $options->{fatal} = $fatal if defined $fatal;
 
     return $self;
 }
