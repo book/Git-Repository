@@ -91,6 +91,20 @@ my @tests = (
     {   cmd  => [ rm => 'does-not-exist', { fatal => -128, quiet => 1 } ],
         exit => 128,
     },
+
+    # an helpful alias to die as we want
+    {   cmd  => [ config => 'alias.exit' => qq<!f(){ $^X -e'exit shift' -- "\$\@";};f> ],
+        exit => 0
+    },
+
+    # test some fatal combinations
+    {   cmd  => [ exit => 123 ],
+        exit => 123,
+    },
+    {   cmd  => [ exit => 124, { fatal => [ 1 .. 255 ] } ],
+        exit => 124,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
 );
 
 # count the warnings we'll check
