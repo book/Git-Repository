@@ -432,6 +432,15 @@ pointing to it, simply do it in two steps:
 
 =head1 METHODS
 
+=begin Pod::Coverage
+
+    create
+    repo_path
+    wc_path
+
+=end Pod::Coverage
+
+
 L<Git::Repository> supports the following methods:
 
 =head2 command( @cmd )
