@@ -125,6 +125,16 @@ my @tests = (
         exit => 126,
     },
 
+    # FATALITY
+    {   test_repo => [ git => { fatal => [ 0 .. 255 ] } ],
+        cmd       => ['status'],
+        exit      => 0,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   cmd  => [ status => { fatal => '-0' } ],
+        exit => 0,
+    },
+
 );
 
 # count the warnings we'll check
