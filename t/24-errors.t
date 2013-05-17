@@ -131,4 +131,5 @@ for my $t (@tests) {
     for my $warning ( @{ $t->{warnings} } ) {
         like( shift @warnings, $warning, '... expected warning' );
     }
+    diag $_ for @warnings;
 }
