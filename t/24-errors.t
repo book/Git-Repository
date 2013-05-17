@@ -110,6 +110,21 @@ my @tests = (
         exit => 124,
         dollar_at => qr/^fatal: unknown git error/,
     },
+
+    # setup a repo with some 'fatal' options
+    # and override them in the call to run()
+    {   test_repo => [ git    => { fatal      => [ 1 .. 255 ] } ],
+        cmd       => [ config => 'alias.exit' => $exit_alias ],
+        exit      => 0,
+    },
+    {   cmd       => [ exit => 125 ],
+        exit      => 125,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   cmd  => [ exit => 126, { fatal => [ -130 .. -120 ] } ],
+        exit => 126,
+    },
+
 );
 
 # count the warnings we'll check
