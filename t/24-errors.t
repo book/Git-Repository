@@ -16,58 +16,78 @@ my $r = test_repository;
 my @warnings;
 local $SIG{__WARN__} = sub { push @warnings, shift };
 
-# some error testing on the empty repository
-@warnings = ();
-eval { my $log = $r->run( log => '-1' ); };
-like( $@, qr/^fatal: bad default revision 'HEAD' /, 'log: died' );
-is( $? >> 8,   128, 'log: exit status 128' );
-is( @warnings, 0,   'no warnings' );
+my @tests = (
 
-# create the empty tree
-@warnings = ();
-my $tree = $r->run( mktree => { input => '' } );
-is( $? >> 8, 0, 'mktree: exit status 0' );
-is( $tree, '4b825dc642cb6eb9a060e54bf8d69288fbee4904', 'mktree empty tree' );
-is( @warnings, 0, 'no warnings' );
+    # empty repository
+    {   cmd       => [qw( log -1 )],
+        exit      => 128,
+        dollar_at => qr/^fatal: bad default revision 'HEAD' /,
+    },
 
-# create a dummy commit
-@warnings = ();
-my $commit = $r->run( 'commit-tree', $tree, { input => "empty tree" } );
-is( $? >> 8, 0, 'commit-tree: exit status 0' );
-$r->run( 'update-ref' => 'refs/heads/master', $commit );
-is( $? >> 8,   0, 'update-ref: exit status 0' );
-is( @warnings, 0, 'no warnings' );
+    # create the empty tree
+    {   cmd  => [ mktree => { input => '' } ],
+        exit => 0,
+    },
 
-# update master
-@warnings = ();
-is( $r->run( log => '--pretty=format:%s' ), 'empty tree', 'commit' );
-is( $? >> 8,   0, 'log: exit status 0' );
-is( @warnings, 0, 'no warnings' );
+    # create a dummy commit
+    {   cmd  => [ 'commit-tree', undef, { input => "empty tree" } ],
+        exit => 0,
+    },
 
-# failing git rm
-@warnings = ();
-eval { $r->run( rm => 'void' ); };
-like( $@, qr/^fatal: pathspec 'void' did not match any files /, 'rm: died' );
-is( $? >> 8,   128, 'rm: exit status 128' );
-is( @warnings, 0,   'no warnings' );
+    # update master
+    {   cmd  => [ 'update-ref' => 'refs/heads/master', undef ],
+        exit => 0,
+    },
 
-# failing git checkout
-@warnings = ();
-$r->run( checkout => 'void' );
-is( $@,        '', 'checkout: ran ok (but warned)' );
-is( $? >> 8,   1,  'checkout: exit status 1' );
-is( @warnings, 1,  '1 warning' );
-like(
-    $warnings[0],
-    qr/^error: pathspec 'void' did not match any file\(s\) known to git. /,
-    '... with the expected error message'
+    # check log message
+    {   cmd    => [qw( log --pretty=format:%s )],
+        exit   => 0,
+        output => 'empty tree',
+    },
+
+    # failing git rm
+    {   cmd  => [ rm => 'does-not-exist' ],
+        exit => 128,
+        dollar_at =>
+            qr/^fatal: pathspec 'does-not-exist' did not match any files /,
+    },
+
+    # failing git checkout
+    {   cmd      => [ checkout => 'does-not-exist' ],
+        exit     => 1,
+        warnings => [
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+        ],
+    },
+
+    # failing git checkout (quiet)
+    {   cmd  => [ checkout => 'does-not-exist', { quiet => 1 } ],
+        exit => 1,
+    },
 );
 
-# failing git checkout (quiet)
-@warnings = ();
-$r->run( checkout => 'void', { quiet => 1 } );
-is( $@,        '', 'checkout: ran ok (but warned)' );
-is( $? >> 8,   1,  'checkout: exit status 1' );
-is( @warnings, 0,  'no warnings' );
+# count the warnings we'll check
+@warnings = map @{ $_->{warnings} ||= [] }, @tests;
 
-done_testing();
+plan tests => 3 * @tests + @warnings + grep exists $_->{output}, @tests;
+
+my $output = '';
+for my $t (@tests) {
+    @warnings = ();
+
+    # check if the command threw errors
+    my @cmd = map { (defined) ? $_ : $output } @{ $t->{cmd} };
+    my $cmd = join ' ', grep !ref, @cmd;
+    $output = eval { $r->run(@cmd); };
+    $t->{dollar_at}
+        ? like( $@, $t->{dollar_at}, "$cmd: died" )
+        : is( $@, '', "$cmd: ran ok" );
+    is( $? >> 8, $t->{exit}, "$cmd: exit status $t->{exit}" );
+    is( $output, $t->{output}, "$cmd: $output" ) if exists $t->{output};
+
+    # check warnings
+    is( @warnings, @{ $t->{warnings} }, "warnings: " . @{ $t->{warnings} } );
+    for my $warning ( @{ $t->{warnings} } ) {
+        like( shift @warnings, $warning, '... expected warning' );
+    }
+}
