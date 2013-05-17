@@ -64,6 +64,33 @@ my @tests = (
     {   cmd  => [ checkout => 'does-not-exist', { quiet => 1 } ],
         exit => 1,
     },
+
+    # usage messages make run() die too
+    {   cmd  => [ branch => '--does-not-exist' ],
+        exit => '129',
+        dollar_at => qr/^error: unknown option `does-not-exist'/
+    },
+
+    # test fatal
+    {   cmd  => [ checkout => 'does-not-exist', { fatal => [1] } ],
+        exit => 1,
+        dollar_at =>
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+    },
+    {   cmd  => [ checkout => 'does-not-exist', { fatal => 1 } ],
+        exit => 1,
+        dollar_at =>
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+    },
+    {   cmd      => [ rm => 'does-not-exist', { fatal => -128 } ],
+        exit     => 128,
+        warnings => [
+            qr/^fatal: pathspec 'does-not-exist' did not match any files /,
+        ],
+    },
+    {   cmd  => [ rm => 'does-not-exist', { fatal => -128, quiet => 1 } ],
+        exit => 128,
+    },
 );
 
 # count the warnings we'll check
