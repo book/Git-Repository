@@ -36,11 +36,12 @@ sub test_repository {
     my $temp = $args{temp} || [ CLEANUP => 1 ];    # File::Temp options
     my $init = $args{init} || [];                  # git init options
     my $opts = $args{git}  || {};                  # Git::Repository options
+    my $safe = { %$opts, fatal => [] };            # ignore 'fatal' settings
 
     # git init requires at least Git 1.5.0
-    my $git_version = Git::Repository->version($opts);
+    my $git_version = Git::Repository->version($safe);
     croak "test_repository() requires git >= 1.5.0 (this is only $git_version)"
-      if Git::Repository->version_lt( '1.5.0', $opts );
+      if Git::Repository->version_lt( '1.5.0', $safe );
 
     # create a temporary directory to host our repository
     my $dir = tempdir(@$temp);
@@ -48,7 +49,7 @@ sub test_repository {
     # create the git repository there
     my $home = cwd;
     chdir $dir or croak "Can't chdir to $dir: $!";
-    Git::Repository->run( init => @$init, $opts );
+    Git::Repository->run( init => @$init, $safe );
 
     # create the Git::Repository object
     my $gitdir = Git::Repository->run(qw( rev-parse --git-dir ));
