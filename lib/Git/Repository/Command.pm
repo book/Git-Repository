@@ -131,6 +131,7 @@ sub new {
             128 => 1,    # fatal
             129 => 1,    # usage
             map s/^-// ? ( $_ => '' ) : ( $_ => 1 ),
+            map /^!0$/ ? ( 1 .. 255 ) : $_,
             map ref() ? @$_ : $_, grep defined, map $_->{fatal}, @o
         }
     };

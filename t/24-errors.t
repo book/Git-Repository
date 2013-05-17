@@ -145,6 +145,21 @@ my @tests = (
         exit => 0,
     },
 
+    # "!0" is a shortcut for 1..255
+    {   test_repo => [],
+        cmd       => [ exit => 140, { git => $exit, fatal => '!0' } ],
+        exit      => 140,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   test_repo => [ git => { fatal => '!0' } ],
+        cmd       => [ exit => 141, { git => $exit } ],
+        exit      => 141,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   cmd  => [ exit => 142, { git => $exit, fatal => [ -150 .. -130 ] } ],
+        exit => 142,
+    },
+
 );
 
 # count the warnings we'll check
