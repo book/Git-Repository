@@ -12,6 +12,10 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 # a place to put a git repository
 my $r;
 
+# the alias used to control git exit values
+# TODO: needs a Windows version
+my $exit_alias = qq<!f(){ $^X -e'exit shift' -- "\$\@";};f>;
+
 # capture all warnings
 my @warnings;
 local $SIG{__WARN__} = sub { push @warnings, shift };
@@ -94,7 +98,7 @@ my @tests = (
     },
 
     # an helpful alias to die as we want
-    {   cmd  => [ config => 'alias.exit' => qq<!f(){ $^X -e'exit shift' -- "\$\@";};f> ],
+    {   cmd  => [ config => 'alias.exit' => $exit_alias ],
         exit => 0
     },
 
