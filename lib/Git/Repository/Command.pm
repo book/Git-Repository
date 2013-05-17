@@ -170,7 +170,7 @@ sub final_output {
     # done with it
     $self->close;
 
-    # exit codes: 128 => fatal, 129 => usage
+    # fatal exit codes set by the 'fatal' option
     if ( $self->options->{fatal}{ $self->exit } ) {
         croak join( "\n", @errput ) || 'fatal: unknown git error';
     }
