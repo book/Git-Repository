@@ -10,7 +10,7 @@ has_git('1.5.0');
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 
 # a place to put a git repository
-my $r = test_repository;
+my $r;
 
 # capture all warnings
 my @warnings;
@@ -19,7 +19,8 @@ local $SIG{__WARN__} = sub { push @warnings, shift };
 my @tests = (
 
     # empty repository
-    {   cmd       => [qw( log -1 )],
+    {   test_repo => [],
+        cmd       => [qw( log -1 )],
         exit      => 128,
         dollar_at => qr/^fatal: bad default revision 'HEAD' /,
     },
@@ -115,6 +116,10 @@ plan tests => 3 * @tests + @warnings + grep exists $_->{output}, @tests;
 my $output = '';
 for my $t (@tests) {
     @warnings = ();
+
+    # create a new test repository if needed
+    $r = test_repository( @{ $t->{test_repo} } )
+        if $t->{test_repo};
 
     # check if the command threw errors
     my @cmd = map { (defined) ? $_ : $output } @{ $t->{cmd} };
