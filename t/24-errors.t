@@ -3,6 +3,8 @@ use warnings;
 use Test::More;
 use Test::Git;
 use Git::Repository;
+use File::Temp qw( tempfile );
+use constant MSWin32 => $^O eq 'MSWin32';
 
 has_git('1.5.0');
 
@@ -12,9 +14,25 @@ delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 # a place to put a git repository
 my $r;
 
-# the alias used to control git exit values
-# TODO: needs a Windows version
-my $exit_alias = qq<!f(){ $^X -e'exit shift' -- "\$\@";};f>;
+# a fake git binary used for setting the exit status
+my $exit;
+{
+    my $version = Git::Repository->version;
+    ( my $fh, $exit ) = tempfile(
+        DIR    => 't',
+        UNLINK => 1,
+      ( SUFFIX => '.bat' )x!! MSWin32,
+    );
+    print {$fh} MSWin32 ? << "WIN32" : << "UNIX";
+\@$^X -e "shift =~ /version/ ? print qq{git version $version\n} : exit shift" %1 %2
+WIN32
+#!$^X
+shift =~ /version/ ? print "git version $version\n"
+                   : exit shift;
+UNIX
+    close $fh;
+    chmod 0755, $exit;
+}
 
 # capture all warnings
 my @warnings;
@@ -97,16 +115,11 @@ my @tests = (
         exit => 128,
     },
 
-    # an helpful alias to die as we want
-    {   cmd  => [ config => 'alias.exit' => $exit_alias ],
-        exit => 0
-    },
-
     # test some fatal combinations
-    {   cmd  => [ exit => 123 ],
+    {   cmd  => [ exit => 123, { git => $exit } ],
         exit => 123,
     },
-    {   cmd  => [ exit => 124, { fatal => [ 1 .. 255 ] } ],
+    {   cmd  => [ exit => 124, { git => $exit, fatal => [ 1 .. 255 ] } ],
         exit => 124,
         dollar_at => qr/^fatal: unknown git error/,
     },
@@ -114,14 +127,11 @@ my @tests = (
     # setup a repo with some 'fatal' options
     # and override them in the call to run()
     {   test_repo => [ git    => { fatal      => [ 1 .. 255 ] } ],
-        cmd       => [ config => 'alias.exit' => $exit_alias ],
-        exit      => 0,
-    },
-    {   cmd       => [ exit => 125 ],
+        cmd       => [ exit => 125, { git => $exit } ],
         exit      => 125,
         dollar_at => qr/^fatal: unknown git error/,
     },
-    {   cmd  => [ exit => 126, { fatal => [ -130 .. -120 ] } ],
+    {   cmd  => [ exit => 126, { git => $exit, fatal => [ -130 .. -120 ] } ],
         exit => 126,
     },
 
