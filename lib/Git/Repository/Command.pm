@@ -269,6 +269,23 @@ The I<current working directory> in which the git command will be run.
 
 A hashref containing key / values to add to the git command environment.
 
+=item C<fatal>
+
+An arrayref containing a list of exit codes that will be considered
+fatal by C<final_output()>.
+
+Prepending the value with C<-> will make it non-fatal, which can be
+useful to override a default. The string C<"!0"> can be used as a
+shortcut for C<[ 1 .. 255 ]>.
+
+If several option hashes have the C<fatal> key, the lists of exit codes
+will be combined, with the values provided last taking precedence (when
+using a combination of positive / negative values).
+
+The generated list always contains C<128> and C<129>; to make them
+non-fatal, just add C<-128> and C<-129> to the list provided to the
+C<fatal> option.
+
 =item C<input>
 
 A string that is send to the git command standard input, which is then closed.
@@ -323,8 +340,9 @@ successively to each line of output. The line being processed is in C<$_>,
 but the coderef must still return the result string.
 
 If the Git command printed anything on stderr, it will be printed as
-warnings. If the git sub-process exited with status C<128> (fatal error),
-or C<129> (usage message), it will C<die()>.
+warnings. If the git sub-process exited with a status code listed in
+the C<fatal> option, it will C<die()>. The defaults fatal exit codes
+are C<128> (fatal error), and C<129> (usage message).
 
 
 =head2 Accessors
