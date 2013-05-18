@@ -410,7 +410,7 @@ So this:
     );
 
 is equivalent to explicitly passing the option hash to each
-C<run()> or C<command()>.
+C<run()> or C<command()> call.
 
 It probably makes no sense to set the C<input> option in C<new()>,
 but L<Git::Repository> won't stop you.
