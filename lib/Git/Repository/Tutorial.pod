@@ -160,6 +160,58 @@ Use the C<env> option:
 
 See L<Git::Repository::Command> for other available options.
 
+=head2 Finely control when C<run()> dies
+
+By default, C<< Git::Repository->run( ... ) >> dies if the Git
+command exited with a status code of C<128> (fatal error)
+or C<129> (usage message).
+
+Some commands will throw an error and exit with a status different
+from the previous two:
+
+    $r->run( checkout => 'does-not-exist' );    # exit status: 1
+
+The above C<run()> call does not die, and output the following warning:
+
+    error: pathspec 'does-not-exist' did not match any file(s) known to git.
+
+The exit status (as given by C<<< $? >> 8 >>>) is C<1>).
+
+
+To force C<run()> to die when the Git command exits with status C<1>,
+use the C<fatal> option (added in version 1.304):
+
+    $r->run( checkout => 'does-not-exist', { fatal => 1 } );
+
+By default, C<128> and C<129> remain in the list of fatal codes.
+
+Here are a few examples:
+
+    # set the fatal codes for all call to run() on this object
+    $r = Git::Repository->new( { fatal => [ 1 .. 255 ] } );
+
+As usual, setting the option to the L<Git::Repository> object will set
+it for all commands run for it:
+
+    # "!0" is a shortcut for 1 .. 255
+    $r = Git::Repository->new( { fatal => [ "!0" ] } );
+
+Using negative codes will make these values non-fatal:
+
+    # all exit codes are fatal, except 3 and 7
+    $r->run( ..., { fatal => [ -3, -7 ] } );
+
+When the list contains a single item, there is no need to use an array
+reference:
+
+    # same as [ "!0" ]
+    $r = Git::Repository->new( { fatal => "!0" } );
+
+    # only 17 is fatal
+    $r->run( ..., { fatal => -17 } );
+
+See L<Git::Repository::Command> for other available options.
+
 =head2 Process the output of B<git log>
 
 When creating a tool that needs to process the output of B<git log>,
