@@ -3,6 +3,8 @@ use warnings;
 use Test::More;
 use Test::Git;
 use Git::Repository;
+use File::Temp qw( tempfile );
+use constant MSWin32 => $^O eq 'MSWin32';
 
 has_git('1.5.0');
 
@@ -10,64 +12,183 @@ has_git('1.5.0');
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 
 # a place to put a git repository
-my $r = test_repository;
+my $r;
+
+# a fake git binary used for setting the exit status
+my $exit;
+{
+    my $version = Git::Repository->version;
+    ( my $fh, $exit ) = tempfile(
+        DIR    => 't',
+        UNLINK => 1,
+      ( SUFFIX => '.bat' )x!! MSWin32,
+    );
+    print {$fh} MSWin32 ? << "WIN32" : << "UNIX";
+\@$^X -e "shift =~ /version/ ? print qq{git version $version\n} : exit shift" %1 %2
+WIN32
+#!$^X
+shift =~ /version/ ? print "git version $version\n"
+                   : exit shift;
+UNIX
+    close $fh;
+    chmod 0755, $exit;
+}
 
 # capture all warnings
 my @warnings;
 local $SIG{__WARN__} = sub { push @warnings, shift };
 
-# some error testing on the empty repository
-@warnings = ();
-eval { my $log = $r->run( log => '-1' ); };
-like( $@, qr/^fatal: bad default revision 'HEAD' /, 'log: died' );
-is( $? >> 8,   128, 'log: exit status 128' );
-is( @warnings, 0,   'no warnings' );
+my @tests = (
 
-# create the empty tree
-@warnings = ();
-my $tree = $r->run( mktree => { input => '' } );
-is( $? >> 8, 0, 'mktree: exit status 0' );
-is( $tree, '4b825dc642cb6eb9a060e54bf8d69288fbee4904', 'mktree empty tree' );
-is( @warnings, 0, 'no warnings' );
+    # empty repository
+    {   test_repo => [],
+        cmd       => [qw( log -1 )],
+        exit      => 128,
+        dollar_at => qr/^fatal: bad default revision 'HEAD' /,
+    },
 
-# create a dummy commit
-@warnings = ();
-my $commit = $r->run( 'commit-tree', $tree, { input => "empty tree" } );
-is( $? >> 8, 0, 'commit-tree: exit status 0' );
-$r->run( 'update-ref' => 'refs/heads/master', $commit );
-is( $? >> 8,   0, 'update-ref: exit status 0' );
-is( @warnings, 0, 'no warnings' );
+    # create the empty tree
+    {   cmd  => [ mktree => { input => '' } ],
+        exit => 0,
+    },
 
-# update master
-@warnings = ();
-is( $r->run( log => '--pretty=format:%s' ), 'empty tree', 'commit' );
-is( $? >> 8,   0, 'log: exit status 0' );
-is( @warnings, 0, 'no warnings' );
+    # create a dummy commit
+    {   cmd  => [ 'commit-tree', undef, { input => "empty tree" } ],
+        exit => 0,
+    },
 
-# failing git rm
-@warnings = ();
-eval { $r->run( rm => 'void' ); };
-like( $@, qr/^fatal: pathspec 'void' did not match any files /, 'rm: died' );
-is( $? >> 8,   128, 'rm: exit status 128' );
-is( @warnings, 0,   'no warnings' );
+    # update master
+    {   cmd  => [ 'update-ref' => 'refs/heads/master', undef ],
+        exit => 0,
+    },
 
-# failing git checkout
-@warnings = ();
-$r->run( checkout => 'void' );
-is( $@,        '', 'checkout: ran ok (but warned)' );
-is( $? >> 8,   1,  'checkout: exit status 1' );
-is( @warnings, 1,  '1 warning' );
-like(
-    $warnings[0],
-    qr/^error: pathspec 'void' did not match any file\(s\) known to git. /,
-    '... with the expected error message'
+    # check log message
+    {   cmd    => [qw( log --pretty=format:%s )],
+        exit   => 0,
+        output => 'empty tree',
+    },
+
+    # failing git rm
+    {   cmd  => [ rm => 'does-not-exist' ],
+        exit => 128,
+        dollar_at =>
+            qr/^fatal: pathspec 'does-not-exist' did not match any files /,
+    },
+
+    # failing git checkout
+    {   cmd      => [ checkout => 'does-not-exist' ],
+        exit     => 1,
+        warnings => [
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+        ],
+    },
+
+    # failing git checkout (quiet)
+    {   cmd  => [ checkout => 'does-not-exist', { quiet => 1 } ],
+        exit => 1,
+    },
+
+    # usage messages make run() die too
+    {   cmd  => [ branch => '--does-not-exist' ],
+        exit => '129',
+        dollar_at => qr/^error: unknown option `does-not-exist'/
+    },
+
+    # test fatal
+    {   cmd  => [ checkout => 'does-not-exist', { fatal => [1] } ],
+        exit => 1,
+        dollar_at =>
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+    },
+    {   cmd  => [ checkout => 'does-not-exist', { fatal => 1 } ],
+        exit => 1,
+        dollar_at =>
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+    },
+    {   cmd      => [ rm => 'does-not-exist', { fatal => -128 } ],
+        exit     => 128,
+        warnings => [
+            qr/^fatal: pathspec 'does-not-exist' did not match any files /,
+        ],
+    },
+    {   cmd  => [ rm => 'does-not-exist', { fatal => -128, quiet => 1 } ],
+        exit => 128,
+    },
+
+    # test some fatal combinations
+    {   cmd  => [ exit => 123, { git => $exit } ],
+        exit => 123,
+    },
+    {   cmd  => [ exit => 124, { git => $exit, fatal => [ 1 .. 255 ] } ],
+        exit => 124,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+
+    # setup a repo with some 'fatal' options
+    # and override them in the call to run()
+    {   test_repo => [ git    => { fatal      => [ 1 .. 255 ] } ],
+        cmd       => [ exit => 125, { git => $exit } ],
+        exit      => 125,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   cmd  => [ exit => 126, { git => $exit, fatal => [ -130 .. -120 ] } ],
+        exit => 126,
+    },
+
+    # FATALITY
+    {   test_repo => [ git => { fatal => [ 0 .. 255 ] } ],
+        cmd       => ['status'],
+        exit      => 0,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   cmd  => [ status => { fatal => '-0' } ],
+        exit => 0,
+    },
+
+    # "!0" is a shortcut for 1..255
+    {   test_repo => [],
+        cmd       => [ exit => 140, { git => $exit, fatal => '!0' } ],
+        exit      => 140,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   test_repo => [ git => { fatal => '!0' } ],
+        cmd       => [ exit => 141, { git => $exit } ],
+        exit      => 141,
+        dollar_at => qr/^fatal: unknown git error/,
+    },
+    {   cmd  => [ exit => 142, { git => $exit, fatal => [ -150 .. -130 ] } ],
+        exit => 142,
+    },
+
 );
 
-# failing git checkout (quiet)
-@warnings = ();
-$r->run( checkout => 'void', { quiet => 1 } );
-is( $@,        '', 'checkout: ran ok (but warned)' );
-is( $? >> 8,   1,  'checkout: exit status 1' );
-is( @warnings, 0,  'no warnings' );
+# count the warnings we'll check
+@warnings = map @{ $_->{warnings} ||= [] }, @tests;
 
-done_testing();
+plan tests => 3 * @tests + @warnings + grep exists $_->{output}, @tests;
+
+my $output = '';
+for my $t (@tests) {
+    @warnings = ();
+
+    # create a new test repository if needed
+    $r = test_repository( @{ $t->{test_repo} } )
+        if $t->{test_repo};
+
+    # check if the command threw errors
+    my @cmd = map { (defined) ? $_ : $output } @{ $t->{cmd} };
+    my $cmd = join ' ', grep !ref, @cmd;
+    $output = eval { $r->run(@cmd); };
+    $t->{dollar_at}
+        ? like( $@, $t->{dollar_at}, "$cmd: died" )
+        : is( $@, '', "$cmd: ran ok" );
+    is( $? >> 8, $t->{exit}, "$cmd: exit status $t->{exit}" );
+    is( $output, $t->{output}, "$cmd: $output" ) if exists $t->{output};
+
+    # check warnings
+    is( @warnings, @{ $t->{warnings} }, "warnings: " . @{ $t->{warnings} } );
+    for my $warning ( @{ $t->{warnings} } ) {
+        like( shift @warnings, $warning, '... expected warning' );
+    }
+    diag $_ for @warnings;
+}
