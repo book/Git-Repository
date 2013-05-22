@@ -5,7 +5,7 @@ use warnings;
 
 use Exporter;
 use Test::Builder;
-use Git::Repository 1.15;
+use Git::Repository;    # 1.15
 use File::Temp qw( tempdir );
 use Cwd qw( cwd );
 use Carp;
