@@ -109,51 +109,59 @@ diag $@ if $@;
 test_repo( $r, $gitdir, $dir, {} );
 chdir $home;
 
-# PASS - clone an existing repo and warns
-BEGIN { $between += 5 }
-my $old = $dir;
-$dir = next_dir;
-ok( $r = eval {
-        Git::Repository->run( clone => $old => $dir, { quiet => 1 } );
-        Git::Repository->new( work_tree => $dir );
-    },
-    "clone => @{[ $i - 1 ]} => $i"
-);
-diag $@ if $@;
-test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
-
-# PASS - clone an existing repo as bare and warns
-# relative target path
-BEGIN { $between += 5 }
-$old = $dir;
-$dir = next_dir;
-chdir $tmp;
-ok( $r = eval {
-        Git::Repository->run( clone => '--bare', $old => $i, { quiet => 1} );
-        Git::Repository->new( git_dir => $i );
-    },
-    "clone => --bare, @{[ $i - 1 ]} => $i"
-);
-diag $@ if $@;
-chdir $home;
-test_repo( $r, $dir, undef, {} );
-
-# PASS - clone an existing repo as bare and warns
-# absolute target path
-BEGIN { $between += 5 }
+my $old;
 SKIP: {
+    skip "cloning an empty repo dies for 1.7.0.rc1 <= git <= 1.7.0.2, we have $version",
+        $between
+        if Git::Repository->version_le('1.7.0.2')
+            && Git::Repository->version_ge('1.7.0.rc1');
+
+    # PASS - clone an existing repo and warns
+    BEGIN { $between += 5 }
     $old = $dir;
     $dir = next_dir;
-    skip 'git clone --bare fails with absolute target path', 5
-        if $^O eq 'MSWin32';
     ok( $r = eval {
-            Git::Repository->run( clone => '--bare', $old => $dir, { quiet => 1 } );
-            Git::Repository->new( git_dir => $dir );
+            Git::Repository->run( clone => $old => $dir, { quiet => 1 } );
+            Git::Repository->new( work_tree => $dir );
+        },
+        "clone => @{[ $i - 1 ]} => $i"
+    );
+    diag $@ if $@;
+    test_repo( $r, File::Spec->catdir( $dir, '.git' ), $dir, {} );
+
+    # PASS - clone an existing repo as bare and warns
+    # relative target path
+    BEGIN { $between += 5 }
+    $old = $dir;
+    $dir = next_dir;
+    chdir $tmp;
+    ok( $r = eval {
+            Git::Repository->run( clone => '--bare', $old => $i, { quiet => 1} );
+            Git::Repository->new( git_dir => $i );
         },
         "clone => --bare, @{[ $i - 1 ]} => $i"
     );
     diag $@ if $@;
+    chdir $home;
     test_repo( $r, $dir, undef, {} );
+
+    # PASS - clone an existing repo as bare and warns
+    # absolute target path
+    BEGIN { $between += 5 }
+    SKIP: {
+        $old = $dir;
+        $dir = next_dir;
+        skip 'git clone --bare fails with absolute target path', 5
+            if $^O eq 'MSWin32';
+        ok( $r = eval {
+                Git::Repository->run( clone => '--bare', $old => $dir, { quiet => 1 } );
+                Git::Repository->new( git_dir => $dir );
+            },
+            "clone => --bare, @{[ $i - 1 ]} => $i"
+        );
+        diag $@ if $@;
+        test_repo( $r, $dir, undef, {} );
+    }
 }
 
 # FAIL - clone a non-existing repo
