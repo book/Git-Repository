@@ -91,7 +91,9 @@ my @tests = (
     # usage messages make run() die too
     {   cmd  => [ branch => '--does-not-exist' ],
         exit => '129',
-        dollar_at => qr/^error: unknown option `does-not-exist'/
+        dollar_at => Git::Repository->version_lt('1.5.4.rc0')
+          ? qr/^usage: git-branch /
+          : qr/^error: unknown option `does-not-exist'/
     },
 
     # test fatal
