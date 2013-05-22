@@ -7,6 +7,11 @@ use Git::Repository;
 has_git( '1.5.3.rc0' ); # first git submodule appearance
 
 plan skip_all =>
+    "git submodule add with a non-existing path fails for git between 1.7.0.rc1 and 1.7.0.2"
+    if Git::Repository->version_le('1.7.0.2')
+        && Git::Repository->version_ge('1.7.0.rc1');
+
+plan skip_all =>
     "Removing environment variables requires System::Command 1.04, this is only $System::Command::VERSION"
     if $System::Command::VERSION < 1.04;
 
