@@ -139,11 +139,12 @@ my @tests = (
 
     # FATALITY
     {   test_repo => [ git => { fatal => [ 0 .. 255 ] } ],
-        cmd       => ['status'],
+        cmd       => ['version'],
         exit      => 0,
         dollar_at => qr/^fatal: unknown git error/,
     },
-    {   cmd  => [ status => { fatal => '-0' } ],
+    {
+        cmd  => [ version => { fatal => '-0' } ],
         exit => 0,
     },
 
