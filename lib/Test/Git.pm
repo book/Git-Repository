@@ -40,8 +40,8 @@ sub test_repository {
 
     # git init requires at least Git 1.5.0
     my $git_version = Git::Repository->version($safe);
-    croak "test_repository() requires git >= 1.5.0 (this is only $git_version)"
-      if Git::Repository->version_lt( '1.5.0', $safe );
+    croak "test_repository() requires git >= 1.5.0.rc1 (this is only $git_version)"
+      if Git::Repository->version_lt( '1.5.0.rc1', $safe );
 
     # create a temporary directory to host our repository
     my $dir = tempdir(@$temp);
@@ -135,6 +135,6 @@ To leave the repository in its location after the end of the test:
     test_repository( temp => [ CLEANUP => 0 ] );
 
 Note that since C<test_repository()> uses C<git init> to create the test
-repository, it requires at least Git version C<1.5.0>.
+repository, it requires at least Git version C<1.5.0.rc1>.
 
 =cut
