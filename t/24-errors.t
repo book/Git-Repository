@@ -162,7 +162,7 @@ my @tests = (
 # count the warnings we'll check
 @warnings = map @{ $_->{warnings} ||= [] }, @tests;
 
-plan tests => 3 * @tests + @warnings + grep exists $_->{output}, @tests;
+plan tests => 3 * @tests + @warnings;
 
 my $output = '';
 for my $t (@tests) {
@@ -180,7 +180,6 @@ for my $t (@tests) {
         ? like( $@, $t->{dollar_at}, "$cmd: died" )
         : is( $@, '', "$cmd: ran ok" );
     is( $? >> 8, $t->{exit}, "$cmd: exit status $t->{exit}" );
-    is( $output, $t->{output}, "$cmd: $output" ) if exists $t->{output};
 
     # check warnings
     is( @warnings, @{ $t->{warnings} }, "warnings: " . @{ $t->{warnings} } );
