@@ -62,12 +62,6 @@ my @tests = (
         exit => 0,
     },
 
-    # check log message
-    {   cmd    => [qw( log --pretty=format:%s )],
-        exit   => 0,
-        output => 'empty tree',
-    },
-
     # failing git rm
     {   cmd  => [ rm => 'does-not-exist' ],
         exit => 128,
