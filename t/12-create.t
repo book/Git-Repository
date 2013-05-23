@@ -8,7 +8,7 @@ use File::Path;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-has_git('1.5.0');
+has_git('1.5.0.rc0');
 
 my $version = Git::Repository->version;
 
