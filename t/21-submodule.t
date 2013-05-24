@@ -6,9 +6,9 @@ use Git::Repository;
 
 has_git( '1.5.3.rc0' ); # first git submodule appearance
 
-plan skip_all =>
-    "git submodule add with a non-existing path fails for git 1.5.4.* and 1.5.5.*"
-    if Git::Repository->version =~ /^1\.5.[45]\b/;
+plan skip_all => "git clone fails for git between 1.5.4.rc0 and 1.6.0.rc0"
+    if Git::Repository->version_le('1.6.0.rc0')
+        && Git::Repository->version_ge('1.5.4.rc0');
 
 plan skip_all =>
     "git submodule add with a non-existing path fails for git between 1.7.0.rc1 and 1.7.0.2"
