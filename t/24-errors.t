@@ -6,7 +6,7 @@ use Git::Repository;
 use File::Temp qw( tempfile );
 use constant MSWin32 => $^O eq 'MSWin32';
 
-has_git('1.5.0');
+has_git('1.5.0.rc1');
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
@@ -62,12 +62,6 @@ my @tests = (
         exit => 0,
     },
 
-    # check log message
-    {   cmd    => [qw( log --pretty=format:%s )],
-        exit   => 0,
-        output => 'empty tree',
-    },
-
     # failing git rm
     {   cmd  => [ rm => 'does-not-exist' ],
         exit => 128,
@@ -79,7 +73,7 @@ my @tests = (
     {   cmd      => [ checkout => 'does-not-exist' ],
         exit     => 1,
         warnings => [
-            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git\./,
         ],
     },
 
@@ -91,19 +85,21 @@ my @tests = (
     # usage messages make run() die too
     {   cmd  => [ branch => '--does-not-exist' ],
         exit => '129',
-        dollar_at => qr/^error: unknown option `does-not-exist'/
+        dollar_at => Git::Repository->version_lt('1.5.4.rc0')
+          ? qr/^usage: git-branch /
+          : qr/^error: unknown option `does-not-exist'/
     },
 
     # test fatal
     {   cmd  => [ checkout => 'does-not-exist', { fatal => [1] } ],
         exit => 1,
         dollar_at =>
-            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git\./,
     },
     {   cmd  => [ checkout => 'does-not-exist', { fatal => 1 } ],
         exit => 1,
         dollar_at =>
-            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git. /,
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git\./,
     },
     {   cmd      => [ rm => 'does-not-exist', { fatal => -128 } ],
         exit     => 128,
@@ -137,11 +133,12 @@ my @tests = (
 
     # FATALITY
     {   test_repo => [ git => { fatal => [ 0 .. 255 ] } ],
-        cmd       => ['status'],
+        cmd       => ['version'],
         exit      => 0,
         dollar_at => qr/^fatal: unknown git error/,
     },
-    {   cmd  => [ status => { fatal => '-0' } ],
+    {
+        cmd  => [ version => { fatal => '-0' } ],
         exit => 0,
     },
 
@@ -165,7 +162,7 @@ my @tests = (
 # count the warnings we'll check
 @warnings = map @{ $_->{warnings} ||= [] }, @tests;
 
-plan tests => 3 * @tests + @warnings + grep exists $_->{output}, @tests;
+plan tests => 3 * @tests + @warnings;
 
 my $output = '';
 for my $t (@tests) {
@@ -183,7 +180,6 @@ for my $t (@tests) {
         ? like( $@, $t->{dollar_at}, "$cmd: died" )
         : is( $@, '', "$cmd: ran ok" );
     is( $? >> 8, $t->{exit}, "$cmd: exit status $t->{exit}" );
-    is( $output, $t->{output}, "$cmd: $output" ) if exists $t->{output};
 
     # check warnings
     is( @warnings, @{ $t->{warnings} }, "warnings: " . @{ $t->{warnings} } );

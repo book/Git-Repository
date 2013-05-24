@@ -8,7 +8,7 @@ use File::Spec;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
 
-has_git('1.5.0');
+has_git('1.5.0.rc1');
 
 my $version = Git::Repository->version;
 
