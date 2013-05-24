@@ -2,6 +2,21 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.304 Sat May 25 2013
+        [ENHANCEMENTS]
+        - the new 'fatal' option makes it possible to define in detail
+          which exit status codes will make run() die, in addition to
+          the defaults 128 and 129 (many thanks to Grant McLean for
+          a great discussion about this, which inspired the feature)
+        [DOCUMENTATION]
+        - add a section about 'fatal' in Git::Repository::Tutorial
+        [TESTS]
+        - let Dist::Zilla manage the author tests
+        - fixed tests with older gits, and also moved requirements
+          for some tests a little bit further in the past
+        - tested against 326 versions of git (including all RC),
+          from 1.5.0.rc0 to 1.8.3.rc3
+
 1.303 Sun Apr 28 2013
         [ENHANCEMENTS]
         - now depends on System::Command 1.100 for proper Win32 support
