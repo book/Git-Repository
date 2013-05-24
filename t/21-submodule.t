@@ -35,7 +35,7 @@ my $blob =
 my $tree = $s->run( mktree => { input => "100644 blob $blob\thello" } );
 my $commit = $s->run( 'commit-tree' => $tree, { input => 'empty tree' } );
 $s->run( 'update-ref', 'refs/heads/master' => $commit );
-$s->run( checkout => 'master' );
+$s->run( checkout => 'master', { quiet => 1 } );
 
 # now test adding a submodule
 my $r = test_repository;
