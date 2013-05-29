@@ -30,8 +30,15 @@ WIN32
 shift =~ /version/ ? print "git version $version\n"
                    : exit shift;
 UNIX
-    close $fh;
-    chmod 0755, $exit;
+    close $fh or diag "close $exit failed: $!";
+    chmod 0755, $exit or diag "chmod $exit failed: $!";
+}
+
+# make sure the binary is available
+if ( !-x $exit ) {
+    diag "Skipping 'git exit' tests: $exit is not "
+        . ( -e _ ? 'executable' : 'available' );
+    $exit = '';
 }
 
 # capture all warnings
@@ -110,6 +117,10 @@ my @tests = (
     {   cmd  => [ rm => 'does-not-exist', { fatal => -128, quiet => 1 } ],
         exit => 128,
     },
+);
+
+# tests that depend on $exit
+push @tests, (
 
     # test some fatal combinations
     {   cmd  => [ exit => 123, { git => $exit } ],
@@ -131,6 +142,11 @@ my @tests = (
         exit => 126,
     },
 
+)x!! $exit;
+
+# test case where EVERY exit status is fatal
+push @tests, (
+
     # FATALITY
     {   test_repo => [ git => { fatal => [ 0 .. 255 ] } ],
         cmd       => ['version'],
@@ -141,6 +157,10 @@ my @tests = (
         cmd  => [ version => { fatal => '-0' } ],
         exit => 0,
     },
+);
+
+# more tests that depend on $exit
+push @tests, (
 
     # "!0" is a shortcut for 1..255
     {   test_repo => [],
@@ -157,7 +177,7 @@ my @tests = (
         exit => 142,
     },
 
-);
+)x!! $exit;
 
 # count the warnings we'll check
 @warnings = map @{ $_->{warnings} ||= [] }, @tests;
