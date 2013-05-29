@@ -16,7 +16,7 @@ my $r;
 
 # a fake git binary used for setting the exit status
 my $exit;
-{
+eval {
     my $version = Git::Repository->version;
     ( my $fh, $exit ) = tempfile(
         DIR    => 't',
@@ -32,7 +32,7 @@ shift =~ /version/ ? print "git version $version\n"
 UNIX
     close $fh or diag "close $exit failed: $!";
     chmod 0755, $exit or diag "chmod $exit failed: $!";
-}
+};
 
 # make sure the binary is available
 if ( !-x $exit ) {
