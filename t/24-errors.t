@@ -27,7 +27,7 @@ eval {
 \@$^X -e "shift =~ /version/ ? print qq{git version $version\\n} : exit shift" -- %1 %2
 WIN32
 #!$^X
-shift =~ /version/ ? print "git version $version\n"
+shift =~ /version/ ? print "git version $version\\n"
                    : exit shift;
 UNIX
     close $fh or diag "close $exit failed: $!";
