@@ -24,7 +24,7 @@ my $exit;
       ( SUFFIX => '.bat' )x!! MSWin32,
     );
     print {$fh} MSWin32 ? << "WIN32" : << "UNIX";
-\@$^X -e "shift =~ /version/ ? print qq{git version $version\\n} : exit shift" %1 %2
+\@$^X -e "shift =~ /version/ ? print qq{git version $version\\n} : exit shift" -- %1 %2
 WIN32
 #!$^X
 shift =~ /version/ ? print "git version $version\n"
