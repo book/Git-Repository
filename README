@@ -12,22 +12,6 @@ Git command may need and use.
 
 
 
-INSTALLATION
-
-To install this module, run the following commands:
-
-	perl Makefile.PL
-	make
-	make test
-	make install
-
-Alternatively, to install with Module::Build, you can use the following commands:
-
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
-
 SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
@@ -52,7 +36,7 @@ You can also look for information at:
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2010 Philippe Bruhat (BooK)
+Copyright (C) 2010-2013 Philippe Bruhat (BooK)
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
