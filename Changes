@@ -2,6 +2,13 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.305 Sun Jun 16 2013
+        [DOCUMENTATION]
+        - list the 'fatal' option in the documentation for run()
+        [TESTS]
+        - various fixes for t/24-errors.t
+          (mostly for Win32, thanks to Christian Walde (MITHALDU))
+
 1.304 Sat May 25 2013
         [ENHANCEMENTS]
         - the new 'fatal' option makes it possible to define in detail
