@@ -175,7 +175,7 @@ The above C<run()> call does not die, and output the following warning:
 
     error: pathspec 'does-not-exist' did not match any file(s) known to git.
 
-The exit status (as given by C<<< $? >> 8 >>>) is C<1>).
+The exit status (as given by C<<< $? >> 8 >>>) is C<1>.
 
 
 To force C<run()> to die when the Git command exits with status C<1>,
