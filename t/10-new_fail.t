@@ -18,7 +18,7 @@ my $missing = File::Spec->catdir( $dir, 'missing' );
 my $gitdir  = File::Spec->catdir( $dir, '.git' );
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
 
 # FAIL - missing repository directory
 ok( !eval { Git::Repository->new( git_dir => $missing ) },

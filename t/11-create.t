@@ -15,7 +15,7 @@ my $version = Git::Repository->version;
 plan tests => my $tests + my $between + my $extra;
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
 my $home = cwd();
 
 # a place to put a git repository

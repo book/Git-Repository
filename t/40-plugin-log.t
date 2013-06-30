@@ -13,7 +13,7 @@ has_git('1.5.0.rc1');
 my $version = Git::Repository->version;
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
 $ENV{GIT_AUTHOR_NAME}     = 'Test Author';
 $ENV{GIT_AUTHOR_EMAIL}    = 'test.author@example.com';
 $ENV{GIT_COMMITTER_NAME}  = 'Test Committer';

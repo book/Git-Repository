@@ -10,7 +10,7 @@ use Git::Repository;
 has_git('1.5.0.rc1');
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
 my $home = cwd();
 
 # a place to put a git repository
