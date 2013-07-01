@@ -172,7 +172,22 @@ fail if the program is unexpectedly run under an unexpected locale.
 The easiest way to ensure your Git commands will be run in a "locale-safe"
 environment, is to set the C<LC_ALL> environment variable to C<C>.
 
+The brutal way:
+
+    $ENV{LC_ALL} = 'C';
+
+The temporary way:
+
+    local $ENV{LC_ALL} = 'C';
+
+The subtle way (restricted to the commands run on a given L<Git::Repository>
+instance):
+
     my $r = Git::Repository->new( { env => { LC_ALL => 'C' } } );
+
+The stealthiest way (restricted to a single command):
+
+    $r->run( ..., { env => { LC_ALL => 'C' } } );
 
 =head2 Ensure the Git commands are run from the current workding directory
 
