@@ -160,6 +160,20 @@ Use the C<env> option:
 
 See L<Git::Repository::Command> for other available options.
 
+=head2 Ensure the output from Git commands is not localized
+
+Since version 1.7.9, Git translates its most common interface messages
+into the user's language if translations are available and the
+locale is appropriately set.
+
+This means that naively parsing the output "porcelain" commands might
+fail if the program is unexpectedly run under an unexpected locale.
+
+The easiest way to ensure your Git commands will be run in a "locale-safe"
+environment, is to set the C<LC_ALL> environment variable to C<C>.
+
+    my $r = Git::Repository->new( { env => { LC_ALL => 'C' } } );
+
 =head2 Ensure the Git commands are run from the current workding directory
 
 By default, L<Git::Repository::Command> will C<chdir()> to the root of
