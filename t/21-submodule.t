@@ -22,7 +22,8 @@ plan skip_all =>
 plan tests => 1;
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+$ENV{LC_ALL}              = 'C';
 $ENV{GIT_AUTHOR_NAME}     = 'Test Author';
 $ENV{GIT_AUTHOR_EMAIL}    = 'test.author@example.com';
 $ENV{GIT_COMMITTER_NAME}  = 'Test Committer';

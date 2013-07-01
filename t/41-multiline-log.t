@@ -95,7 +95,8 @@ YWsAn28+jo5C5RGY1UKo58Gz9/6QqUpf
 }
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+$ENV{LC_ALL} = 'C';
 
 # first create a new empty repository
 my $r = test_repository;

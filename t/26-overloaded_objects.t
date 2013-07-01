@@ -12,7 +12,8 @@ has_git('1.6.5');
 plan tests => 3;
 
 # clean up the environment
-delete @ENV{qw( GIT_DIR GIT_WORK_TREE LANGUAGE )};
+delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
+$ENV{LC_ALL} = 'C';
 
 # A class with stringification to test with.
 {
