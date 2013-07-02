@@ -361,4 +361,13 @@ using the I<private> C<_version_gt()> method (which accepts two parameters):
 Have a look at L<Git::Repository::Plugin> and L<Git::Repository::Plugin::Log>,
 to learn how to add your own methods to L<Git::Repository>.
 
+=head1 COPYRIGHT
+
+Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 =cut

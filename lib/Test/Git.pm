@@ -137,4 +137,13 @@ To leave the repository in its location after the end of the test:
 Note that since C<test_repository()> uses C<git init> to create the test
 repository, it requires at least Git version C<1.5.0.rc1>.
 
+=head1 COPYRIGHT
+
+Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 =cut

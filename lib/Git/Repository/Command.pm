@@ -421,4 +421,13 @@ Many thanks go also to Chris Williams (BINGOS) for pointing me towards
 perlmonks posts by ikegami that contained crucial elements to a working
 MSWin32 implementation.
 
+=head1 COPYRIGHT
+
+Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 =cut
