@@ -2,6 +2,16 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.306 Tue Jul 2 2013
+        [DOCUMENTATION]
+        - document how to run git from cwd in Git::Repository::Tutorial
+          (follow-up of RT #86154, thanks to Daniel B. Boorstein (DANBOO))
+        - document how to avoid the translation of Git messages by using
+          LC_ALL=C in Git::Repository::Tutorial
+        [TESTS]
+        - made tests more robust no matter which locale is defined
+          (thanks to Lars Dieckow (DAXIM))
+
 1.305 Sun Jun 16 2013
         [DOCUMENTATION]
         - list the 'fatal' option in the documentation for run()
