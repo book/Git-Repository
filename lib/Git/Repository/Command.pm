@@ -421,6 +421,11 @@ Many thanks go also to Chris Williams (BINGOS) for pointing me towards
 perlmonks posts by ikegami that contained crucial elements to a working
 MSWin32 implementation.
 
+In the end, it was Christian Walder (MITHALDU) who helped me finalize
+Win32 support for L<System::Command> through a quick round of edit
+(on my Linux box) and testing (on his Windows box) during the Perl QA
+Hackathon 2013 in Lancaster.
+
 =head1 COPYRIGHT
 
 Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
