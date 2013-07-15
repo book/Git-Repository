@@ -248,7 +248,8 @@ it for all commands run for it:
 
 Using negative codes will make these values non-fatal:
 
-    # all exit codes are fatal, except 3 and 7
+    # the above call to new() makes all exit codes fatal
+    # but 3 and 7 won't be fatal for this specific run
     $r->run( ..., { fatal => [ -3, -7 ] } );
 
 When the list contains a single item, there is no need to use an array
@@ -257,7 +258,7 @@ reference:
     # same as [ "!0" ]
     $r = Git::Repository->new( { fatal => "!0" } );
 
-    # only 17 is fatal
+    # remove 17 from the list of fatal exit codes for this run only
     $r->run( ..., { fatal => -17 } );
 
 See L<Git::Repository::Command> for other available options.
