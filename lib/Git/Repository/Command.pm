@@ -387,8 +387,6 @@ following code:
 
 C<$fh> is opened and points to the output of the git subcommand, while
 the anonymous L<Git::Repository::Command> object has been destroyed.
-Once C<$fh> is destroyed, the subprocess will be reaped, thus avoiding
-zombies.
 
 After the call to C<close()>, the following attributes will be defined:
 
