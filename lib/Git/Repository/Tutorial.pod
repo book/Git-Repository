@@ -189,7 +189,7 @@ The stealthiest way (restricted to a single command):
 
     $r->run( ..., { env => { LC_ALL => 'C' } } );
 
-=head2 Ensure the Git commands are run from the current workding directory
+=head2 Ensure the Git commands are run from the current working directory
 
 By default, L<Git::Repository::Command> will C<chdir()> to the root of
 the work tree before launching the requested Git command.
