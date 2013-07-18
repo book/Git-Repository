@@ -77,9 +77,9 @@ sub _is_git {
         if !( defined $git && -x $git );
 
     # try to run it
-    my ( $pid, $in, $out, $err )
-        = System::Command->spawn( $git, @args, '--version' );
-    my $version = do { local $/ = "\n"; <$out>; };
+    my $cmd = System::Command->new( $git, @args, '--version' );
+    my $version = do { local $/ = "\n"; $cmd->stdout->getline; };
+    $cmd->close;
 
     # does it really look like git?
     return $binary{$type}{$key}{$binary}{$args}
