@@ -2,6 +2,14 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.307 Fri Jul 26 2013
+        [ENHANCEMENTS]
+        - avoid creating zombie processes in _is_git
+        - require the latest System-Command, as it properly works with
+          FCGI, Plack et al.
+        [DOCUMENTATION]
+        - various minor documentation improvements
+
 1.306 Tue Jul 2 2013
         [DOCUMENTATION]
         - document how to run git from cwd in Git::Repository::Tutorial
