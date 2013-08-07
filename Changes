@@ -2,6 +2,12 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.308 Thu Aug 8 2013
+        [ENHANCEMENTS]
+        - require System-Command 1.103, since 1.102 was somewhat broken
+        [DOCUMENTATION]
+        - new tutorial item based on RT#87334
+
 1.307 Fri Jul 26 2013
         [ENHANCEMENTS]
         - avoid creating zombie processes in _is_git
