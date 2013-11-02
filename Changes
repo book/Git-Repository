@@ -2,6 +2,17 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.309 Sat Nov 2 2013
+        [TEST]
+        - replace use_ok by simply running perl -M$module -e1
+        [DOCUMENTATION]
+        - some guidelines for naming attributes in plugins
+        [PACKAGING]
+        - split Git::Repository::Plugin::Log and its supporting modules
+          (Git::Repository::Log and Git::Repository::Log::Iterator) out
+          in their own distribution (Git-Repository-Plugin-Log) as of
+          version 1.309 of both distributions
+
 1.308 Thu Aug 8 2013
         [ENHANCEMENTS]
         - require System-Command 1.103, since 1.102 was somewhat broken
