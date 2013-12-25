@@ -300,9 +300,6 @@ sub version_ge {
 
     # start from a repository reachable from the current directory
     $r = Git::Repository->new();
-    
-    # Use a specific git binary on an existing repository
-    $r = Git::Repository->new( git_dir => $gitdir, { git => './bin/git' } );
 
     # or init our own repository first
     Git::Repository->run( init => $dir, ... );
@@ -312,12 +309,16 @@ sub version_ge {
     Git::Repository->run( clone => $url, $dir, ... );
     $r = Git::Repository->new( work_tree => $dir );
 
-    # run commands
-    # - get the full output (no errput)
-    $output = $r->run(@cmd);
+    # provide an option hash for Git::Repository::Command
+    # (see Git::Repository::Command for all available options)
+    $r = Git::Repository->new( ..., \%options );
 
-    # - get the full output as a list of lines (no errput)
-    @output = $r->run(@cmd);
+    # run commands
+    # - get the full output (no errput) passing options for this command only
+    $output = $r->run( @cmd, \%options );
+
+    # - get the full output as a list of lines (no errput), with options
+    @output = $r->run( @cmd, \%options );
 
     # - process the output with callbacks
     $output = $r->run( @cmd, sub {...} );
@@ -325,7 +326,7 @@ sub version_ge {
 
     # - obtain a Git::Repository::Command object
     #   (see Git::Repository::Command for details)
-    $cmd = $r->command(@cmd);
+    $cmd = $r->command( @cmd, \%options );
 
     # obtain version information
     my $version = $r->version();
