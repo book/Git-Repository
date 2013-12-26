@@ -403,22 +403,26 @@ corresponding L<Git::Repository> instance.
 
 So this:
 
-    my $options = {
-        git => '/path/to/some/other/git',
-        env => {
-            GIT_COMMITTER_EMAIL => 'book@cpan.org',
-            GIT_COMMITTER_NAME  => 'Philippe Bruhat (BooK)',
-        },
-    };
     my $r = Git::Repository->new(
+        # parameters
         work_tree => $dir,
-        $options
+        # options
+        {   git => '/path/to/some/other/git',
+            env => {
+                GIT_COMMITTER_EMAIL => 'book@cpan.org',
+                GIT_COMMITTER_NAME  => 'Philippe Bruhat (BooK)',
+            },
+        }
     );
 
 is equivalent to explicitly passing the option hash to each
 C<run()> or C<command()> call.
 The documentation for L<Git::Repository::Command> lists all
 available options.
+
+Note that Git::Repository and L<Git::Repository::Command> take
+great care in finding the option hash wherever it may be in C<@_>,
+and to merge multiple option hashes if more than one is provided.
 
 It probably makes no sense to set the C<input> option in C<new()>,
 but L<Git::Repository> won't stop you.
