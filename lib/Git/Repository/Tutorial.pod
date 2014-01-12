@@ -71,7 +71,7 @@ Note that the old C<create()> method is obsolete and has been removed.
 Cloning works the same way:
 
     Git::Repository->run( clone => $url => $dir );
-    $r = Git::Repository->new( $dir );
+    $r = Git::Repository->new( work_tree => $dir );
 
 =head2 Run a simple command
 
