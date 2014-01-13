@@ -63,7 +63,9 @@ with all the methods they provide, or only a selection of them.
 
 L<Git::Repository::Plugin> provides a single method:
 
-=head2 install( @keywords )
+=head2 install
+
+    $plugin->install( @keywords );
 
 Install all keywords provided in the L<Git::Repository> namespace.
 
