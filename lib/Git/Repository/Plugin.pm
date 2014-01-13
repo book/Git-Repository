@@ -104,7 +104,7 @@ Further improvements to the plugin system proposed by Aristotle Pagaltzis.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
