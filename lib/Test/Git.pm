@@ -118,6 +118,32 @@ a L<Git::Repository> object pointing to it.
 This function takes options as a hash. Each key will influence a
 different part of the creation process.
 
+The keys are:
+
+=over 4
+
+=item temp
+
+Array reference containing parameters to L<File::Temp> C<tempdir> function.
+
+Default: C<[ CLEANUP => 1 ]>
+
+=item init
+
+Array reference containing parameters to C<git init>.
+Must not contain the target directory parameter, which is provided
+by C<test_repository()> (via L<File::Temp>).
+
+Default: C<[]>
+
+=item git
+
+Hash reference containing options for L<Git::Repository>.
+
+Default: C<{}>
+
+=back
+
 This call is the equivalent of the default call with no options:
 
     test_repository(
