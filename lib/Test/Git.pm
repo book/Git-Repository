@@ -54,7 +54,10 @@ sub test_repository {
     my $home = cwd;
     chdir $dir or croak "Can't chdir to $dir: $!";
     my @cmd = $clone ? ( clone => @$clone ) : ( init => @$init );
-    Git::Repository->run( @cmd, '.', $safe );
+    eval { Git::Repository->run( @cmd, '.', $safe ); 1; } or do {
+        chdir $home or warn "Can't chdir to $home: $!";
+        die $@;
+    };
 
     # create the Git::Repository object
     my $gitdir = Git::Repository->run(qw( rev-parse --git-dir ));
