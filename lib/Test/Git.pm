@@ -32,11 +32,15 @@ sub has_git {
 sub test_repository {
     my %args = @_;
 
+    croak "Can't use both 'init' and 'clone' paramaters"
+        if exists $args{init} && exists $args{clone};
+
     # setup some default values
     my $temp = $args{temp} || [ CLEANUP => 1 ];    # File::Temp options
     my $init = $args{init} || [];                  # git init options
     my $opts = $args{git}  || {};                  # Git::Repository options
     my $safe = { %$opts, fatal => [] };            # ignore 'fatal' settings
+    my $clone = $args{clone};                      # git clone options
 
     # git init requires at least Git 1.5.0
     my $git_version = Git::Repository->version($safe);
@@ -49,7 +53,8 @@ sub test_repository {
     # create the git repository there
     my $home = cwd;
     chdir $dir or croak "Can't chdir to $dir: $!";
-    Git::Repository->run( init => @$init, $safe );
+    my @cmd = $clone ? ( clone => @$clone ) : ( init => @$init );
+    Git::Repository->run( @cmd, '.', $safe );
 
     # create the Git::Repository object
     my $gitdir = Git::Repository->run(qw( rev-parse --git-dir ));
@@ -85,6 +90,10 @@ sub test_repository {
     # and return a Git::Repository object
     my $r = test_repository();
     
+    # clone an existing repository in a temporary location
+    # and return a Git::Repository object
+    my $c = test_repository( clone => [ $url ] );
+
     # run some tests on the repository
     ...
 
@@ -135,6 +144,17 @@ Must not contain the target directory parameter, which is provided
 by C<test_repository()> (via L<File::Temp>).
 
 Default: C<[]>
+
+=item clone
+
+Array reference containing parameters to C<git clone>.
+Must not contain the target directory parameter, which is provided
+by C<test_repository()> (via L<File::Temp>).
+
+Default: C<[]>
+
+Note that C<clone> and C<init> are mutually exclusive and that
+C<test_repository()> will croak if both are provided.
 
 =item git
 
