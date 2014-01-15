@@ -103,7 +103,9 @@ scripts that require the creation and management of a Git repository.
 
 =head1 EXPORTED FUNCTIONS
 
-=head2 has_git( $version, \%options )
+=head2 has_git
+
+    has_git( $version, \%options );
 
 Checks if there is a git binary available, or skips all tests.
 
@@ -117,7 +119,9 @@ This function must be called before C<plan()>, as it performs a B<skip_all>
 if requirements are not met.
 
 
-=head2 test_repository( %options )
+=head2 test_repository
+
+    test_repository( %options );
 
 Creates a new empty git repository in a temporary location, and returns
 a L<Git::Repository> object pointing to it.
@@ -183,7 +187,7 @@ repository, it requires at least Git version C<1.5.0.rc1>.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

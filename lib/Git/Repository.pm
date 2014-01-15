@@ -365,7 +365,9 @@ See L<Git::Repository::Tutorial> for more code examples.
 
 =head1 CONSTRUCTOR
 
-=head2 new( %args, $options )
+=head2 new
+
+    Git::Repository->new( %args, $options );
 
 Create a new L<Git::Repository> object, based on an existing Git repository.
 
@@ -455,7 +457,10 @@ pointing to it, simply do it in two steps:
 
 L<Git::Repository> supports the following methods:
 
-=head2 command( @cmd )
+=head2 command
+
+    Git::Repository->command( @cmd );
+    $r->command( @cmd );
 
 Runs the git sub-command and options, and returns a L<Git::Repository::Command>
 object pointing to the sub-process running the command.
@@ -463,7 +468,10 @@ object pointing to the sub-process running the command.
 As described in the L<Git::Repository::Command> documentation, C<@cmd>
 may also contain a hashref containing options for the command.
 
-=head2 run( @cmd )
+=head2 run
+
+    Git::Repository->run( @cmd );
+    $r->run( @cmd );
 
 Runs the command and returns the output as a string in scalar context,
 or as a list of lines in list context. Also accepts a hashref of options.
@@ -484,20 +492,20 @@ the C<fatal> option (see L<Git::Repository::Command> for details).
 The exit status of the command that was just run is accessible as usual
 using C<<< $? >> 8 >>>. See L<perlvar> for details about C<$?>.
 
-=head2 git_dir()
+=head2 git_dir
 
 Returns the repository path.
 
-=head2 work_tree()
+=head2 work_tree
 
 Returns the working copy path.
 Used as current working directory by L<Git::Repository::Command>.
 
-=head2 options()
+=head2 options
 
 Return the option hash that was passed to C<< Git::Repository->new() >>.
 
-=head2 version()
+=head2 version
 
 Return the version of git, as given by C<git --version>.
 
@@ -709,7 +717,7 @@ L<http://search.cpan.org/dist/Git-Repository>
 
 =head1 COPYRIGHT
 
-Copyright 2010-2013 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
