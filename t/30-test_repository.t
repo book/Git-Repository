@@ -9,7 +9,7 @@ use Git::Repository;
 
 has_git('1.5.0.rc1');
 
-plan tests => 3;
+plan tests => 6;
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
@@ -34,8 +34,11 @@ $r->run( commit => '-m' => 'hello' );
 my $sha1 = $r->run( 'rev-parse' => 'master' );
 
 # make a clone with test_repository
-my $s = test_repository( clone => [ $r->work_tree ] );
-isnt( $s->git_dir,   $r->git_dir,   'work_tree clone: different git_dir' );
-isnt( $s->work_tree, $r->work_tree, 'work_tree clone: different work_tree' );
-is( $s->run( 'rev-parse' => 'master' ),
-    $sha1, 'work_tree clone points to the same master' );
+my $s;
+for my $meth (qw( work_tree git_dir )) {
+    $s = test_repository( clone => [ $r->$meth ] );
+    isnt( $s->git_dir,   $r->git_dir,   "$meth clone: different git_dir" );
+    isnt( $s->work_tree, $r->work_tree, "$meth clone: different work_tree" );
+    is( $s->run( 'rev-parse' => 'master' ),
+        $sha1, "$meth clone points to the same master" );
+}
