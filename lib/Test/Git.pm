@@ -7,6 +7,7 @@ use Exporter;
 use Test::Builder;
 use Git::Repository;    # 1.15
 use File::Temp qw( tempdir );
+use File::Spec::Functions qw( catdir );
 use Cwd qw( cwd );
 use Carp;
 
@@ -49,21 +50,15 @@ sub test_repository {
 
     # create a temporary directory to host our repository
     my $dir = tempdir(@$temp);
+    my $cwd = { cwd => $dir };    # option to chdir there
 
     # create the git repository there
-    my $home = cwd;
-    chdir $dir or croak "Can't chdir to $dir: $!";
     my @cmd = $clone ? ( clone => @$clone ) : ( init => @$init );
-    eval { Git::Repository->run( @cmd, '.', $safe ); 1; } or do {
-        chdir $home or warn "Can't chdir to $home: $!";
-        die $@;
-    };
+    Git::Repository->run( @cmd, '.', $safe, $cwd );
 
     # create the Git::Repository object
-    my $gitdir = Git::Repository->run(qw( rev-parse --git-dir ));
-    my $r = Git::Repository->new( git_dir => $gitdir, $opts );
-    chdir $home or croak "Can't chdir to $home: $!";
-    return $r;
+    my $gitdir = Git::Repository->run( qw( rev-parse --git-dir ), $cwd );
+    return Git::Repository->new( git_dir => catdir( $dir, $gitdir ), $opts );
 }
 
 1;
