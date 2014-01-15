@@ -7,7 +7,7 @@ use File::Spec::Functions;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
 
-has_git('1.5.0.rc1');
+has_git('1.6.2.rc0');    # git clone supports existing directories since then
 
 plan tests => 6;
 
