@@ -149,6 +149,9 @@ by C<test_repository()> (via L<File::Temp>).
 
 Default: C<[]>
 
+The C<init> option is only supported with Git versions higher or
+equal to 1.6.2.rc0.
+
 =item clone
 
 Array reference containing parameters to C<git clone>.
@@ -159,6 +162,9 @@ Default: C<[]>
 
 Note that C<clone> and C<init> are mutually exclusive and that
 C<test_repository()> will croak if both are provided.
+
+The C<clone> option is only supported with Git versions higher or
+equal to 1.6.2.rc0.
 
 =item git
 
