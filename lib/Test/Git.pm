@@ -158,10 +158,10 @@ Array reference containing parameters to C<git clone>.
 Must not contain the target directory parameter, which is provided
 by C<test_repository()> (via L<File::Temp>).
 
-Default: C<[]>
-
 Note that C<clone> and C<init> are mutually exclusive and that
 C<test_repository()> will croak if both are provided.
+This option has no default value, since at least a Git URL must be
+provided to the C<clone> option.
 
 The C<clone> option is only supported with Git versions higher or
 equal to 1.6.2.rc0.
