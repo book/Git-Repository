@@ -43,18 +43,20 @@ sub test_repository {
     my $safe = { %$opts, fatal => [] };            # ignore 'fatal' settings
     my $clone = $args{clone};                      # git clone options
 
-    # git init requires at least Git 1.5.0
+    # version check
+    my ( $cmd, $min_version ) = $clone ? ( clone => '1.6.2.rc0' )
+                                       : ( init  => '1.5.0.rc1' );
     my $git_version = Git::Repository->version($safe);
-    croak "test_repository() requires git >= 1.5.0.rc1 (this is only $git_version)"
-      if Git::Repository->version_lt( '1.5.0.rc1', $safe );
+    croak "test_repository( $cmd => ... ) requires git >= $min_version (this is only $git_version)"
+      if Git::Repository->version_lt( $min_version, $safe );
 
     # create a temporary directory to host our repository
     my $dir = tempdir(@$temp);
     my $cwd = { cwd => $dir };    # option to chdir there
 
     # create the git repository there
-    my @cmd = $clone ? ( clone => @$clone ) : ( init => @$init );
-    Git::Repository->run( @cmd, '.', $safe, $cwd );
+    my @cmd = $clone ? ( clone => @$clone, $dir ) : ( init => @$init, $cwd );
+    Git::Repository->run( @cmd, $safe );
 
     # create the Git::Repository object
     my $gitdir = Git::Repository->run( qw( rev-parse --git-dir ), $cwd );
