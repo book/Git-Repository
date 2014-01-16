@@ -2,8 +2,19 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.310 Fri Jan 17 2014
+        [ENHANCEMENTS]
+        - add support for a 'clone' option in test_repository()
+        [DOCUMENTATION]
+        - better document the test_repository() options
+        - better document the options hash
+        - make method names easier to link to throughout the documentation
+        [TESTS]
+        - tested against 350 versions of git (including all RC),
+          from 1.5.0.rc0 to 1.8.5.3
+
 1.309 Sat Nov 2 2013
-        [TEST]
+        [TESTS]
         - replace use_ok by simply running perl -M$module -e1
         [DOCUMENTATION]
         - some guidelines for naming attributes in plugins
