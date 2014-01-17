@@ -604,7 +604,7 @@ See L<Git::Repository::Plugin> about how to create a new plugin.
 
 =head1 ACKNOWLEDGEMENTS
 
-Thanks to Todd Rinalo, who wanted to add more methods to
+Thanks to Todd Rinaldo, who wanted to add more methods to
 L<Git::Repository>, which made me look for a solution that would preserve
 the minimalism of L<Git::Repository>. The C<::Plugin> interface is what
 I came up with.
