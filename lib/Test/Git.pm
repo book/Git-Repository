@@ -139,7 +139,7 @@ The keys are:
 
 Array reference containing parameters to L<File::Temp> C<tempdir> function.
 
-Default: C<[ CLEANUP => 1 ]>
+Default: C<<[ CLEANUP => 1 ]>>
 
 =item init
 
