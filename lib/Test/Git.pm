@@ -45,7 +45,7 @@ sub test_repository {
 
     # version check
     my ( $cmd, $min_version ) = $clone ? ( clone => '1.6.2.rc0' )
-                                       : ( init  => '1.5.0.rc1' );
+                                       : ( init  => '1.4.0' );
     my $git_version = Git::Repository->version($safe);
     croak "test_repository( $cmd => ... ) requires git >= $min_version (this is only $git_version)"
       if Git::Repository->version_lt( $min_version, $safe );
@@ -55,7 +55,9 @@ sub test_repository {
     my $cwd = { cwd => $dir };    # option to chdir there
 
     # create the git repository there
-    my @cmd = $clone ? ( clone => @$clone, $dir ) : ( init => @$init, $cwd );
+    unshift @$init,
+        Git::Repository->version_lt('1.5.0.rc1') ? 'init-db' : 'init';
+    my @cmd = $clone ? ( clone => @$clone, $dir ) : ( @$init, $cwd );
     Git::Repository->run( @cmd, $safe );
 
     # create the Git::Repository object
