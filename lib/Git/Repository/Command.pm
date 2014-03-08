@@ -78,7 +78,7 @@ sub _is_git {
 
     # try to run it
     my $cmd = System::Command->new( $git, @args, '--version' );
-    my $version = do { local $/ = "\n"; $cmd->stdout->getline; };
+    my $version = do { local $/ = "\n"; $cmd->stdout->getline; } || '';
     $cmd->close;
 
     # does it really look like git?
