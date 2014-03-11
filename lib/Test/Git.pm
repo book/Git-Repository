@@ -33,7 +33,7 @@ sub has_git {
 sub test_repository {
     my %args = @_;
 
-    croak "Can't use both 'init' and 'clone' paramaters"
+    croak "Can't use both 'init' and 'clone' parameters"
         if exists $args{init} && exists $args{clone};
 
     # setup some default values
