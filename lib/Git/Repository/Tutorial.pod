@@ -70,7 +70,9 @@ so we use the C<cwd> option:
     Git::Repository->run( 'init-db' => { cwd => $dir } );
     $r = Git::Repository->new( work_tree => $dir );
 
-Note that the old C<create()> method is obsolete and has been removed.
+Note that the old C<create()> method
+is obsolete (as of L<Git::Repository> 1.18, from April 16, 2011)
+and has been removed (as of L<Git::Repository> 1.301, January 21, 2013).
 
 =head2 Clone a repository
 
