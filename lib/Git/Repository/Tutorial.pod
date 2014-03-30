@@ -59,9 +59,15 @@ Sometime, you'll need to create the Git repository from scratch:
     Git::Repository->run( init => $dir );
     $r = Git::Repository->new( work_tree => $dir );
 
-    # any older git requires the command to be run in the work tree,
-    # so we use the cwd option
+Any git older than 1.6.5 requires the command to be run in the work tree,
+so we use the C<cwd> option:
+
+    # git version 1.5.0.rc1 and above
     Git::Repository->run( init => { cwd => $dir } );
+    $r = Git::Repository->new( work_tree => $dir );
+
+    # older git versions
+    Git::Repository->run( 'init-db' => { cwd => $dir } );
     $r = Git::Repository->new( work_tree => $dir );
 
 Note that the old C<create()> method is obsolete and has been removed.
