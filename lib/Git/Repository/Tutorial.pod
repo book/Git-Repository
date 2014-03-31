@@ -255,7 +255,7 @@ The exit status (as given by C<<< $? >> 8 >>>) is C<1>.
 
 
 To force C<run()> to die when the Git command exits with status C<1>,
-use the C<fatal> option (added in version 1.304):
+use the C<fatal> option (added in version 1.304, May 25, 2013):
 
     $r->run( checkout => 'does-not-exist', { fatal => 1 } );
 
