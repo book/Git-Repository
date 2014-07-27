@@ -178,7 +178,7 @@ ok( !(  $r = eval {
 );
 is( $r, undef,
     "clone => @{[ $i - 1 ]} => $i - did not create a repository" );
-like( $@, qr/^fatal: /, 'fatal error from git' );
+like( $@, qr/^fatal: /m, 'fatal error from git' );
 
 # PASS - init a bare repository
 BEGIN { $tests += 5 }
@@ -288,7 +288,7 @@ SKIP: {
         "init => $i - FAILED"
     );
     is( $r, undef, "init => $i - did not create a repository" );
-    like( $@, qr/^fatal: /, 'fatal error from git' );
+    like( $@, qr/^fatal: /m, 'fatal error from git' );
 
     # PASS - init on an existing repository
     BEGIN { $extra += 10 }
