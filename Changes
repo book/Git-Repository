@@ -2,6 +2,20 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.312 Sun Aug 3 2014
+    [ENHANCEMENTS]
+    - test_repository() uses `git init-db` for init under older git
+      versions (although the test suite hasn't yet been adapted to
+      support really old versions of git)
+    - fixed a typo in the error message for test_repository()
+    [TESTS]
+    - made some tests for failure a little more lax when looking for
+      the "fatal:" string in the errput (i.e. look for it at the beginning
+      of any line, not just the firts)
+    [DOCUMENTATION]
+    - various minor documentation improvements
+    - the "OTHER GIT WRAPPERS" is really a "SEE ALSO" section
+
 1.311 Sun Mar 9 2014
     [ENHANCEMENTS]
     - avoid warnings from _is_git() when we get nothing out of "git"
