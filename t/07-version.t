@@ -6,7 +6,7 @@ use File::Temp qw( tempfile );
 use Git::Repository;
 use constant MSWin32 => $^O eq 'MSWin32';
 
-has_git('1.4.0');
+has_git;
 
 # setup fake git
 my $W = my $V = my $version = Git::Repository->version;
