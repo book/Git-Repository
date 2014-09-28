@@ -635,15 +635,6 @@ or process the output of commands (but have a look at the plugins), etc.
 One the following modules may therefore be better suited for your needs,
 depending on what you're trying to achieve.
 
-=head2 Git::Raw
-
-L<Git::Raw>
-provides bindings to L<libgit2|http://libgit2.github.com>, a pure C
-implementation of the Git core methods. Most of the functions provided by
-libgit2 are available. If you have complex workflows, or even if speed is of
-the essence, this may be a more attractive solution than shelling out to git.
-
-
 =head2 Git.pm
 
 Git.pm is not on CPAN. It is usually packaged with Git, and installed with
@@ -684,6 +675,17 @@ limitations (due to the way L<System::Sub> itself works) which don't
 impact most Git commands.
 
 L<Git::Sub> doesn't support working with streams.
+
+=head2 Git::Raw
+
+(This description was added for completeness in September 2014,
+upon request of the author of L<Git::Raw>.)
+
+L<Git::Raw>
+provides bindings to L<libgit2|http://libgit2.github.com/>, a pure C
+implementation of the Git core methods. Most of the functions provided by
+libgit2 are available. If you have complex workflows, or even if speed is of
+the essence, this may be a more attractive solution than shelling out to git.
 
 =head1 BUGS
 
