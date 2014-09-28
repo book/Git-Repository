@@ -637,15 +637,17 @@ depending on what you're trying to achieve.
 
 =head2 Git.pm
 
-Git.pm is not on CPAN. It is usually packaged with Git, and installed with
-the system Perl libraries. Not being on CPAN makes it harder to install
-in any Perl. It makes it harder for a CPAN library to depend on it.
+Git.pm was not on CPAN in 2010. It is packaged with Git, and installed
+with the system Perl libraries. Not being on CPAN made it harder to
+install in any Perl. It made it harder for a CPAN library to depend on it.
 
 It doesn't allow calling C<git init> or C<git clone>.
 
 The C<command_bidi_pipe> function especially has problems:
 L<http://kerneltrap.org/mailarchive/git/2008/10/24/3789584>
 
+The L<Git> module from git.git was packaged as a CPAN distribution by
+MSOUTH in June 2013.
 
 =head2 Git::Class
 
