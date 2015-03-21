@@ -5,7 +5,7 @@ Revision history for Git-Repository
 1.313 Sat Mar 21 2015
     [DOCUMENTATION]
     - add a section about Git::Raw in the SEE ALSO (written by its author)
-    - document the availability of Git.pm on CPAN
+    - document the availability of Git.pm on CPAN (RT #100957)
     - added the list of contributors to the META file
 
 1.312 Sun Aug 3 2014
