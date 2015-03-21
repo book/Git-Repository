@@ -2,6 +2,12 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.313 Sat Mar 21 2015
+    [DOCUMENTATION]
+    - add a section about Git::Raw in the SEE ALSO (written by its author)
+    - document the availability of Git.pm on CPAN
+    - added the list of contributors to the META file
+
 1.312 Sun Aug 3 2014
     [ENHANCEMENTS]
     - test_repository() uses `git init-db` for init under older git
