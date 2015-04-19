@@ -212,12 +212,7 @@ sub version {
 
 sub _version_eq {
     my ( $v1, $v2 ) = @_;
-    my @v1 = split /\./, $v1;
-    my @v2 = split /\./, $v2;
-
-    return '' if @v1 != @v2;
-    $v1[$_] ne $v2[$_] and return '' for 0 .. $#v1;
-    return 1;
+    return $v1 eq $v2;
 }
 
 sub _version_gt {
