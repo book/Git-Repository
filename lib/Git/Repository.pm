@@ -210,11 +210,6 @@ sub version {
             =~ /git version (.*)/g )[0];
 }
 
-sub _version_eq {
-    my ( $v1, $v2 ) = @_;
-    return $v1 eq $v2;
-}
-
 sub _version_gt {
     my ( $v1, $v2 ) = @_;
     my @v1 = split /\./, $v1;
@@ -245,12 +240,12 @@ sub _version_gt {
 # every op is a combination of eq and gt
 sub version_eq {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return _version_eq( $r->version(@o), $v );
+    return $r->version(@o) eq $v;
 }
 
 sub version_ne {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return !_version_eq( $r->version(@o), $v );
+    return $r->version(@o) ne $v;
 }
 
 sub version_gt {
@@ -266,14 +261,14 @@ sub version_le {
 sub version_lt {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $V = $r->version(@o);
-    return !_version_eq( $V, $v )
+    return $V ne $v
         && !_version_gt( $V, $v );
 }
 
 sub version_ge {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $V = $r->version(@o);
-    return _version_eq( $V, $v )
+    return $V eq $v
         || _version_gt( $V, $v );
 }
 
