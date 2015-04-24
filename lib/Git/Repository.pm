@@ -539,11 +539,15 @@ The methods are:
 
 All those methods also accept an option hash, just like the others.
 
-Note that there are a small number of cases where the version comparison
-operators will I<not> compare versions correctly for I<very old> versions of
-Git. Typical example is C<1.0.0a gt 1.0.0> which should return true, but
-doesn't. This only matters in comparisons, only for version numbers prior to
-C<1.4.0-rc1> (June 2006), and only when the compared versions are very close.
+Note that in the C<git.git> repository, C<v1.0.1> and C<v1.0.2> are
+lightweight tags that points respectively to C<v1.0.0a> and C<v1.0.0b>.
+As of Git::Repository 1.314, the comparison code internally converts
+C<v1.0.0a> and C<v1.0.0b> to their numerical equivalent before performing
+the comparison.
+
+Prior to C<1.4.0-rc1> (June 2006), compiling a development version of git
+would lead C<git --version> to output C<1.x-GIT> (with C<x> in C<0 .. 3>),
+which would make comparing versions that are very close a futile exercise.
 
 Other issues exist when comparing development version numbers with one
 another. For example, C<1.7.1.1> is greater than both C<1.7.1.1.gc8c07>
