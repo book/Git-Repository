@@ -44,7 +44,8 @@ my @true = (
     [ '1.7.1.rc1',            'version_ne', '1.7.1.rc2' ],
     [ '1.0.0a',               'version_ne', '1.0.0' ],
     [ '1.4.0.rc1',            'version_le', '1.4.1' ],
-    [ '1.0.0a', 'version_gt', '1.0.0', 'TODO' ], # will probably never be done
+    [ '1.0.0a',               'version_gt', '1.0.0' ],
+    # non-standard versions
     [ '1.7.1.236.g81fa0',   'version_gt', '1.7.1' ],
     [ '1.7.1.236.g81fa0',   'version_lt', '1.7.1.1' ],
     [ '1.7.1.211.g54fcb21', 'version_gt', '1.7.1.209.gd60ad81' ],
@@ -117,8 +118,7 @@ my $dev;
 $r = 'Git::Repository::VersionFaker';
 
 for (@true) {
-    ( $dev, my $meth, my $v, $TODO ) = @$_;
-    local $TODO = $TODO ? 'version comparison not exhaustive' : '';
+    ( $dev, my $meth, my $v ) = @$_;
     ok( $r->$meth($v), "$dev $meth $v" );
     $meth = $negate{$meth};
     ok( !$r->$meth($v), "$dev not $meth $v" );
