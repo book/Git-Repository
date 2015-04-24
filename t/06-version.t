@@ -45,6 +45,9 @@ my @true = (
     [ '1.0.0a',               'version_ne', '1.0.0' ],
     [ '1.4.0.rc1',            'version_le', '1.4.1' ],
     [ '1.0.0a',               'version_gt', '1.0.0' ],
+    [ '1.0.0a',               'version_lt', '1.0.3' ],
+    [ '1.0.0a',               'version_eq', '1.0.1' ],
+    [ '1.0.0b',               'version_eq', '1.0.2' ],
     # non-standard versions
     [ '1.7.1.236.g81fa0',   'version_gt', '1.7.1' ],
     [ '1.7.1.236.g81fa0',   'version_lt', '1.7.1.1' ],
