@@ -686,7 +686,7 @@ L<Git::Sub> doesn't support working with streams.
 upon request of the author of L<Git::Raw>.)
 
 L<Git::Raw>
-provides bindings to L<libgit2|http://libgit2.github.com/>, a pure C
+provides bindings to L<libgit2|https://libgit2.github.io/>, a pure C
 implementation of the Git core methods. Most of the functions provided by
 libgit2 are available. If you have complex workflows, or even if speed is of
 the essence, this may be a more attractive solution than shelling out to git.
