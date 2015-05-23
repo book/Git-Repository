@@ -2,6 +2,11 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.314 Sat May 23 2015
+    [ENHANCEMENTS]
+    - simplified the internals of version comparisons
+    - give the correct result for comparisons involving 1.0.0a and 1.0.0b
+
 1.313 Sat Mar 21 2015
     [DOCUMENTATION]
     - add a section about Git::Raw in the SEE ALSO (written by its author)
