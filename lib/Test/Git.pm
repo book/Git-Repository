@@ -122,6 +122,9 @@ accepted by L<Git::Repository> and L<Git::Repository::Command>.
 This function must be called before C<plan()>, as it performs a B<skip_all>
 if requirements are not met.
 
+Note that the C<test_requires_git> function provided by the
+L<Test::Requires::Git> module is much more flexible.
+
 
 =head2 test_repository
 
@@ -200,6 +203,10 @@ repository, it requires at least Git version C<1.5.0.rc1>.
 The C<clone> option and capability of C<test_repository()> owes a lot
 to Nathan Nutter (NNUTTER), who wanted to be able to clone into a test
 repository.
+
+=head1 SEE ALSO
+
+L<Test::Requires::Git>.
 
 =head1 COPYRIGHT
 
