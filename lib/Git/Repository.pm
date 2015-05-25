@@ -82,8 +82,9 @@ sub new {
         if defined delete $arg{working_copy};
 
     # setup default options
-    my $git_dir   = delete $arg{git_dir};
-    my $work_tree = delete $arg{work_tree};
+    my $git_dir      = delete $arg{git_dir};
+    my $no_work_tree = 1 if exists $arg{work_tree} && !defined $arg{work_tree};
+    my $work_tree    = delete $arg{work_tree};
 
     croak "Unknown parameters: @{[keys %arg]}" if keys %arg;
 
@@ -122,7 +123,7 @@ sub new {
         $self->{git_dir} = $git_dir if defined $git_dir;
 
         # in a non-bare repository, the work tree is just above the gitdir
-        if ( $self->run(qw( config --bool core.bare )) ne 'true' ) {
+        if ( !$no_work_tree && $self->run(qw( config --bool core.bare )) ne 'true' ) {
             $self->{work_tree}
                 = _abs_path( File::Spec->updir, $self->{git_dir} );
         }
