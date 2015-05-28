@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Temp qw( tempdir );
 use File::Spec;
@@ -8,7 +9,7 @@ use File::Path;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-has_git('1.5.0.rc0');
+test_requires_git version_ge => '1.5.0.rc0';
 
 my $version = Git::Repository->version;
 

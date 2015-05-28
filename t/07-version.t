@@ -1,12 +1,13 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Temp qw( tempfile );
 use Git::Repository;
 use constant MSWin32 => $^O eq 'MSWin32';
 
-has_git;
+test_requires_git;
 
 # setup fake git
 my $W = my $V = my $version = Git::Repository->version;

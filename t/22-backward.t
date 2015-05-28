@@ -1,13 +1,14 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Temp qw( tempdir );
 use File::Spec;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-has_git('1.5.0.rc1');
+test_requires_git version_ge => '1.5.0.rc1';
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};

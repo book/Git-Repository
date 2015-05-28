@@ -1,10 +1,11 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Spec;
 
-has_git();
+test_requires_git;
 
 plan tests => 3;
 
