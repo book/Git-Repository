@@ -172,8 +172,10 @@ sub final_output {
     $self->close;
 
     # fatal exit codes set by the 'fatal' option
+    # when working with fatal => '!0' it's helpful to be able to show the exit status
+    # so that specific exit codes can be made non-fatal if desired.
     if ( $self->options->{fatal}{ $self->exit } ) {
-        croak join( "\n", @errput ) || 'fatal: unknown git error';
+        croak join( "\n", @errput ) || 'fatal: unknown git error, exit status '.$self->exit;
     }
 
     # something else's wrong
