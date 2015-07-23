@@ -133,7 +133,7 @@ push @tests, (
     },
     {   cmd  => [ exit => 124, { git => $exit, fatal => [ 1 .. 255 ] } ],
         exit => 124,
-        dollar_at => qr/^fatal: unknown git error/,
+        dollar_at => qr/^fatal: unknown git error, exit status 124/,
     },
 
     # setup a repo with some 'fatal' options
