@@ -130,9 +130,11 @@ sub new {
         fatal => {
             128 => 1,    # fatal
             129 => 1,    # usage
-            map s/^-// ? ( $_ => '' ) : ( $_ => 1 ),
-            map /^!0$/ ? ( 1 .. 255 ) : $_,
-            map ref() ? @$_ : $_, grep defined, map $_->{fatal}, @o
+            map { s/^-// ? ( $_ => '' ) : ( $_ => 1 ) }
+                map { /^!0$/ ? ( 1 .. 255 ) : ( $_ ) }
+                    map { ref() ? @$_ : $_ }
+                        grep { defined }
+                            map { $_->{fatal} } @o
         }
     };
 
@@ -173,7 +175,13 @@ sub final_output {
 
     # fatal exit codes set by the 'fatal' option
     if ( $self->options->{fatal}{ $self->exit } ) {
-        croak join( "\n", @errput ) || 'fatal: unknown git error';
+        # when working with fatal => '!0' it's helpful to be able to show the exit status
+        # so that specific exit codes can be made non-fatal if desired.
+        # The trace facility in System::Command ought to show this info but doesn't
+        # https://rt.cpan.org/Ticket/Display.html?id=106046
+        # https://rt.cpan.org/Ticket/Display.html?id=106048
+        # warn "fatal: git returned exit status ".$self->exit if $self->trace;
+        croak join( "\n", @errput ) || 'fatal: unknown git error, exit status '.$self->exit;
     }
 
     # something else's wrong
