@@ -67,9 +67,11 @@ sub test_repository {
 
 1;
 
-# ABSTRACT: Helper functions for test scripts using Git
+__END__
 
-=pod
+=head1 NAME
+
+Test::Git - Helper functions for test scripts using Git
 
 =head1 SYNOPSIS
 
@@ -210,7 +212,7 @@ L<Test::Requires::Git>.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

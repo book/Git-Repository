@@ -30,9 +30,11 @@ sub _keywords {
 
 1;
 
-# ABSTRACT: Base class for Git::Repository plugins
+__END__
 
-=pod
+=head1 NAME
+
+Git::Repository::Plugin - Base class for Git::Repository plugins
 
 =head1 SYNOPSIS
 
@@ -104,7 +106,7 @@ Further improvements to the plugin system proposed by Aristotle Pagaltzis.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

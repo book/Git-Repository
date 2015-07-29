@@ -192,7 +192,11 @@ sub final_output {
 
 1;
 
-# ABSTRACT: Command objects for running git
+__END__
+
+=head1 NAME
+
+Git::Repository::Command - Command objects for running git
 
 =pod
 
@@ -434,7 +438,7 @@ Hackathon 2013 in Lancaster.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

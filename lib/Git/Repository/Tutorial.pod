@@ -1,5 +1,6 @@
-# ABSTRACT: Control git from Perl using Git::Repository
-# PODNAME: Git::Repository::Tutorial
+=head1 NAME
+
+Git::Repository::Tutorial - Control git from Perl using Git::Repository
 
 =head1 SYNOPSIS
 
@@ -390,7 +391,7 @@ to learn how to add your own methods to L<Git::Repository>.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 

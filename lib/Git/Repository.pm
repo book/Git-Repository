@@ -282,9 +282,11 @@ sub version_ge {
 
 1;
 
-# ABSTRACT: Perl interface to Git repositories
+__END__
 
-=pod
+=head1 NAME
+
+Git::Repository - Perl interface to Git repositories
 
 =head1 SYNOPSIS
 
@@ -732,7 +734,7 @@ L<http://search.cpan.org/dist/Git-Repository>
 
 =head1 COPYRIGHT
 
-Copyright 2010-2014 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
