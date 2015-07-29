@@ -2,6 +2,10 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.315 Wed Jul 29 2015
+    [ENHANCEMENTS]
+    - Show exit status in 'unknown git error' message (TIMB)
+
 1.314 Sat May 23 2015
     [ENHANCEMENTS]
     - simplified the internals of version comparisons
