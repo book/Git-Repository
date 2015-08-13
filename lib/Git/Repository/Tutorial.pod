@@ -304,6 +304,18 @@ See also L<Git::Repository::Plugin::Log> for adding to your
 L<Git::Repository> objects a C<log()> method that will parse the log
 output for you.
 
+Understanding the various options for B<git log> can make it very simple
+to obtain a lot of information.
+
+For example:
+
+    # all tags reachable from $committish
+    my @tags = map {
+        s/^ \((.*)\)/$1/;
+        ( map +( split /: / )[1], grep /^tag: /, split /, / )
+      }
+      $_->run( qw( log --simplify-by-decoration --pretty=%d ), $committish );
+
 =head2 Process the output of B<git shortlog>
 
 B<git shortlog> behaves differently when it detects it's not attached
