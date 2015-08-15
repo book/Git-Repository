@@ -164,8 +164,8 @@ sub final_output {
     my ( @output, @errput );
     {
         local $/ = "\n";
-        chomp( @output = <$stdout> );
-        chomp( @errput = <$stderr> );
+        chomp( @output = <$stdout> ) if $stdout->opened;
+        chomp( @errput = <$stderr> ) if $stderr->opened;
     }
 
     # done with it
