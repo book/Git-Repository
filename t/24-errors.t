@@ -56,7 +56,7 @@ my @tests = (
     {   test_repo => [],
         cmd       => [qw( log -1 )],
         exit      => 128,
-        dollar_at => qr/^fatal: bad default revision 'HEAD' /,
+        dollar_at => qr/^fatal: (?:bad default revision 'HEAD' |your current branch 'master' does not have any commits yet)/,
     },
 
     # create the empty tree
