@@ -2,6 +2,16 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.316 Wed Dec 2 2015
+    [ENHANCEMENTS]
+    - avoid a warning if the filehandles have already been closed
+      (related to System::Command 1.114 'interactive' option)
+    [DOCUMENTATION]
+    - add examples for `git log` and using callbacks with `$r->run`
+      in Git::Repository::Tutorial
+    [TESTS]
+    - git-2.5.2 test suite compatibility fix (Petr Šabata)
+
 1.315 Wed Jul 29 2015
     [ENHANCEMENTS]
     - Show exit status in 'unknown git error' message (TIMB)
