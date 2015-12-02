@@ -272,7 +272,7 @@ should be an array reference with the command and parameters, like this:
 =item C<cwd>
 
 The I<current working directory> in which the git command will be run.
-(C<chdir()> will be called just before lauching the command.)
+(C<chdir()> will be called just before launching the command.)
 
 If not provided, it will default to the root of the Git repository work
 tree (if the repository is bare, then no C<chdir()> will be performed).
