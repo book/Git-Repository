@@ -187,6 +187,21 @@ Use the C<env> option:
 
 See L<Git::Repository::Command> for other available options.
 
+=head2 Ignore the system and global configuration files
+
+Git has three levels of configuration files that can change the output
+of porcelain commands: system (F<$(prefix)/etc/gitconfig>), global
+(F<$HOME/.gitconfig> and F<$XDG_CONFIG_HOME/git/config>) and local
+(F<.git/config> inside the repository).
+
+To ensure the system and global configuration files will be ignored
+and won't interfere with the expected output of your Git commands,
+you can add the following keys to the C<env> option:
+
+    GIT_CONFIG_NOSYSTEM => 1,
+    XDG_CONFIG_HOME     => undef,
+    HOME                => undef,
+
 =head2 Ensure the output from Git commands is not localized
 
 Since version 1.7.9, Git translates its most common interface messages
