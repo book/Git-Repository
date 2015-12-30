@@ -212,7 +212,7 @@ sub version {
 
 sub _version_gt {
     my ( $v1, $v2 ) = @_;
-    s/(?<=^1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
 
     my @v1 = split /\./, $v1;
     my @v2 = split /\./, $v2;
@@ -243,14 +243,14 @@ sub _version_gt {
 sub version_eq {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=^1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
     return $v1 eq $v2;
 }
 
 sub version_ne {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=^1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
     return $v1 ne $v2;
 }
 
@@ -267,7 +267,7 @@ sub version_le {
 sub version_lt {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=^1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
     return $v1 ne $v2
         && !_version_gt( $v1, $v2 );
 }
@@ -275,7 +275,7 @@ sub version_lt {
 sub version_ge {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=^1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
     return $v1 eq $v2
         || _version_gt( $v1, $v2 );
 }
