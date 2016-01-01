@@ -20,11 +20,35 @@ my @versions;
     closedir $DH
 }
 
-# the test script accepts a range of Git versions to test (min, max)
+# the test script accepts version specifications to limit the number
+# of versions tested
+my @spec = map {
+    /-/
+      ? do {    # range
+        my ( $min, $max ) = split /-/;
+        sub {
+            !( $min      && Git::Repository::_version_gt( $min,  $_[0] ) )
+              && !( $max && Git::Repository::_version_gt( $_[0], $max ) );
+          }
+      }
+      : do {    # single item
+        my $v = $_;
+        sub { $_[0] eq $v }
+      };
+} @ARGV;
+
 # the default it to test against all available versions
+if (@spec) {
+    @versions = grep {
+        my $version = $_;
+        my $ok;
+        $ok += $_->($version) for @spec;
+        $ok;
+    } @versions;
+}
+
+# sort the versions to test
 @versions =
-  grep { !( $ARGV[0] && Git::Repository::_version_gt( $ARGV[0], $_ ) ) }
-  grep { !( $ARGV[1] && Git::Repository::_version_gt( $_,       $ARGV[1] ) ) }
   sort {
     Git::Repository::_version_gt( $a, $b )
       || -Git::Repository::_version_gt( $b, $a )
