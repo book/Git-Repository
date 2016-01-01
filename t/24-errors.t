@@ -3,7 +3,7 @@ use warnings;
 use Test::More;
 use Test::Git;
 use Git::Repository;
-use File::Temp qw( tempfile );
+use File::Temp qw( tempfile tempdir );
 use constant MSWin32 => $^O eq 'MSWin32';
 
 has_git('1.5.0.rc1');
@@ -24,7 +24,7 @@ my $exit;
 eval {
     my $version = Git::Repository->version;
     ( my $fh, $exit ) = tempfile(
-        DIR    => 't',
+        DIR    => tempdir( CLEANUP => 1 ),
         UNLINK => 1,
       ( SUFFIX => '.bat' )x!! MSWin32,
     );

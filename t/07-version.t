@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Git;
-use File::Temp qw( tempfile );
+use File::Temp qw( tempfile tempdir );
 use Git::Repository;
 use constant MSWin32 => $^O eq 'MSWin32';
 
@@ -52,8 +52,11 @@ for my $t (@true) {
 # helper routine to build a fake fit binary
 sub fake_git {
     my ($version) = @_;
-    my ( $fh, $filename ) =
-      tempfile( DIR => 't', UNLINK => 1, MSWin32 ? ( SUFFIX => '.bat' ) : () );
+    my ( $fh, $filename ) = tempfile(
+        DIR    => tempdir( CLEANUP => 1 ),
+        UNLINK => 1,
+      ( SUFFIX => '.bat' )x!! MSWin32,
+    );
     print {$fh} MSWin32 ? << "WIN32" : << "UNIX";
 \@echo git version $version
 WIN32
