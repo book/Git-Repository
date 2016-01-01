@@ -18,7 +18,7 @@ my $O = { git => fake_git($W) };         # big one
 # setup tests (that will fail if the real git is called)
 my @true = (
     [ version_eq => '1.2.3',   $o ],     # small
-    [ version_ne => $version,  $o ],
+    [ version_ne => '1.2.2',   $o ],
     [ version_lt => '1.2.3.5', $o ],
     [ version_le => '1.2.3',   $o ],
     [ version_le => '1.2.3.5', $o ],
