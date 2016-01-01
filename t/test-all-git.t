@@ -29,7 +29,11 @@ my @versions;
     closedir $DH
 }
 
+# the test script accepts a range of Git versions to test (min, max)
+# the default it to test against all available versions
 @versions =
+  grep { !( $ARGV[0] && Git::Repository::_version_gt( $ARGV[0], $_ ) ) }
+  grep { !( $ARGV[1] && Git::Repository::_version_gt( $_,       $ARGV[1] ) ) }
   sort {
     Git::Repository::_version_gt( $a, $b )
       || -Git::Repository::_version_gt( $b, $a )
