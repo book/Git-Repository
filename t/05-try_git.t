@@ -58,6 +58,7 @@ SKIP:
             map {"git$_"} '', '.cmd', '.exe'
         }
         split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
+    $abs_git = File::Spec->rel2abs($abs_git);
 
     diag "Testing _is_git with $abs_git from $cwd";
     ok( Git::Repository::Command::_is_git($abs_git), "_is_git( $abs_git ) " );
