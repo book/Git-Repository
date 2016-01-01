@@ -38,11 +38,11 @@ is( Git::Repository->version($O), $W,      "version() options (big git)" );
 # use options in version_eq()
 for my $t (@true) {
     my ( $method, @args ) = @$t;
-    ok( Git::Repository->$method(@args), "$method() options" );
+    ok( Git::Repository->$method(@args), "$method($args[0]) options" );
     ok( Git::Repository->$method( reverse @args ),
-        "$method() options (any order)" );
+        "$method($args[0]) options (any order)" );
     ok( Git::Repository->$method( @args, 'bonk' ),
-        "$method() options (with bogus extra args)"
+        "$method($args[0]) options (with bogus extra args)"
     );
 }
 
