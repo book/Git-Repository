@@ -46,10 +46,15 @@ delete $ENV{EXTENDED_TESTING};
 
 my $path_sep = $Config::Config{path_sep} || ';';
 
+my @fail;
 for my $version (@versions) {
     local $ENV{PATH} = join $path_sep,
       File::Spec->catdir( $git_home, $version, 'bin' ), $ENV{PATH};
     close STDERR;    # don't let the inner prove spoil the output
     `prove -l t`;
     ok( $? == 0, $version );
+    push @fail, $version if $?;
 }
+
+diag "Test suite failed with Git version:" if @fail;
+diag join ' ', splice @fail, 0, 5 while @fail;
