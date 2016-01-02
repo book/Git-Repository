@@ -9,7 +9,6 @@ use Cwd qw( cwd );
 use IO::Handle;
 use Scalar::Util qw( blessed );
 use File::Spec;
-use Config;
 use System::Command;
 
 our @ISA = qw( System::Command );
@@ -22,6 +21,24 @@ for my $attr (qw( pid stdin stdout stderr exit signal core )) {
 for my $attr (qw( cmdline )) {
     no strict 'refs';
     *$attr = sub { return @{ $_[0]{$attr} } };
+}
+
+sub _which {
+    my @pathext = ('');
+    push @pathext,
+        $^O eq 'MSWin32' ? split ';', $ENV{PATHEXT}
+      : $^O eq 'cygwin'  ? qw( .com .exe .bat )
+      :                    ();
+
+    for my $path ( File::Spec->path ) {
+        for my $ext (@pathext) {
+            my $binary = File::Spec->catfile( $path, $_[0] . $ext );
+            return $binary if -x $binary && !-d _;
+        }
+    }
+
+    # not found
+    return undef;
 }
 
 # CAN I HAS GIT?
@@ -55,22 +72,9 @@ sub _is_git {
         if exists $binary{$type}{$key}{$binary}{$args};
 
     # compute a list of candidate files (look in PATH if needed)
-    my $git;
-    if ( $type eq 'path' ) {
-        my $path_sep = $Config::Config{path_sep} || ';';
-        my @ext = (
-            '', $^O eq 'MSWin32' ? ( split /\Q$path_sep\E/, $ENV{PATHEXT} ) : ()
-        );
-        ($git) = grep { -x && !-d }
-            map {
-            my $path = $_;
-            map { File::Spec->catfile( $path, $_ ) } map {"$binary$_"} @ext
-            }
-            split /\Q$path_sep\E/, $path;
-    }
-    else {
-        $git = File::Spec->rel2abs($binary);
-    }
+    my $git = $type eq 'path'
+      ? _which($binary)
+      : File::Spec->rel2abs($binary);
 
     # if we can't find any, we're done
     return $binary{$type}{$key}{$binary} = undef
