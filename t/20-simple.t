@@ -98,7 +98,8 @@ SKIP: {
     isa_ok( $cmd, 'Git::Repository::Command' );
     local $/ = "\n";
     my $error = $cmd->stderr->getline;
-    is_deeply( [ $cmd->cmdline ], [ qw( git commit ) ], 'command-line' );
+    my $git = Git::Repository::Command::_is_git('git');
+    is_deeply( [ $cmd->cmdline ], [ $git, 'commit' ], 'command-line' );
     $cmd->close;
     like(
         $error,
@@ -148,7 +149,8 @@ BEGIN { $tests += 3 }
     my $lines;
     my $cmd = $r->command( log => '--pretty=oneline', '--all' );
     isa_ok( $cmd, 'Git::Repository::Command' );
-    is_deeply( [ $cmd->cmdline ], [ qw( git log --pretty=oneline --all ) ], 'command-line' );
+    my $git = Git::Repository::Command::_is_git('git');
+    is_deeply( [ $cmd->cmdline ], [ $git, qw( log --pretty=oneline --all ) ], 'command-line' );
     my $log = $cmd->stdout;
     local $/ = "\n";
     while (<$log>) {
