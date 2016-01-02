@@ -251,15 +251,16 @@ is( $r->git_dir, $gitdir, 'git dir' );
 # PASS - pass the git binary as an option to new()
 BEGIN { $tests += 9 }
 {
-    my $path_sep = $Config::Config{path_sep} || ';';
-    my $re = qr/\Q$path_sep\E/;
     my $abs_git = File::Spec->rel2abs( Git::Repository::Command::_which('git') );
 
-    # do not wipe the Windows PATH
+    # produce a minimal PATH, but
+    # - keep the Windows PATH (MSWin32)
+    # - keep the directory containing `pwd` (Unix)
+    my $path_sep = $Config::Config{path_sep};
     local $ENV{PATH} = join $path_sep,
         $^O eq 'MSWin32'
-        ? grep { /\Q$ENV{SYSTEMROOT}\E/ }              split $re, $ENV{PATH}
-        : grep { -x File::Spec->catfile( $_, 'pwd' ) } split $re, $ENV{PATH};
+        ? grep { /\Q$ENV{SYSTEMROOT}\E/ }              split $path_sep, $ENV{PATH}
+        : grep { -x File::Spec->catfile( $_, 'pwd' ) } split $path_sep, $ENV{PATH};
 
     $r = Git::Repository->new( git_dir => $gitdir, { git => $abs_git } );
     isa_ok( $r, 'Git::Repository' );
