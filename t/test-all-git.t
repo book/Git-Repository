@@ -3,7 +3,6 @@ use warnings;
 use Test::More;
 use Git::Repository;
 use File::Spec;
-use Config;
 
 my $git_home = 'git-collection';
 
@@ -59,11 +58,9 @@ plan tests => scalar @versions;
 # remove it to avoid infinite loops
 delete $ENV{EXTENDED_TESTING};
 
-my $path_sep = $Config::Config{path_sep} || ';';
-
 my @fail;
 for my $version (@versions) {
-    local $ENV{PATH} = join $path_sep,
+    local $ENV{PATH} = join $Config::Config{path_sep},
       File::Spec->catdir( $git_home, $version, 'bin' ), $ENV{PATH};
     close STDERR;    # don't let the inner prove spoil the output
     `prove -l t`;

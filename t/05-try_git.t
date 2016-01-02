@@ -50,7 +50,6 @@ SKIP:
     skip 'Default git binary not found in PATH', 10
         if !Git::Repository::Command::_is_git('git');
 
-    my $path_sep = $Config::Config{path_sep} || ';';
     my $abs_git = File::Spec->rel2abs( Git::Repository::Command::_which('git') );
 
     diag "Testing _is_git with $abs_git from $cwd";
@@ -98,7 +97,7 @@ SKIP:
         # secondary target, working, but later in the PATH
         my $subdir = File::Spec->catdir( $dir, 'sub' );
         mkpath $subdir;
-        $ENV{PATH} = join $path_sep, $dir, $subdir;
+        local $ENV{PATH} = join $Config::Config{path_sep}, $dir, $subdir;
         ok( symlink( $abs_git, File::Spec->catfile( $subdir, 'link' ) ),
             "sub/link -> $abs_git " );
         ok( Git::Repository::Command::_is_git('link'), 'symlink to git' );
