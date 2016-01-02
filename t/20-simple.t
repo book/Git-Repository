@@ -253,14 +253,7 @@ BEGIN { $tests += 9 }
 {
     my $path_sep = $Config::Config{path_sep} || ';';
     my $re = qr/\Q$path_sep\E/;
-    my @ext =
-      ( '', $^O eq 'MSWin32' ? ( split $re, $ENV{PATHEXT} ) : () );
-    my ($abs_git) = grep { -x && !-d }
-      map {
-        my $path = $_;
-        map { File::Spec->catfile( $path, $_ ) } map { "git$_" } @ext
-      } split $re, ( $ENV{PATH} || '' );
-    $abs_git = File::Spec->rel2abs($abs_git);
+    my $abs_git = File::Spec->rel2abs( Git::Repository::Command::_which('git') );
 
     # do not wipe the Windows PATH
     local $ENV{PATH} = join $path_sep,

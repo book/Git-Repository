@@ -51,14 +51,7 @@ SKIP:
         if !Git::Repository::Command::_is_git('git');
 
     my $path_sep = $Config::Config{path_sep} || ';';
-    my ($abs_git) = grep { -x && !-d }
-        map {
-        my $path = $_;
-        map { File::Spec->catfile( $path, $_ ) }
-            map {"git$_"} '', '.cmd', '.exe'
-        }
-        split /\Q$path_sep\E/, ( $ENV{PATH} || '' );
-    $abs_git = File::Spec->rel2abs($abs_git);
+    my $abs_git = File::Spec->rel2abs( Git::Repository::Command::_which('git') );
 
     diag "Testing _is_git with $abs_git from $cwd";
     ok( Git::Repository::Command::_is_git($abs_git), "_is_git( $abs_git ) " );
