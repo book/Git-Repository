@@ -52,14 +52,18 @@ sub _is_git {
     # and use the arguments as part of the cache key
 
     # compute cache key:
-    # - filename (path):     path
+    # - filename (path-rel): $CWD \0 $PATH
+    # - filename (path):     $PATH
     # - absolute path (abs): empty string
     # - relative path (rel): dirname
     my $path = defined $ENV{PATH} && length( $ENV{PATH} ) ? $ENV{PATH} : '';
-    my ( $type, $key )
-        = ( File::Spec->splitpath($binary) )[2] eq $binary ? ( 'path', $path )
-        : File::Spec->file_name_is_absolute($binary)       ? ( 'abs', '' )
-        :                                                    ( 'rel', cwd() );
+    my ( $type, $key ) =
+        ( File::Spec->splitpath($binary) )[2] eq $binary
+      ? grep( !File::Spec->file_name_is_absolute($_), File::Spec->path )
+          ? ( 'path-rel', join "\0", cwd(), $path )
+          : ( 'path', $path )
+      : File::Spec->file_name_is_absolute($binary) ? ( 'abs', '' )
+      :                                              ( 'rel', cwd() );
 
     # This relatively complex cache key scheme allows PATH or cwd to change
     # during the life of a program using Git::Repository, which is likely
@@ -72,9 +76,11 @@ sub _is_git {
         if exists $binary{$type}{$key}{$binary}{$args};
 
     # compute a list of candidate files (look in PATH if needed)
-    my $git = $type eq 'path'
+    my $git = $type =~ /^path/
       ? _which($binary)
       : File::Spec->rel2abs($binary);
+    $git = File::Spec->rel2abs($git)
+      if defined $git && $type eq 'path-rel';
 
     # if we can't find any, we're done
     return $binary{$type}{$key}{$binary} = undef
