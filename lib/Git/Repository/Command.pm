@@ -135,6 +135,10 @@ sub new {
             if defined $work_tree;
     }
 
+    # pick up the modified PATH, if any
+    exists $_->{env} and exists $_->{env}{PATH} and $ENV{PATH} = $_->{env}{PATH}
+      for @o;
+
     # extract and process the 'fatal' option
     push @o, {
         fatal => {
