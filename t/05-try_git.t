@@ -17,7 +17,7 @@ my @not_git = ( map ( {
     } 'this-command-unlikely-to-even-exist-or-be-git' ),
     $^X, '', 't' );
 
-plan tests => 3 * @not_git + 2 + 8;
+plan tests => 3 * @not_git + 2 + 8 * 2;
 
 for my $not_git (@not_git) {
 
@@ -50,7 +50,7 @@ SKIP:
     skip 'Default git binary not found in PATH', 10
         if !Git::Repository::Command::_is_git('git');
 
-    my $abs_git = File::Spec->rel2abs( Git::Repository::Command::_which('git') );
+    my $abs_git = Git::Repository::Command::_which('git');
 
     diag "Testing _is_git with $abs_git from $cwd";
     ok( Git::Repository::Command::_is_git($abs_git), "_is_git( $abs_git ) " );
@@ -63,7 +63,7 @@ SKIP:
 SKIP:
     {
         my $osname = "@Config{qw( osname osvers archname archname64 )}";
-        skip "symlink() not supported on this $osname", 8
+        skip "symlink() not supported on this $osname", 8 * 2
             if !eval { symlink( '', '' ); 1 };
 
         # a place to experiment
@@ -71,40 +71,42 @@ SKIP:
         my $target = File::Spec->catfile( $dir, 'target' );
         my $link   = File::Spec->catfile( $dir, 'link' );
         my $real   = File::Spec->catfile( $dir, 'real' );
-        $ENV{PATH} = $dir;
 
-        # symlink pointing to the real thing
-        # (not using 'link', because the _is_git() cache is not very smart
-        # with links that change of target while the program is running)
-        ok( symlink( $abs_git, $real ), "real -> $abs_git" );
-        ok( Git::Repository::Command::_is_git('real'), 'symlink to git' );
-        unlink $link, $real;
+        for my $dir ( $dir, File::Spec->rel2abs( $dir ) ) {
+            $ENV{PATH} = $dir;
 
-        # create a dangling symlink
-        open my $fh, '>', $target or diag "Can't open $target: $!";
-        close $fh;
-        chmod 0777, $target;
-        ok( symlink( 'target', $link ), 'link -> target' );
-        unlink $target;
-        ok( !Git::Repository::Command::_is_git('link'), 'dangling symlink' );
-        unlink $link;
+            # symlink pointing to the real thing
+            # (not using 'link', because the _is_git() cache is not very smart
+            # with links that change of target while the program is running)
+            ok( symlink( File::Spec->rel2abs( $abs_git ), $real ), "real -> $abs_git" );
+            ok( Git::Repository::Command::_is_git('real'), 'symlink to git' );
+            unlink $link, $real;
 
-        # symlink pointing to a directory
-        mkpath $target;
-        ok( symlink( 'target', $link ), 'link -> target/' );
-        ok( !Git::Repository::Command::_is_git('link'), 'symlink to a dir' );
-        unlink $link;
-        rmtree $target;
+            # create a dangling symlink
+            open my $fh, '>', $target or diag "Can't open $target: $!";
+            close $fh;
+            chmod 0777, $target;
+            ok( symlink( 'target', $link ), 'link -> target' );
+            unlink $target;
+            ok( !Git::Repository::Command::_is_git('link'), 'dangling symlink' );
+            unlink $link;
 
-        # secondary target, working, but later in the PATH
-        my $subdir = File::Spec->catdir( $dir, 'sub' );
-        mkpath $subdir;
-        local $ENV{PATH} = join $Config::Config{path_sep}, $dir, $subdir;
-        ok( symlink( $abs_git, File::Spec->catfile( $subdir, 'link' ) ),
-            "sub/link -> $abs_git " );
-        ok( Git::Repository::Command::_is_git('link'), 'symlink to git' );
-        unlink $link;
-        rmtree $subdir;
+            # symlink pointing to a directory
+            mkpath $target;
+            ok( symlink( 'target', $link ), 'link -> target/' );
+            ok( !Git::Repository::Command::_is_git('link'), 'symlink to a dir' );
+            unlink $link;
+            rmtree $target;
+
+            # secondary target, working, but later in the PATH
+            my $subdir = File::Spec->catdir( $dir, 'sub' );
+            mkpath $subdir;
+            local $ENV{PATH} = join $Config::Config{path_sep}, $dir, $subdir;
+            ok( symlink( File::Spec->rel2abs( $abs_git ), File::Spec->catfile( $subdir, 'link' ) ), "sub/link -> $abs_git " );
+            ok( Git::Repository::Command::_is_git('link'), 'symlink to git' );
+            unlink $link;
+            rmtree $subdir;
+        }
     }
 }
 
