@@ -78,7 +78,7 @@ SKIP:
         # with links that change of target while the program is running)
         ok( symlink( $abs_git, $real ), "real -> $abs_git" );
         ok( Git::Repository::Command::_is_git('real'), 'symlink to git' );
-        unlink $link;
+        unlink $link, $real;
 
         # create a dangling symlink
         open my $fh, '>', $target or diag "Can't open $target: $!";
@@ -93,6 +93,8 @@ SKIP:
         mkpath $target;
         ok( symlink( 'target', $link ), 'link -> target/' );
         ok( !Git::Repository::Command::_is_git('link'), 'symlink to a dir' );
+        unlink $link;
+        rmtree $target;
 
         # secondary target, working, but later in the PATH
         my $subdir = File::Spec->catdir( $dir, 'sub' );
@@ -101,6 +103,8 @@ SKIP:
         ok( symlink( $abs_git, File::Spec->catfile( $subdir, 'link' ) ),
             "sub/link -> $abs_git " );
         ok( Git::Repository::Command::_is_git('link'), 'symlink to git' );
+        unlink $link;
+        rmtree $subdir;
     }
 }
 
