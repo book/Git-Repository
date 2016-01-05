@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 use Git::Repository;
+use Git::Repository::Util qw( cmp_git );
 use File::Spec;
 
 my $git_home = 'git-collection';
@@ -47,11 +48,7 @@ if (@spec) {
 }
 
 # sort the versions to test
-@versions =
-  sort {
-    Git::Repository::_version_gt( $a, $b )
-      || -Git::Repository::_version_gt( $b, $a )
-  } @versions;
+@versions = sort cmp_git @versions;
 
 plan tests => scalar @versions;
 
