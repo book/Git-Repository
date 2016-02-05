@@ -1,0 +1,55 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Pod::Usage;
+use File::Spec;
+use Getopt::Long;
+use Git::Repository;
+use Git::Repository::Util qw( cmp_git );
+
+# command-line options
+my %option = (
+    source      => '/opt/src/git',
+    destination => '/opt/git',
+);
+GetOptions( \%option, 'source=s', 'destination=s', 'all' )
+  or pod2usage( -verbose => 0 );
+
+# git.git
+my $r = Git::Repository->new( work_tree => $option{source} );
+
+# map version numbers to tags
+my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
+  grep /^v[^0]/ && !/^v1\.0rc/,    # skip anything before 1.0
+  $r->run( tag => '-l', 'v*' );
+
+# select the versions to build and install
+my @versions;
+if ( $option{all} ) {
+    @versions = grep !/^1\.0\.0[ab]$/, keys %tag_for;
+}
+else {
+    # select versions based on the arguments
+    @versions = @ARGV;
+}
+
+# install all versions
+for my $version (sort cmp_git @versions) {
+    my $prefix = File::Spec->catdir( $option{destination}, $version );
+
+    # skip if that git already exists
+    my $git = File::Spec->catfile( $prefix, 'bin', 'git' );
+    if ( eval { Git::Repository->version_eq( $version, { git => $git } ) } ) {
+        print "*** GIT $version ALREADY INSTALLED ***\n";
+        next;
+    }
+    else {
+        $r->run( checkout => $tag_for{$version} );
+        $r->run( clean => '-xdf' ); # optional
+
+        # compile and install the actual git
+        print "make -j3 prefix=$prefix install\n";
+        `make -j3 prefix=$prefix install`;
+    }
+
+}
