@@ -13,9 +13,10 @@ my %option = (
     destination => '/opt/git',
     limit       => 0,
 );
-GetOptions( \%option, 'source=s', 'destination=s', 'since=s', 'until=s',
- 'limit=i' )
-  or pod2usage( -verbose => 0 );
+GetOptions(
+    \%option,  'source=s', 'destination=s', 'list',
+    'since=s', 'until=s',  'limit=i',
+) or pod2usage( -verbose => 0 );
 
 # git.git
 my $r = Git::Repository->new( work_tree => $option{source} );
@@ -35,6 +36,9 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
   ? @versions[ -$option{limit} .. -1 ]       # <limit> most recent
   : @versions[ 0 .. -$option{limit} - 1 ]    # <limit> most ancient
   if $option{limit};
+
+# just list the selected versions
+print map "$_\n", @versions and exit if $option{list};
 
 # build install select versions
 for my $version (@versions) {
