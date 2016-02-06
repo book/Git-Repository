@@ -24,10 +24,10 @@ my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
   $r->run( tag => '-l', 'v*' );
 
 # select the versions to build and install
-my @versions = @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for;
+my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for;
 
-# install all versions
-for my $version (sort cmp_git @versions) {
+# build install select versions
+for my $version (@versions) {
     my $prefix = File::Spec->catdir( $option{destination}, $version );
 
     # skip if that git already exists
