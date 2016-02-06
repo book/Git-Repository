@@ -54,6 +54,20 @@ for my $version (@versions) {
         $r->run( checkout => $tag_for{$version} );
         $r->run( clean => '-xdf' ); # optional
 
+        # add missing #include <sys/resource.h>
+        if (   cmp_git( $version, '1.7.5.rc0' ) <= 0
+            && cmp_git( '1.7.4.2', $version ) <= 0 )
+        {
+            $r->run( 'cherry-pick', '-n',
+                'ebae9ff95de2d0b36b061c7db833df4f7e01a41d' );
+
+            # force the expected version number
+            my $version_file = File::Spec->catfile( $r->work_tree, 'version' );
+            open my $fh, '>', $version_file
+              or die "Can't open $version_file: $!";
+            print $fh "$version\n";
+        }
+
         # compile and install the actual git
         print "make -j3 prefix=$prefix install\n";
         `make -j3 prefix=$prefix install`;
