@@ -11,8 +11,10 @@ use Git::Repository::Util qw( cmp_git );
 my %option = (
     source      => '/opt/src/git',
     destination => '/opt/git',
+    limit       => 0,
 );
-GetOptions( \%option, 'source=s', 'destination=s', 'since=s', 'until=s' )
+GetOptions( \%option, 'source=s', 'destination=s', 'since=s', 'until=s',
+ 'limit=i' )
   or pod2usage( -verbose => 0 );
 
 # git.git
@@ -28,6 +30,11 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
 
 @versions = grep cmp_git( $option{since}, $_ ) <= 0, @versions if $option{since};
 @versions = grep cmp_git( $_, $option{until} ) <= 0, @versions if $option{until};
+
+@versions = $option{limit} > 0
+  ? @versions[ -$option{limit} .. -1 ]       # <limit> most recent
+  : @versions[ 0 .. -$option{limit} - 1 ]    # <limit> most ancient
+  if $option{limit};
 
 # build install select versions
 for my $version (@versions) {
