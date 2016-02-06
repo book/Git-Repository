@@ -15,8 +15,13 @@ my %option = (
 );
 GetOptions(
     \%option,  'source=s', 'destination=s', 'list',
-    'since=s', 'until=s',  'limit=i',
+    'since=s', 'until=s',  'limit=i',       'help',
+    'manual'
 ) or pod2usage( -verbose => 0 );
+
+# simple help/manual
+pod2usage( -verbose => 1 ) if $option{help};
+pod2usage( -verbose => 2 ) if $option{manual};
 
 # git.git
 my $r = Git::Repository->new( work_tree => $option{source} );
@@ -44,7 +49,7 @@ print map "$_\n", @versions and exit if $option{list};
 for my $version (@versions) {
     my $prefix = File::Spec->catdir( $option{destination}, $version );
 
-    # skip if that git already exists
+    # skip if that git already exists (and runs)
     my $git = File::Spec->catfile( $prefix, 'bin', 'git' );
     if ( eval { Git::Repository->version_eq( $version, { git => $git } ) } ) {
         print "*** GIT $version ALREADY INSTALLED ***\n";
@@ -74,3 +79,75 @@ for my $version (@versions) {
     }
 
 }
+
+__END__
+
+=pod
+
+=head1 NAME
+
+build-git - Build and install any Git
+
+=head1 SYNOPSIS
+
+    # clone git.git
+
+    # build and install Git 1.7.2
+    $ build-git 1.7.2
+
+    # build and install all versions between 1.6.5 and 2.1.0
+    $ build-git --since 1.6.5 --until 2.1.0
+
+    # build and install all versions of Git (since 1.0.0)
+    $ build-git
+
+    # build and install the 5 most recent versions of the selection
+    $ build-git --limit 5 ...
+
+    # build and install the 5 most ancient versions of the selection
+    $ build-git --limit -5 ...
+
+=head1 OPTIONS AND ARGUMENTS
+
+=head2 Options
+
+ --source <directory>             The location of the git.git clone checkout
+
+ --destination <directory>        The location of the Git collection
+
+ --since <version>                Select versions greater or equal to <version>
+
+ --until <version>                Select versions less or equal to <version>
+
+ --limit <count>                  Limit the number of versions in the selection
+                                  (if <count> is positive, keep the most recent
+                                  version, if <count> is negative, keep the oldest)
+
+=head2 Arguments
+
+If no argument is given, all versions are selected.
+
+=head1 DESCRIPTION
+
+B<build-git> is a small utility to build and install any version of Git.
+
+It automatically applies some necessary patches that are need to compile
+Git on recent systems.
+
+It is used to test the L<Git::Repository> module against all versions
+of Git.
+
+=head1 AUTHOR
+
+Philippe Bruhat (BooK) <book@cpan.org>
+
+=head1 COPYRIGHT
+
+Copyright 2016 Philippe Bruhat (BooK), all rights reserved.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
