@@ -12,7 +12,7 @@ my %option = (
     source      => '/opt/src/git',
     destination => '/opt/git',
 );
-GetOptions( \%option, 'source=s', 'destination=s' )
+GetOptions( \%option, 'source=s', 'destination=s', 'since=s', 'until=s' )
   or pod2usage( -verbose => 0 );
 
 # git.git
@@ -25,6 +25,9 @@ my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
 
 # select the versions to build and install
 my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for;
+
+@versions = grep cmp_git( $option{since}, $_ ) <= 0, @versions if $option{since};
+@versions = grep cmp_git( $_, $option{until} ) <= 0, @versions if $option{until};
 
 # build install select versions
 for my $version (@versions) {
