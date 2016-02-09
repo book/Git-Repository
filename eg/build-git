@@ -47,6 +47,7 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
 print map "$_\n", @versions and exit if $option{list};
 
 # build install select versions
+chdir $option{source} or die "Can't chdir to $option{source}: $!";
 for my $version (@versions) {
     my $prefix = File::Spec->catdir( $option{destination}, $version );
 
@@ -79,12 +80,9 @@ for my $version (@versions) {
         local $ENV{PERL_MM_OPT};
 
         # compile and install the actual git
-        my $orig = cwd;
-        chdir $option{source} or die "Can't chdir to $option{source}: $!";
 
         print "make -j3 prefix=$prefix install\n";
         `make -j3 prefix=$prefix install`;
-        chdir $orig or die "Can't chdir to $orig: $!";
     }
 
 }
