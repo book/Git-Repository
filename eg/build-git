@@ -28,6 +28,9 @@ pod2usage( -verbose => 2 ) if $option{manual};
 # git.git
 my $r = Git::Repository->new( work_tree => $option{source} );
 
+# fetch recent commits
+$r->run( 'fetch' ) if $option{fetch};
+
 # map version numbers to tags
 my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
   grep /^v[^0]/ && !/^v1\.0rc/,    # skip anything before 1.0
@@ -46,9 +49,6 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
 
 # just list the selected versions
 print map "$_\n", @versions and exit if $option{list};
-
-# fetch recent commits
-$r->run( 'fetch' ) if $option{fetch};
 
 # build install select versions
 chdir $option{source} or die "Can't chdir to $option{source}: $!";
