@@ -74,6 +74,10 @@ for my $version (@versions) {
             print $fh "$version\n";
         }
 
+        # clean up environment (possibly set by local::lib)
+        local $ENV{PERL_MB_OPT};
+        local $ENV{PERL_MM_OPT};
+
         # compile and install the actual git
         my $orig = cwd;
         chdir $option{source} or die "Can't chdir to $option{source}: $!";
