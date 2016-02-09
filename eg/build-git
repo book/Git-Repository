@@ -62,7 +62,7 @@ for my $version (@versions) {
         next;
     }
     else {
-        $r->run( checkout => $tag_for{$version} );
+        $r->run( checkout => '-f', $tag_for{$version} );
         $r->run( clean => '-xdf' ); # optional
 
         # Fix various issues in the Git sources
