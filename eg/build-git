@@ -16,8 +16,9 @@ my %option = (
 );
 GetOptions(
     \%option,  'source=s', 'destination=s', 'list',
-    'since=s', 'until=s',  'limit=i',       'help',
-    'manual'
+    'since=s', 'until=s',  'limit=i',
+    'fetch',
+    'help',    'manual',
 ) or pod2usage( -verbose => 0 );
 
 # simple help/manual
@@ -45,6 +46,9 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
 
 # just list the selected versions
 print map "$_\n", @versions and exit if $option{list};
+
+# fetch recent commits
+$r->run( 'fetch' ) if $option{fetch};
 
 # build install select versions
 chdir $option{source} or die "Can't chdir to $option{source}: $!";
@@ -114,6 +118,9 @@ build-git - Build and install any Git
     # build and install the 5 most ancient versions of the selection
     $ build-git --limit -5 ...
 
+    # fetch the latest commit and install the latest git
+    $ build-git --fetch --limit 1
+
 =head1 OPTIONS AND ARGUMENTS
 
 =head2 Options
@@ -121,6 +128,8 @@ build-git - Build and install any Git
  --source <directory>             The location of the git.git clone checkout
 
  --destination <directory>        The location of the Git collection
+
+ --fetch                          Start by doing a `git fetch`
 
  --since <version>                Select versions greater or equal to <version>
 
