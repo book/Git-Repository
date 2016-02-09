@@ -65,8 +65,16 @@ for my $version (@versions) {
         $r->run( checkout => $tag_for{$version} );
         $r->run( clean => '-xdf' ); # optional
 
+        # Fix various issues in the Git sources
+
+        # fix GIT_VERSION in the Makefile
+        if ( cmp_git( $version, '1.0.9' ) == 0 ) {
+            local ( $^I, @ARGV ) = ( '', 'Makefile' );
+            s/^GIT_VERSION = .*/GIT_VERSION = $version/, print while <>;
+        }
+
         # add missing #include <sys/resource.h>
-        if (   cmp_git( $version, '1.7.5.rc0' ) <= 0
+        elsif (   cmp_git( $version, '1.7.5.rc0' ) <= 0
             && cmp_git( '1.7.4.2', $version ) <= 0 )
         {
             $r->run( 'cherry-pick', '-n',
