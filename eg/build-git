@@ -19,8 +19,8 @@ my %option = (
 GetOptions(
     \%option,  'source=s', 'destination=s', 'verbose+', 'quiet',
     'since=s', 'until=s',  'limit=i',
-    'list',
-    'fetch',
+    'list',    'missing',  'installed',
+    'fetch',   'test',
     'help',    'manual',
 ) or pod2usage( -verbose => 0 );
 
@@ -48,6 +48,9 @@ my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
 # select the versions to build and install
 my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for;
 
+@versions = grep !is_installed($_), @versions if $option{missing};
+@versions = grep is_installed($_),  @versions if $option{installed};
+
 @versions = grep cmp_git( $option{since}, $_ ) <= 0, @versions if $option{since};
 @versions = grep cmp_git( $_, $option{until} ) <= 0, @versions if $option{until};
 
@@ -62,11 +65,9 @@ print map "$_\n", @versions and exit if $option{list};
 # build install select versions
 chdir $option{source} or die "Can't chdir to $option{source}: $!";
 for my $version (@versions) {
-    my $prefix = File::Spec->catdir( $option{destination}, $version );
 
     # skip if that git already exists (and runs)
-    my $git = File::Spec->catfile( $prefix, 'bin', 'git' );
-    if ( eval { Git::Repository->version_eq( $version, { git => $git } ) } ) {
+    if ( is_installed($version) ) {
         print "*** GIT $version ALREADY INSTALLED ***\n" if !$option{quiet};
         next;
     }
@@ -100,6 +101,7 @@ for my $version (@versions) {
         # clean up environment (possibly set by local::lib)
         local $ENV{PERL_MB_OPT};
         local $ENV{PERL_MM_OPT};
+        my $prefix = File::Spec->catdir( $option{destination}, $version );
 
         # compile and install the actual git
         run_cmd( make => '-j3', "prefix=$prefix", 'install' );
@@ -110,6 +112,13 @@ for my $version (@versions) {
 sub run_cmd {
     print "* @_\n";
     System::Command->loop_on( command => \@_, %run_opt ) or die "FAIL: @_\n";
+}
+
+sub is_installed {
+    my ($version) = @_;
+    my $git =
+      File::Spec->catfile( $option{destination}, $version, 'bin', 'git' );
+    return eval { Git::Repository->version_eq( $version, { git => $git } ) };
 }
 
 __END__
@@ -155,6 +164,11 @@ build-git - Build and install any Git
  --since <version>            Select versions greater or equal to <version>
 
  --until <version>            Select versions less or equal to <version>
+
+ --missing                    Select only non-installed versions
+
+ --installed                  Select only installed versions
+                              (incompatible with the --missing option)
 
  --limit <count>              Limit the number of versions in the selection
                               (if <count> is positive, keep the most recent
