@@ -14,10 +14,12 @@ my %option = (
     source      => '/opt/src/git',
     destination => '/opt/git',
     limit       => 0,
+    verbose     => 0,
 );
 GetOptions(
-    \%option,  'source=s', 'destination=s', 'list',
+    \%option,  'source=s', 'destination=s', 'verbose+',
     'since=s', 'until=s',  'limit=i',
+    'list',
     'fetch',
     'help',    'manual',
 ) or pod2usage( -verbose => 0 );
@@ -25,6 +27,11 @@ GetOptions(
 # simple help/manual
 pod2usage( -verbose => 1 ) if $option{help};
 pod2usage( -verbose => 2 ) if $option{manual};
+
+# verbosity options
+my %run_opt;
+$run_opt{stderr} = undef if !$option{verbose};
+$run_opt{stdout} = sub { print shift } if $option{verbose} > 1;
 
 # git.git
 my $r = Git::Repository->new( work_tree => $option{source} );
@@ -63,6 +70,7 @@ for my $version (@versions) {
         next;
     }
     else {
+        print "*** GIT $version ***\n";
         $r->run( checkout => '-f', $tag_for{$version} );
         $r->run( clean => '-xdf' ); # optional
 
@@ -99,8 +107,8 @@ for my $version (@versions) {
 }
 
 sub run_cmd {
-    print "@_\n";
-    System::Command->new(@_)->loop_on or die "FAIL: @_\n";
+    print "* @_\n";
+    System::Command->loop_on( command => \@_, %run_opt ) or die "FAIL: @_\n";
 }
 
 __END__
@@ -150,6 +158,10 @@ build-git - Build and install any Git
  --limit <count>                  Limit the number of versions in the selection
                                   (if <count> is positive, keep the most recent
                                   version, if <count> is negative, keep the oldest)
+
+ --verbose                        Used once, shows the STDERR of the commands
+                                  run to compile and install Git.
+                                  Used twice, also shows the STDOUT.
 
 =head2 Arguments
 
