@@ -17,7 +17,7 @@ my %option = (
     verbose     => 0,
 );
 GetOptions(
-    \%option,  'source=s', 'destination=s', 'verbose+',
+    \%option,  'source=s', 'destination=s', 'verbose+', 'quiet',
     'since=s', 'until=s',  'limit=i',
     'list',
     'fetch',
@@ -30,6 +30,7 @@ pod2usage( -verbose => 2 ) if $option{manual};
 
 # verbosity options
 my %run_opt;
+$option{verbose} = 0     if $option{quiet};
 $run_opt{stderr} = undef if !$option{verbose};
 $run_opt{stdout} = sub { print shift } if $option{verbose} > 1;
 
@@ -66,13 +67,13 @@ for my $version (@versions) {
     # skip if that git already exists (and runs)
     my $git = File::Spec->catfile( $prefix, 'bin', 'git' );
     if ( eval { Git::Repository->version_eq( $version, { git => $git } ) } ) {
-        print "*** GIT $version ALREADY INSTALLED ***\n";
+        print "*** GIT $version ALREADY INSTALLED ***\n" if !$option{quiet};
         next;
     }
     else {
-        print "*** GIT $version ***\n";
-        $r->run( checkout => '-f', $tag_for{$version} );
-        $r->run( clean => '-xdf' ); # optional
+        print "*** GIT $version ***\n" if !$option{quiet};
+        $r->run( checkout => '-f', '-q', $tag_for{$version} );
+        $r->run( clean => '-xqdf' );
 
         # Fix various issues in the Git sources
 
@@ -162,6 +163,8 @@ build-git - Build and install any Git
  --verbose                    Used once, shows the STDERR of the commands
                               run to compile and install Git.
                               Used twice, also shows the STDOUT.
+
+ --quiet                      Silence all output, including the progress status
 
 =head2 Arguments
 
