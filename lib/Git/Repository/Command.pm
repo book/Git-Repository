@@ -452,7 +452,7 @@ Hackathon 2013 in Lancaster.
 
 =head1 COPYRIGHT
 
-Copyright 2010-2015 Philippe Bruhat (BooK), all rights reserved.
+Copyright 2010-2016 Philippe Bruhat (BooK), all rights reserved.
 
 =head1 LICENSE
 
