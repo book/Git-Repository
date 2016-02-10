@@ -7,6 +7,7 @@ use Cwd qw( cwd );
 use Getopt::Long;
 use Git::Repository;
 use Git::Repository::Util qw( cmp_git );
+use System::Command 1.117;    # loop_on
 
 # command-line options
 my %option = (
@@ -92,11 +93,14 @@ for my $version (@versions) {
         local $ENV{PERL_MM_OPT};
 
         # compile and install the actual git
-
-        print "make -j3 prefix=$prefix install\n";
-        `make -j3 prefix=$prefix install`;
+        run_cmd( make => '-j3', "prefix=$prefix", 'install' );
     }
 
+}
+
+sub run_cmd {
+    print "@_\n";
+    System::Command->new(@_)->loop_on or die "FAIL: @_\n";
 }
 
 __END__
