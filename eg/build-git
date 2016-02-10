@@ -145,23 +145,23 @@ build-git - Build and install any Git
 
 =head2 Options
 
- --source <directory>             The location of the git.git clone checkout
+ --source <directory>         The location of the git.git clone checkout
 
- --destination <directory>        The location of the Git collection
+ --destination <directory>    The location of the Git collection
 
- --fetch                          Start by doing a `git fetch`
+ --fetch                      Start by doing a `git fetch`
 
- --since <version>                Select versions greater or equal to <version>
+ --since <version>            Select versions greater or equal to <version>
 
- --until <version>                Select versions less or equal to <version>
+ --until <version>            Select versions less or equal to <version>
 
- --limit <count>                  Limit the number of versions in the selection
-                                  (if <count> is positive, keep the most recent
-                                  version, if <count> is negative, keep the oldest)
+ --limit <count>              Limit the number of versions in the selection
+                              (if <count> is positive, keep the most recent
+                              ones, if <count> is negative, keep the oldest)
 
- --verbose                        Used once, shows the STDERR of the commands
-                                  run to compile and install Git.
-                                  Used twice, also shows the STDOUT.
+ --verbose                    Used once, shows the STDERR of the commands
+                              run to compile and install Git.
+                              Used twice, also shows the STDOUT.
 
 =head2 Arguments
 
@@ -171,7 +171,7 @@ If no argument is given, all versions are selected.
 
 B<build-git> is a small utility to build and install any version of Git.
 
-It automatically applies some necessary patches that are need to compile
+It automatically applies some necessary patches that are needed to compile
 Git on recent systems.
 
 It is used to test the L<Git::Repository> module against all versions
