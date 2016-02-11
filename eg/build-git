@@ -15,11 +15,12 @@ my %option = (
     destination => '/opt/git',
     limit       => 0,
     verbose     => 0,
+    rc          => 1,
 );
 GetOptions(
     \%option,  'source=s', 'destination=s', 'verbose+', 'quiet',
     'since=s', 'until=s',  'limit=i',
-    'list',    'missing',  'installed',
+    'list',    'missing',  'installed',     'rc!',
     'fetch',   'test',
     'help',    'manual',
 ) or pod2usage( -verbose => 0 );
@@ -47,6 +48,8 @@ my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
 
 # select the versions to build and install
 my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for;
+
+@versions = grep !/rc/, @versions if !$option{rc};
 
 @versions = grep !is_installed($_), @versions if $option{missing};
 @versions = grep is_installed($_),  @versions if $option{installed};
