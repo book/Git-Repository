@@ -101,13 +101,19 @@ for my $version (@versions) {
             print $fh "$version\n";
         }
 
+        # settings
+        my $prefix = File::Spec->catdir( $option{destination}, $version );
+        my @make = ( make => "prefix=$prefix" );
+
         # clean up environment (possibly set by local::lib)
         local $ENV{PERL_MB_OPT};
         local $ENV{PERL_MM_OPT};
-        my $prefix = File::Spec->catdir( $option{destination}, $version );
 
-        # compile and install the actual git
-        run_cmd( make => '-j3', "prefix=$prefix", 'install' );
+        # build
+        run_cmd( @make => '-j3' );
+
+        # install
+        run_cmd( @make => 'install' );
     }
 
 }
