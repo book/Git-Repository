@@ -62,6 +62,11 @@ my @true = (
     [ '1.7.1.211.g54fcb21',   'version_ge', '1.7.1.209.gd60ad81' ],
     [ '1.7.1.209.gd60ad81',   'version_lt', '1.7.1.1.1.g66bd8ab' ],
     [ '1.7.0.2.msysgit.0',    'version_gt', '1.6.6' ],
+    [ '1.7.1',                'version_lt', '1.7.1.1.gc8c07' ],
+    [ '1.7.1',                'version_lt', '1.7.1.1.g5f35a' ],
+    [ '1.7.1.1',              'version_gt', '1.7.1.1.gc8c07' ],
+    [ '1.7.1.1',              'version_gt', '1.7.1.1.g5f35a' ],
+    [ '1.7.1.1.gc8c07',       'version_eq', '1.7.1.1.g5f35a' ],
 );
 
 # operator reversal: $a op $b <=> $b rop $a

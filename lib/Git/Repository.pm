@@ -522,7 +522,8 @@ and C<1.7.1.1.g5f35a>, and C<1.7.1> is less than both. Obviously,
 C<1.7.1.1.gc8c07> will compare as greater than C<1.7.1.1.g5f35a>
 (asciibetically), but in fact these two version numbers cannot be
 compared, as they are two siblings children of the commit tagged
-C<v1.7.1>).
+C<v1.7.1>). For practical purposes, the version-comparison methods
+declares them equal.
 
 If one were to compute the set of all possible version numbers (as returned
 by C<git --version>) for all git versions that can be compiled from each
