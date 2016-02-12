@@ -210,9 +210,45 @@ sub version {
             =~ /git version (.*)/g )[0];
 }
 
+# A few versions have two tags, or non-standard numbering:
+# - the left-hand side is what `git --version` reports
+# - the right-hand side is an internal canonical name
+my %version_alias = (
+    '0.99.7a' => '0.99.7.1',
+    '0.99.7b' => '0.99.7.2',
+    '0.99.7c' => '0.99.7.3',
+    '0.99.7d' => '0.99.7.4',
+    '0.99.8a' => '0.99.8.1',
+    '0.99.8b' => '0.99.8.2',
+    '0.99.8c' => '0.99.8.3',
+    '0.99.8d' => '0.99.8.4',
+    '0.99.8e' => '0.99.8.5',
+    '0.99.8f' => '0.99.8.6',
+    '0.99.8g' => '0.99.8.7',
+    '0.99.9a' => '0.99.9.1',
+    '0.99.9b' => '0.99.9.2',
+    '0.99.9c' => '0.99.9.3',
+    '0.99.9d' => '0.99.9.4',
+    '0.99.9e' => '0.99.9.5',
+    '0.99.9f' => '0.99.9.6',
+    '0.99.9g' => '0.99.9.7',
+    '0.99.9h' => '0.99.9.8',     # 1.0.rc1
+    '1.0.rc1' => '0.99.9.8',
+    '0.99.9i' => '0.99.9.9',     # 1.0.rc2
+    '1.0.rc2' => '0.99.9.9',
+    '0.99.9j' => '0.99.9.10',    # 1.0.rc3
+    '1.0.rc3' => '0.99.9.10',
+    '0.99.9k' => '0.99.9.11',
+    '0.99.9l' => '1.0.rc4',
+    '0.99.9m' => '1.0.rc5',
+    '0.99.9n' => '1.0.rc6',
+    '1.0.0a'  => '1.0.1',
+    '1.0.0b'  => '1.0.2',
+);
+
 sub _version_gt {
     my ( $v1, $v2 ) = @_;
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    $_ = $version_alias{$_} || $_ for $v1, $v2;    # aliases
 
     my @v1 = split /\./, $v1;
     my @v2 = split /\./, $v2;
@@ -243,14 +279,14 @@ sub _version_gt {
 sub version_eq {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    $_ = $version_alias{$_} || $_ for $v1, $v2;    # aliases
     return $v1 eq $v2;
 }
 
 sub version_ne {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    $_ = $version_alias{$_} || $_ for $v1, $v2;    # aliases
     return $v1 ne $v2;
 }
 
@@ -267,7 +303,7 @@ sub version_le {
 sub version_lt {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    $_ = $version_alias{$_} || $_ for $v1, $v2;    # aliases
     return $v1 ne $v2
         && !_version_gt( $v1, $v2 );
 }
@@ -275,7 +311,7 @@ sub version_lt {
 sub version_ge {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
+    $_ = $version_alias{$_} || $_ for $v1, $v2; # aliases
     return $v1 eq $v2
         || _version_gt( $v1, $v2 );
 }

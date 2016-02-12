@@ -48,6 +48,13 @@ my @true = (
     [ '1.0.0a',               'version_lt', '1.0.3' ],
     [ '1.0.0a',               'version_eq', '1.0.1' ],
     [ '1.0.0b',               'version_eq', '1.0.2' ],
+    # the 0.99 series
+    [ '0.99',                 'version_lt', '1.0.2' ],
+    [ '0.99',                 'version_lt', '0.99.7a' ],
+    [ '0.99.9c',              'version_lt', '0.99.9g' ],
+    [ '0.99.7c',              'version_lt', '0.99.7d' ],
+    [ '0.99.7c',              'version_lt', '0.99.8' ],
+    [ '1.0.rc2',              'version_eq', '0.99.9i' ],
     # non-standard versions
     [ '1.7.1.236.g81fa0',     'version_gt', '1.7.1' ],
     [ '1.7.1.236.g81fa0',     'version_lt', '1.7.1.1' ],
