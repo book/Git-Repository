@@ -11,6 +11,18 @@ use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
 
+# helper function
+sub _abs_path {
+    my ( $path, $base ) = @_;
+    my $abs_path = File::Spec->rel2abs( $path, $base );
+
+    # normalize, but don't die on Win32 if the path doesn't exist
+    eval { $abs_path = realpath($abs_path); };
+    return $abs_path;
+}
+
+use namespace::clean;
+
 # a few simple accessors
 for my $attr (qw( git_dir work_tree options )) {
     no strict 'refs';
@@ -23,16 +35,6 @@ sub repo_path {
 }
 sub wc_path {
     croak "wc_path() is obsolete, please use work_tree() instead";
-}
-
-# helper function
-sub _abs_path {
-    my ( $path, $base ) = @_;
-    my $abs_path = File::Spec->rel2abs( $path, $base );
-
-    # normalize, but don't die on Win32 if the path doesn't exist
-    eval { $abs_path = realpath($abs_path); };
-    return $abs_path;
 }
 
 #
