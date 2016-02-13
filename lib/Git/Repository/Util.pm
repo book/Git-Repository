@@ -71,7 +71,8 @@ sub _normalize {
     my ( $r, $c ) = ( 0, 0 );
 
     # commit count since the previous tag
-    ($c) = splice @v, -2 if substr( $v[-1], 0, 1 ) eq 'g';
+    ($c) = ( 1, splice @v, -1 ) if $v[-1] eq 'GIT';           # before 1.4
+    ($c) = splice @v, -2 if substr( $v[-1], 0, 1 ) eq 'g';    # after  1.4
 
     # release candidate number
     ($r) = splice @v, -1 if substr( $v[-1], 0, 2 ) eq 'rc';
