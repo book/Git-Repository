@@ -72,6 +72,11 @@ my @versions = sort cmp_git @ARGV ? @ARGV : keys %tag_for;
   : @versions[ 0 .. -$option{limit} - 1 ]    # <limit> most ancient
   if $option{limit};
 
+
+# pick up invalid versions
+my @nope = grep !exists $tag_for{$_}, @versions;
+die "Can't compile non-existent versions: @nope\n" if @nope;
+
 # just list the selected versions
 print map "$_\n", @versions and exit if $option{list};
 
