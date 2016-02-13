@@ -12,7 +12,7 @@ Revision history for Git-Repository
     - eg/build-git: a utility to build and install any Git version
     [DOCUMENTATION]
     - Tutorial entry: "Ignore the system and global configuration files"
-    - spelling fix (Gregor Herrmann)
+    - spelling fix (RT #110027 by Gregor Herrmann)
     [TEST]
     - fix RT #89086 (reported by Alex Raguero)
     - new test: t/test-all-git.t to run the test suite against a directory
