@@ -2,6 +2,24 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.317 Sat Feb 13 2016
+    [ENHANCEMENTS]
+    - improved git binary detection in Git::Repository::Command
+    - fixed version comparisons for 1.0.0a and 1.0.0b under Perl 5.6
+    - test_repository( clone => ... ) now dies with a useful message
+      when trying to call it with a broken Git
+    - Git::Repository::Util provides utility functions for Git stuff
+    - eg/build-git: a utility to build and install any Git version
+    [DOCUMENTATION]
+    - Tutorial entry: "Ignore the system and global configuration files"
+    - spelling fix (Gregor Herrmann)
+    [TEST]
+    - fix RT #89086 (reported by Alex Raguero)
+    - new test: t/test-all-git.t to run the test suite against a directory
+      full of git builds (if available)
+    - tested against 513 versions of git (including all RC),
+      from 1.0.0 to 2.7.1
+
 1.316 Wed Dec 2 2015
     [ENHANCEMENTS]
     - avoid a warning if the filehandles have already been closed
