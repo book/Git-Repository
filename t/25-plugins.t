@@ -13,6 +13,9 @@ has_git('1.5.0.rc1');
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 $ENV{LC_ALL} = 'C';
+$ENV{GIT_CONFIG_NOSYSTEM} = 1;
+delete $ENV{XDG_CONFIG_HOME};
+delete $ENV{HOME};
 
 plan tests => my $tests;
 

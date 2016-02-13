@@ -14,6 +14,9 @@ plan tests => 3;
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};
 $ENV{LC_ALL} = 'C';
+$ENV{GIT_CONFIG_NOSYSTEM} = 1;
+delete $ENV{XDG_CONFIG_HOME};
+delete $ENV{HOME};
 
 # A class with stringification to test with.
 {

@@ -15,6 +15,9 @@ $ENV{GIT_AUTHOR_NAME}     = 'Test Author';
 $ENV{GIT_AUTHOR_EMAIL}    = 'test.author@example.com';
 $ENV{GIT_COMMITTER_NAME}  = 'Test Committer';
 $ENV{GIT_COMMITTER_EMAIL} = 'test.committer@example.com';
+$ENV{GIT_CONFIG_NOSYSTEM} = 1;
+delete $ENV{XDG_CONFIG_HOME};
+delete $ENV{HOME};
 
 # a place to put a git repository
 my $r;
