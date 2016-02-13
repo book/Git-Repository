@@ -81,6 +81,17 @@ for my $version (@versions) {
 
         # Fix various issues in the Git sources
 
+        # Fix GIT-VERSION-GEN to use `git describe` instead of `git-describe`
+        if (
+            cmp_git( $version, '1.3.3' ) <= 0
+            && cmp_git( '1.1.0', $version ) <= 0
+            && do { no warnings; `git-describe`; $? != 0 }
+          )
+        {
+            local ( $^I, @ARGV ) = ( '', 'GIT-VERSION-GEN' );
+            s/git-describe/git describe/, print while <>;
+        }
+
         # fix GIT_VERSION in the Makefile
         if ( cmp_git( $version, '1.0.9' ) == 0 ) {
             local ( $^I, @ARGV ) = ( '', 'Makefile' );
