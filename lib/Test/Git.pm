@@ -8,6 +8,7 @@ use Test::Builder;
 use Git::Repository;    # 1.15
 use File::Temp qw( tempdir );
 use File::Spec::Functions qw( catdir );
+use Git::Repository::Util qw( cmp_git );
 use Cwd qw( cwd );
 use Carp;
 
@@ -44,11 +45,22 @@ sub test_repository {
     my $clone = $args{clone};                      # git clone options
 
     # version check
-    my ( $cmd, $min_version ) = $clone ? ( clone => '1.6.2.rc0' )
-                                       : ( init  => '1.4.0' );
+    my $bad_version;
     my $git_version = Git::Repository->version($safe);
-    croak "test_repository( $cmd => ... ) requires git >= $min_version (this is only $git_version)"
-      if Git::Repository->version_lt( $min_version, $safe );
+    if ($clone) {
+        if (
+            cmp_git( $git_version, '1.6.2.rc0' ) < 0
+            || (   cmp_git( '1.7.0.rc1', $git_version ) <= 0
+                && cmp_git( $git_version, '1.7.0.2' ) <= 0 )
+          )
+        {
+            $bad_version = "test_repository( clone => ... ) requires git >= 1.6.2.rc0 and 1.7.0.rc1 < git < 1.7.0.2 (this is $git_version)";
+        }
+    }
+    elsif ( cmp_git( $git_version, '1.4.0' ) <= 0 ) {
+        $bad_version = "test_repository( init => ... ) requires git >= 1.4.0 (this is only $git_version)";
+    }
+    croak $bad_version if $bad_version;
 
     # create a temporary directory to host our repository
     my $dir = tempdir(@$temp);
