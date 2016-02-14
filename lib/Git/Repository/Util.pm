@@ -3,14 +3,100 @@ package Git::Repository::Util;
 use strict;
 use warnings;
 use Exporter;
-use Git::Repository;
+
+use Scalar::Util qw( looks_like_number );
+use namespace::clean;
 
 our @ISA       = qw(Exporter);
-our @EXPORT_OK = qw( cmp_git );
+our @EXPORT_OK = qw(
+  _version_eq _version_gt
+  cmp_git
+);
+
+# A few versions have two tags, or non-standard numbering:
+# - the left-hand side is what `git --version` reports
+# - the right-hand side is an internal canonical name
+#
+# We turn versions into strings, so we can use the fast `eq` and `gt`.
+# The 6 elements are integers padded with 0:
+# - the 4 parts of the dotted version (padded with as many .0 as needed)
+# - '.000' if not an RC, or '-xxx' if an RC (- sorts before . in ascii)
+# - the number of commits since the previous tag (for dev versions)
+#
+# The special cases are pre-computed below, the rest is computed as needed.
+my %version_alias = (
+    '0.99.7a' => '000.099.007.001.000.000',
+    '0.99.7b' => '000.099.007.002.000.000',
+    '0.99.7c' => '000.099.007.003.000.000',
+    '0.99.7d' => '000.099.007.004.000.000',
+    '0.99.8a' => '000.099.008.001.000.000',
+    '0.99.8b' => '000.099.008.002.000.000',
+    '0.99.8c' => '000.099.008.003.000.000',
+    '0.99.8d' => '000.099.008.004.000.000',
+    '0.99.8e' => '000.099.008.005.000.000',
+    '0.99.8f' => '000.099.008.006.000.000',
+    '0.99.8g' => '000.099.008.007.000.000',
+    '0.99.9a' => '000.099.009.001.000.000',
+    '0.99.9b' => '000.099.009.002.000.000',
+    '0.99.9c' => '000.099.009.003.000.000',
+    '0.99.9d' => '000.099.009.004.000.000',
+    '0.99.9e' => '000.099.009.005.000.000',
+    '0.99.9f' => '000.099.009.006.000.000',
+    '0.99.9g' => '000.099.009.007.000.000',
+    '0.99.9h' => '000.099.009.008.000.000',    # 1.0.rc1
+    '1.0.rc1' => '000.099.009.008.000.000',
+    '1.0rc1'  => '000.099.009.008.000.000',
+    '0.99.9i' => '000.099.009.009.000.000',    # 1.0.rc2
+    '1.0.rc2' => '000.099.009.009.000.000',
+    '1.0rc2'  => '000.099.009.009.000.000',
+    '0.99.9j' => '000.099.009.010.000.000',    # 1.0.rc3
+    '1.0.rc3' => '000.099.009.010.000.000',
+    '1.0rc3'  => '000.099.009.010.000.000',
+    '0.99.9k' => '000.099.009.011.000.000',
+    '0.99.9l' => '000.099.009.012.000.000',    # 1.0.rc4
+    '1.0.rc4' => '000.099.009.012.000.000',
+    '1.0rc4'  => '000.099.009.012.000.000',
+    '0.99.9m' => '000.099.009.013.000.000',    # 1.0.rc5
+    '1.0.rc5' => '000.099.009.013.000.000',
+    '1.0rc5'  => '000.099.009.013.000.000',
+    '0.99.9n' => '000.099.009.014.000.000',    # 1.0.rc6
+    '1.0.rc6' => '000.099.009.014.000.000',
+    '1.0rc6'  => '000.099.009.014.000.000',
+    '1.0.0a'  => '001.000.001.000.000.000',
+    '1.0.0b'  => '001.000.002.000.000.000',
+);
+
+sub _normalize {
+    my @v = split /\./, $_[0];
+    my ( $r, $c ) = ( 0, 0 );
+
+    # commit count since the previous tag
+    ($c) = ( 1, splice @v, -1 ) if $v[-1] eq 'GIT';           # before 1.4
+    ($c) = splice @v, -2 if substr( $v[-1], 0, 1 ) eq 'g';    # after  1.4
+
+    # release candidate number
+    ($r) = splice @v, -1 if substr( $v[-1], 0, 2 ) eq 'rc';
+    $r &&= do { $r =~ s/rc//; sprintf '-%03d', $r };
+
+    join( '.', map sprintf( '%03d', $_ ), ( @v, 0, 0, 0 )[ 0 .. 3 ] )
+      . ( $r || '.000' )
+      . sprintf( '.%03d', $c );
+}
+
+sub _version_eq {
+    my ( $v1, $v2 ) = @_;
+    $_ = $version_alias{$_} ||= _normalize( $_ ) for $v1, $v2;    # aliases
+    return $v1 eq $v2;
+}
+
+sub _version_gt {
+    my ( $v1, $v2 ) = @_;
+    $_ = $version_alias{$_} ||= _normalize( $_ ) for $v1, $v2;    # aliases
+    return $v1 gt $v2;
+}
 
 sub cmp_git ($$) {
-    return Git::Repository::_version_gt( $_[0], $_[1] )
-      || -Git::Repository::_version_gt( $_[1], $_[0] );
+    return _version_gt( $_[0], $_[1] ) || -_version_gt( $_[1], $_[0] );
 }
 
 1;

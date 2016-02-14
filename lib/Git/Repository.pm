@@ -7,9 +7,21 @@ use 5.006;
 use Carp;
 use File::Spec;
 use Cwd qw( cwd realpath );
-use Scalar::Util qw( looks_like_number );
 
 use Git::Repository::Command;
+use Git::Repository::Util qw( _version_eq _version_gt );
+
+# helper function
+sub _abs_path {
+    my ( $path, $base ) = @_;
+    my $abs_path = File::Spec->rel2abs( $path, $base );
+
+    # normalize, but don't die on Win32 if the path doesn't exist
+    eval { $abs_path = realpath($abs_path); };
+    return $abs_path;
+}
+
+use namespace::clean;
 
 # a few simple accessors
 for my $attr (qw( git_dir work_tree options )) {
@@ -23,16 +35,6 @@ sub repo_path {
 }
 sub wc_path {
     croak "wc_path() is obsolete, please use work_tree() instead";
-}
-
-# helper function
-sub _abs_path {
-    my ( $path, $base ) = @_;
-    my $abs_path = File::Spec->rel2abs( $path, $base );
-
-    # normalize, but don't die on Win32 if the path doesn't exist
-    eval { $abs_path = realpath($abs_path); };
-    return $abs_path;
 }
 
 #
@@ -210,48 +212,15 @@ sub version {
             =~ /git version (.*)/g )[0];
 }
 
-sub _version_gt {
-    my ( $v1, $v2 ) = @_;
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
-
-    my @v1 = split /\./, $v1;
-    my @v2 = split /\./, $v2;
-
-    # pick up any dev parts
-    my @dev1 = splice @v1, -2 if substr( $v1[-1], 0, 1 ) eq 'g';
-    my @dev2 = splice @v2, -2 if substr( $v2[-1], 0, 1 ) eq 'g';
-
-    # skip to the first difference
-    shift @v1, shift @v2 while @v1 && @v2 && $v1[0] eq $v2[0];
-
-    # we're comparing dev versions with the same ancestor
-    if ( !@v1 && !@v2 ) {
-        @v1 = @dev1;
-        @v2 = @dev2;
-    }
-
-    # prepare the bits to compare
-    ( $v1, $v2 ) = ( $v1[0] || 0, $v2[0] || 0 );
-
-    # rcX is less than any number
-    return looks_like_number($v1)
-             ? looks_like_number($v2) ? $v1 > $v2 : 1
-             : looks_like_number($v2) ? ''        : $v1 gt $v2;
-}
-
 # every op is a combination of eq and gt
 sub version_eq {
-    my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
-    return $v1 eq $v2;
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return _version_eq( $r->version(@o), $v );
 }
 
 sub version_ne {
-    my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
-    return $v1 ne $v2;
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return !_version_eq( $r->version(@o), $v );
 }
 
 sub version_gt {
@@ -267,17 +236,13 @@ sub version_le {
 sub version_lt {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
-    return $v1 ne $v2
-        && !_version_gt( $v1, $v2 );
+    return !_version_eq( $v1, $v2 ) && !_version_gt( $v1, $v2 );
 }
 
 sub version_ge {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    s/(?<=\A1\.0\.)0([ab])$/$1^"P"/e for $v1, $v2; # aliases
-    return $v1 eq $v2
-        || _version_gt( $v1, $v2 );
+    return _version_eq( $v1, $v2 ) || _version_gt( $v1, $v2 );
 }
 
 1;
@@ -541,11 +506,15 @@ The methods are:
 
 All those methods also accept an option hash, just like the others.
 
-Note that in the C<git.git> repository, C<v1.0.1> and C<v1.0.2> are
-lightweight tags that points respectively to C<v1.0.0a> and C<v1.0.0b>.
-As of Git::Repository 1.314, the comparison code internally converts
-C<v1.0.0a> and C<v1.0.0b> to their numerical equivalent before performing
-the comparison.
+Note that in the C<git.git> repository, several commits have multiple
+tags (e.g. C<v1.0.1> and C<v1.0.2> point respectively to C<v1.0.0a>
+and C<v1.0.0b>). Pre-1.0.0 versions also have non-standard formats like
+C<0.99.9j> or C<1.0rc2>. As of Git::Repository 1.317, the comparison code
+converts all version numbers to an internal format before performing
+a simple string comparison.
+
+`git --version` appeared in version C<0.99.7>. Before that, there is no
+way to know which version of Git one is dealing with.
 
 Prior to C<1.4.0-rc1> (June 2006), compiling a development version of git
 would lead C<git --version> to output C<1.x-GIT> (with C<x> in C<0 .. 3>),
@@ -557,7 +526,8 @@ and C<1.7.1.1.g5f35a>, and C<1.7.1> is less than both. Obviously,
 C<1.7.1.1.gc8c07> will compare as greater than C<1.7.1.1.g5f35a>
 (asciibetically), but in fact these two version numbers cannot be
 compared, as they are two siblings children of the commit tagged
-C<v1.7.1>).
+C<v1.7.1>). For practical purposes, the version-comparison methods
+declares them equal.
 
 If one were to compute the set of all possible version numbers (as returned
 by C<git --version>) for all git versions that can be compiled from each

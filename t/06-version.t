@@ -48,6 +48,13 @@ my @true = (
     [ '1.0.0a',               'version_lt', '1.0.3' ],
     [ '1.0.0a',               'version_eq', '1.0.1' ],
     [ '1.0.0b',               'version_eq', '1.0.2' ],
+    # the 0.99 series
+    [ '0.99',                 'version_lt', '1.0.2' ],
+    [ '0.99',                 'version_lt', '0.99.7a' ],
+    [ '0.99.9c',              'version_lt', '0.99.9g' ],
+    [ '0.99.7c',              'version_lt', '0.99.7d' ],
+    [ '0.99.7c',              'version_lt', '0.99.8' ],
+    [ '1.0.rc2',              'version_eq', '0.99.9i' ],
     # non-standard versions
     [ '1.7.1.236.g81fa0',     'version_gt', '1.7.1' ],
     [ '1.7.1.236.g81fa0',     'version_lt', '1.7.1.1' ],
@@ -55,6 +62,13 @@ my @true = (
     [ '1.7.1.211.g54fcb21',   'version_ge', '1.7.1.209.gd60ad81' ],
     [ '1.7.1.209.gd60ad81',   'version_lt', '1.7.1.1.1.g66bd8ab' ],
     [ '1.7.0.2.msysgit.0',    'version_gt', '1.6.6' ],
+    [ '1.7.1',                'version_lt', '1.7.1.1.gc8c07' ],
+    [ '1.7.1',                'version_lt', '1.7.1.1.g5f35a' ],
+    [ '1.7.1.1',              'version_gt', '1.7.1.1.gc8c07' ],
+    [ '1.7.1.1',              'version_gt', '1.7.1.1.g5f35a' ],
+    [ '1.7.1.1.gc8c07',       'version_eq', '1.7.1.1.g5f35a' ],
+    [ '1.3.GIT',              'version_gt',  '1.3.0' ],
+    [ '1.3.GIT',              'version_lt',  '1.3.1' ],
 );
 
 # operator reversal: $a op $b <=> $b rop $a

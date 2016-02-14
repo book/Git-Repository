@@ -50,7 +50,17 @@ my %tag_for = map { ( my $v = substr $_, 1 ) =~ y/-/./; ( $v => $_ ) }
   $r->run( tag => '-l', 'v*' );
 
 # select the versions to build and install
-my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for;
+my @versions = sort cmp_git @ARGV ? @ARGV : keys %tag_for;
+
+# replace aliases with the canonical name
+{
+    my %alias = (
+        '1.0.1'   => '1.0.0a',
+        '1.0.2'   => '1.0.0a',
+    );
+    my %seen;
+    @versions = grep !$seen{$_}++, map $alias{$_} || $_, @versions;
+}
 
 @versions = grep !/rc/, @versions if !$option{rc};
 
@@ -64,6 +74,11 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
   ? @versions[ -$option{limit} .. -1 ]       # <limit> most recent
   : @versions[ 0 .. -$option{limit} - 1 ]    # <limit> most ancient
   if $option{limit};
+
+
+# pick up invalid versions
+my @nope = grep !exists $tag_for{$_}, @versions;
+die "Can't compile non-existent versions: @nope\n" if @nope;
 
 # just list the selected versions
 print map "$_\n", @versions and exit if $option{list};
