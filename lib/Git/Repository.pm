@@ -513,6 +513,9 @@ C<0.99.9j> or C<1.0rc2>. As of Git::Repository 1.317, the comparison code
 converts all version numbers to an internal format before performing
 a simple string comparison.
 
+`git --version` appeared in version C<0.99.7>. Before that, there is no
+way to know which version of Git one is dealing with.
+
 Prior to C<1.4.0-rc1> (June 2006), compiling a development version of git
 would lead C<git --version> to output C<1.x-GIT> (with C<x> in C<0 .. 3>),
 which would make comparing versions that are very close a futile exercise.
