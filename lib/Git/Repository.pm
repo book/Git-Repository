@@ -506,11 +506,12 @@ The methods are:
 
 All those methods also accept an option hash, just like the others.
 
-Note that in the C<git.git> repository, C<v1.0.1> and C<v1.0.2> are
-lightweight tags that points respectively to C<v1.0.0a> and C<v1.0.0b>.
-As of Git::Repository 1.314, the comparison code internally converts
-C<v1.0.0a> and C<v1.0.0b> to their numerical equivalent before performing
-the comparison.
+Note that in the C<git.git> repository, several commits have multiple
+tags (e.g. C<v1.0.1> and C<v1.0.2> point respectively to C<v1.0.0a>
+and C<v1.0.0b>). Pre-1.0.0 versions also have non-standard formats like
+C<0.99.9j> or C<1.0rc2>. As of Git::Repository 1.317, the comparison code
+converts all version numbers to an internal format before performing
+a simple string comparison.
 
 Prior to C<1.4.0-rc1> (June 2006), compiling a development version of git
 would lead C<git --version> to output C<1.x-GIT> (with C<x> in C<0 .. 3>),
