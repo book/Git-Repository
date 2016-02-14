@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Pod::Usage;
 use File::Spec;
+use File::Path qw( remove_tree );
 use Cwd qw( cwd );
 use Getopt::Long;
 use Git::Repository;
@@ -31,6 +32,7 @@ pod2usage( -verbose => 2 ) if $option{manual};
 
 # verbosity options
 my %run_opt;
+$option{quiet}   = 1     if $option{test};
 $option{verbose} = 0     if $option{quiet};
 $run_opt{stderr} = undef if !$option{verbose};
 $run_opt{stdout} = sub { print shift } if $option{verbose} > 1;
@@ -64,6 +66,13 @@ my @versions = sort cmp_git @ARGV ? @ARGV : grep !/^1\.0\.0[ab]$/, keys %tag_for
 
 # just list the selected versions
 print map "$_\n", @versions and exit if $option{list};
+
+# test outputs TAP
+if ( $option{test} ) {
+    require Test::More;
+    import Test::More;
+    plan( tests => scalar @versions );
+}
 
 # build install select versions
 chdir $option{source} or die "Can't chdir to $option{source}: $!";
@@ -125,8 +134,13 @@ for my $version (@versions) {
 
         # install
         run_cmd( @make => 'install' );
-    }
 
+        # test the installation and remove all
+        if ( $option{test} ) {
+            ok( is_installed($version), "$version installed successfully" );
+            remove_tree( $prefix );
+        }
+    }
 }
 
 sub run_cmd {
@@ -180,6 +194,9 @@ build-git - Build and install any Git
  --destination <directory>    The location of the Git collection
 
  --fetch                      Start by doing a `git fetch`
+
+ --test                       Compile, install, test and uninstall
+                              the selected versions. Outputs TAP.
 
  --since <version>            Select versions greater or equal to <version>
 
