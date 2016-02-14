@@ -4,6 +4,7 @@ use warnings;
 use Pod::Usage;
 use File::Spec;
 use File::Path qw( remove_tree );
+use File::Temp qw( tempdir );
 use Cwd qw( cwd );
 use Getopt::Long;
 use Git::Repository;
@@ -72,6 +73,7 @@ if ( $option{test} ) {
     require Test::More;
     import Test::More;
     plan( tests => scalar @versions );
+    $option{destination} = tempdir( CLEANUP => 1 );
 }
 
 # build install select versions
@@ -195,8 +197,12 @@ build-git - Build and install any Git
 
  --fetch                      Start by doing a `git fetch`
 
+ --list                       List the selected versions and exit
+
  --test                       Compile, install, test and uninstall
                               the selected versions. Outputs TAP.
+                              (Implies --quiet and force --destination to
+                              a temporary directory.)
 
  --since <version>            Select versions greater or equal to <version>
 
