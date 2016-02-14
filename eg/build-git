@@ -130,7 +130,7 @@ for my $version (@versions) {
 }
 
 sub run_cmd {
-    print "* @_\n";
+    print "* @_\n" if !$option{quiet};
     System::Command->loop_on( command => \@_, %run_opt ) or die "FAIL: @_\n";
 }
 
