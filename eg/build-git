@@ -8,7 +8,7 @@ use File::Temp qw( tempdir );
 use Cwd qw( cwd );
 use Getopt::Long;
 use Git::Repository;
-use Git::Repository::Util qw( cmp_git );
+use Git::Version::Compare qw( cmp_git );
 use System::Command 1.117;    # loop_on
 
 # command-line options

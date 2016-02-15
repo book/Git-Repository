@@ -8,7 +8,7 @@ use Test::Builder;
 use Git::Repository;    # 1.15
 use File::Temp qw( tempdir );
 use File::Spec::Functions qw( catdir );
-use Git::Repository::Util qw( cmp_git );
+use Git::Version::Compare qw( cmp_git );
 use Cwd qw( cwd );
 use Carp;
 

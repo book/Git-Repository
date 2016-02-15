@@ -9,7 +9,7 @@ use File::Spec;
 use Cwd qw( cwd realpath );
 
 use Git::Repository::Command;
-use Git::Repository::Util qw( _version_eq _version_gt );
+use Git::Version::Compare qw( :ops );
 
 # helper function
 sub _abs_path {
@@ -212,37 +212,35 @@ sub version {
             =~ /git version (.*)/g )[0];
 }
 
-# every op is a combination of eq and gt
 sub version_eq {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return _version_eq( $r->version(@o), $v );
+    return eq_git( $r->version(@o), $v );
 }
 
 sub version_ne {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return !_version_eq( $r->version(@o), $v );
+    return ne_git( $r->version(@o), $v );
 }
 
 sub version_gt {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return _version_gt( $r->version(@o), $v );
+    return gt_git( $r->version(@o), $v );
 }
 
 sub version_le {
     my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return !_version_gt( $r->version(@o), $v );
+    return le_git( $r->version(@o), $v );
 }
 
 sub version_lt {
     my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
     my $v1 = $r->version(@o);
-    return !_version_eq( $v1, $v2 ) && !_version_gt( $v1, $v2 );
+    return lt_git( $v1, $v2 );
 }
 
 sub version_ge {
-    my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    my $v1 = $r->version(@o);
-    return _version_eq( $v1, $v2 ) || _version_gt( $v1, $v2 );
+    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
+    return ge_git( $r->version(@o), $v );
 }
 
 1;
@@ -506,38 +504,8 @@ The methods are:
 
 All those methods also accept an option hash, just like the others.
 
-Note that in the C<git.git> repository, several commits have multiple
-tags (e.g. C<v1.0.1> and C<v1.0.2> point respectively to C<v1.0.0a>
-and C<v1.0.0b>). Pre-1.0.0 versions also have non-standard formats like
-C<0.99.9j> or C<1.0rc2>. As of Git::Repository 1.317, the comparison code
-converts all version numbers to an internal format before performing
-a simple string comparison.
-
-`git --version` appeared in version C<0.99.7>. Before that, there is no
-way to know which version of Git one is dealing with.
-
-Prior to C<1.4.0-rc1> (June 2006), compiling a development version of git
-would lead C<git --version> to output C<1.x-GIT> (with C<x> in C<0 .. 3>),
-which would make comparing versions that are very close a futile exercise.
-
-Other issues exist when comparing development version numbers with one
-another. For example, C<1.7.1.1> is greater than both C<1.7.1.1.gc8c07>
-and C<1.7.1.1.g5f35a>, and C<1.7.1> is less than both. Obviously,
-C<1.7.1.1.gc8c07> will compare as greater than C<1.7.1.1.g5f35a>
-(asciibetically), but in fact these two version numbers cannot be
-compared, as they are two siblings children of the commit tagged
-C<v1.7.1>). For practical purposes, the version-comparison methods
-declares them equal.
-
-If one were to compute the set of all possible version numbers (as returned
-by C<git --version>) for all git versions that can be compiled from each
-commit in the F<git.git> repository, the result would not be a totally ordered
-set. Big deal.
-
-Also, don't be too precise when requiring the minimum version of Git that
-supported a given feature. The precise commit in git.git at which a given
-feature was added doesn't mean as much as the release branch in which that
-commit was merged.
+The actual version-comparison logic is managed by L<Git::Version::Compare>.
+Check its documentation for details.
 
 =head1 PLUGIN SUPPORT
 

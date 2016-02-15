@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More;
 use Git::Repository;
-use Git::Repository::Util qw( cmp_git );
+use Git::Version::Compare qw( cmp_git );
 use File::Spec;
 
 my $git_home = 'git-collection';
