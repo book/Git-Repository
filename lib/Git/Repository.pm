@@ -212,35 +212,16 @@ sub version {
             =~ /git version (.*)/g )[0];
 }
 
-sub version_eq {
-    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return eq_git( $r->version(@o), $v );
+BEGIN {
+    for my $op ( qw( lt gt le ge eq ne ) ) {
+        no strict 'refs';
+        *{"version_$op"} = eval << "OP";
+sub {
+    my ( \$r, \$v, \@o ) = ( shift, ( grep !ref, \@_ )[0], grep ref, \@_ );
+    return ${op}_git( \$r->version(\@o), \$v );
 }
-
-sub version_ne {
-    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return ne_git( $r->version(@o), $v );
-}
-
-sub version_gt {
-    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return gt_git( $r->version(@o), $v );
-}
-
-sub version_le {
-    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return le_git( $r->version(@o), $v );
-}
-
-sub version_lt {
-    my ( $r, $v2, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    my $v1 = $r->version(@o);
-    return lt_git( $v1, $v2 );
-}
-
-sub version_ge {
-    my ( $r, $v, @o ) = ( shift, ( grep !ref, @_ )[0], grep ref, @_ );
-    return ge_git( $r->version(@o), $v );
+OP
+    }
 }
 
 1;
