@@ -651,6 +651,10 @@ L<http://search.cpan.org/dist/Git-Repository>
 
 =back
 
+=head1 AUTHOR
+
+Philippe Bruhat (BooK) <book@cpan.org>
+
 =head1 COPYRIGHT
 
 Copyright 2010-2016 Philippe Bruhat (BooK), all rights reserved.

@@ -90,6 +90,10 @@ avoid name clashes between plugins) is C<_plugin_I<name>_I<attribute>>,
 where I<name> is the plugin lowercase name, and I<attribute> is the
 attribute name.
 
+=head1 AUTHOR
+
+Philippe Bruhat (BooK) <book@cpan.org>
+
 =head1 ACKNOWLEDGEMENTS
 
 Thanks to Todd Rinaldo, who wanted to add more methods to

@@ -212,6 +212,10 @@ To leave the repository in its location after the end of the test:
 Note that since C<test_repository()> uses C<git init> to create the test
 repository, it requires at least Git version C<1.5.0.rc1>.
 
+=head1 AUTHOR
+
+Philippe Bruhat (BooK) <book@cpan.org>
+
 =head1 ACKNOWLEDGEMENTS
 
 The C<clone> option and capability of C<test_repository()> owes a lot

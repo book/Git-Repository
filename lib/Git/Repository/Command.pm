@@ -432,6 +432,10 @@ The signal, if any, that killed the command.
 
 =back
 
+=head1 AUTHOR
+
+Philippe Bruhat (BooK) <book@cpan.org>
+
 =head1 ACKNOWLEDGEMENTS
 
 The core of L<Git::Repository::Command> has been moved into its own
