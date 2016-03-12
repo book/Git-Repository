@@ -2,6 +2,15 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.318 2016-03-12 BOOK
+    [ENHANCEMENTS]
+    - Extend version support to all existing version
+    - Let Git::Version::Compare handle all version comparison code
+    - eg/build-git can now build all Git versions since 1.0.0
+    [DOCUMENTATION]
+    - Minor documentation updates
+    - URL corrections by DOLMEN
+
 1.317 2016-02-13 BOOK
     [ENHANCEMENTS]
     - improved git binary detection in Git::Repository::Command
