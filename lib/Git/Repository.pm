@@ -217,7 +217,9 @@ BEGIN {
         no strict 'refs';
         *{"version_$op"} = eval << "OP";
 sub {
-    my ( \$r, \$v, \@o ) = ( shift, ( grep !ref, \@_ )[0], grep ref, \@_ );
+    my \$r = shift;
+    my \@o;
+    my (\$v) = grep !( ref && ref eq 'HASH' ? push \@o, \$_ : 0 ), \@_;
     return ${op}_git( \$r->version(\@o), \$v );
 }
 OP
