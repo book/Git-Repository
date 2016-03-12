@@ -2,7 +2,7 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
-1.317 Sat Feb 13 2016
+1.317 2016-02-13 BOOK
     [ENHANCEMENTS]
     - improved git binary detection in Git::Repository::Command
     - fixed version comparisons for 1.0.0a and 1.0.0b under Perl 5.6
@@ -20,7 +20,7 @@ Revision history for Git-Repository
     - tested against 513 versions of git (including all RC),
       from 1.0.0 to 2.7.1
 
-1.316 Wed Dec 2 2015
+1.316 2015-12-02 BOOK
     [ENHANCEMENTS]
     - avoid a warning if the filehandles have already been closed
       (related to System::Command 1.114 'interactive' option)
@@ -30,22 +30,22 @@ Revision history for Git-Repository
     [TESTS]
     - git-2.5.2 test suite compatibility fix (Petr Šabata)
 
-1.315 Wed Jul 29 2015
+1.315 2015-07-29 BOOK
     [ENHANCEMENTS]
     - Show exit status in 'unknown git error' message (TIMB)
 
-1.314 Sat May 23 2015
+1.314 2015-05-23 BOOK
     [ENHANCEMENTS]
     - simplified the internals of version comparisons
     - give the correct result for comparisons involving 1.0.0a and 1.0.0b
 
-1.313 Sat Mar 21 2015
+1.313 2015-03-21 BOOK
     [DOCUMENTATION]
     - add a section about Git::Raw in the SEE ALSO (written by its author)
     - document the availability of Git.pm on CPAN (RT #100957)
     - added the list of contributors to the META file
 
-1.312 Sun Aug 3 2014
+1.312 2014-08-03 BOOK
     [ENHANCEMENTS]
     - test_repository() uses `git init-db` for init under older git
       versions (although the test suite hasn't yet been adapted to
@@ -59,7 +59,7 @@ Revision history for Git-Repository
     - various minor documentation improvements
     - the "OTHER GIT WRAPPERS" is really a "SEE ALSO" section
 
-1.311 Sun Mar 9 2014
+1.311 2014-03-09 BOOK
     [ENHANCEMENTS]
     - avoid warnings from _is_git() when we get nothing out of "git"
     [DOCUMENTATION]
@@ -68,7 +68,7 @@ Revision history for Git-Repository
     - acknowledge Nathan Nutter's help in designing the clone option
       to test_repository()
 
-1.310 Fri Jan 17 2014
+1.310 2014-01-17 BOOK
     [ENHANCEMENTS]
     - add support for a 'clone' option in test_repository()
     [DOCUMENTATION]
@@ -79,7 +79,7 @@ Revision history for Git-Repository
     - tested against 350 versions of git (including all RC),
       from 1.5.0.rc0 to 1.8.5.3
 
-1.309 Sat Nov 2 2013
+1.309 2013-11-02 BOOK
     [TESTS]
     - replace use_ok by simply running perl -M$module -e1
     [DOCUMENTATION]
@@ -90,13 +90,13 @@ Revision history for Git-Repository
       in their own distribution (Git-Repository-Plugin-Log) as of
       version 1.309 of both distributions
 
-1.308 Thu Aug 8 2013
+1.308 2013-08-08 BOOK
     [ENHANCEMENTS]
     - require System-Command 1.103, since 1.102 was somewhat broken
     [DOCUMENTATION]
     - new tutorial item based on RT#87334
 
-1.307 Fri Jul 26 2013
+1.307 2013-07-26 BOOK
     [ENHANCEMENTS]
     - avoid creating zombie processes in _is_git
     - require the latest System-Command, as it properly works with
@@ -104,7 +104,7 @@ Revision history for Git-Repository
     [DOCUMENTATION]
     - various minor documentation improvements
 
-1.306 Tue Jul 2 2013
+1.306 2013-07-02 BOOK
     [DOCUMENTATION]
     - document how to run git from cwd in Git::Repository::Tutorial
       (follow-up of RT #86154, thanks to Daniel B. Boorstein (DANBOO))
@@ -114,14 +114,14 @@ Revision history for Git-Repository
     - made tests more robust no matter which locale is defined
       (thanks to Lars Dieckow (DAXIM))
 
-1.305 Sun Jun 16 2013
+1.305 2013-06-16 BOOK
     [DOCUMENTATION]
     - list the 'fatal' option in the documentation for run()
     [TESTS]
     - various fixes for t/24-errors.t
       (mostly for Win32, thanks to Christian Walde (MITHALDU))
 
-1.304 Sat May 25 2013
+1.304 2013-05-25 BOOK
     [ENHANCEMENTS]
     - the new 'fatal' option makes it possible to define in detail
       which exit status codes will make run() die, in addition to
@@ -136,21 +136,21 @@ Revision history for Git-Repository
     - tested against 326 versions of git (including all RC),
       from 1.5.0.rc0 to 1.8.3.rc3
 
-1.303 Sun Apr 28 2013
+1.303 2013-04-28 BOOK
     [ENHANCEMENTS]
     - now depends on System::Command 1.100 for proper Win32 support
     - thanks to a lot of testing help from Christian Walde (MITHALDU)
       the test suite passes on Win32 (by skipping tests of little
       importance)
 
-1.302 Fri Mar 1 2013
+1.302 2013-03-01 BOOK
     [ENHANCEMENTS]
     - Git::Repository::Plugin::Log is now able to parse commits
       with completely empty log messages
     - Git::Repository::Plugin::Log is now able to parse commits
       containing multiline headers (like gpgsig and mergetag)
 
-1.301 Mon Jan 21 2013
+1.301 2013-01-21 BOOK
     [DEPRECATION]
     - the following Git::Repository methods are obsolete,
       and will die when called: create, wc_path, repo_path
@@ -159,7 +159,7 @@ Revision history for Git-Repository
     [PACKAGING]
     - switch to Dist::Zilla for maintaining the distribution
 
-1.300 Mon Jan  7 2013
+1.300 2013-01-07 BOOK
     [ENHANCEMENTS]
     - fixed support for overloaded objects (e.g. Path::Class objects)
       in Git::Repository::Command (RT #82373)
@@ -170,13 +170,13 @@ Revision history for Git-Repository
       passed ambiguous or unexpected parameters.
       (follow-up of RT #82373, thanks to Michael G. Schwern)
 
-1.29 Tue Dec 4 2012
+1.29 2012-12-04 BOOK
     [ENHANCEMENTS]
     - added support for callbacks in run()
     [DOCUMENTATION]
     - minor documentation improvements
 
-1.28 Sun Nov  4 2012
+1.28 2012-11-04 BOOK
     [ENHANCEMENTS]
     - disabled colored output from logs in Git::Repository::Log::Iterator
     - wc_path() and repo_path() accessors are deprecated and now warn
@@ -185,14 +185,14 @@ Revision history for Git-Repository
     - ignore commit hooks that may be included with templates (RT #80593)
     - test for quiet won't fail if no identity is defined (RT #80321)
 
-1.27 Thu Oct 11 2012
+1.27 2012-10-11 BOOK
     [ENHANCEMENTS]
     - Git::Repository::Command skips non-executable files when searching
       for a git command in the PATH
     [TEST]
     - Fixed tests failing with a directory named git in the PATH (RT #80117)
 
-1.26 Tue Aug  1 2012
+1.26 2012-08-01 BOOK
     [ENHANCEMENTS]
     - added a 'quiet' option to silence warnings
     - improved carp level for the run() method
@@ -200,13 +200,13 @@ Revision history for Git-Repository
     - provide an example for the 'quiet' option in
       Git::Repository::Tutorial
 
-1.25 Tue Dec 27 23:07:11 CET 2011
+1.25 2011-12-27 BOOK
     [ENHANCEMENTS]
     - None. It's as good as 1.24, without the stupid test fail.
     [TESTS]
     - fixed a test plan when a git binary is not available
 
-1.24 Mon Dec 26 14:51:36 CET 2011
+1.24 2011-12-26 BOOK
     [ENHANCEMENTS]
     - the command cache for _is_git() is now properly populated
       when the git option is a command with options (e.g. sudo)
@@ -215,16 +215,16 @@ Revision history for Git-Repository
     - Fix spelling errors fixed in Debian (RT #73079)
     - Defend against changes to $/ (RT #71621)
 
-1.23 Sun Dec  4 16:06:08 CET 2011
+1.23 2011-12-04 BOOK
     [TESTS]
     - made t/07-version.t pass when /tmp is mounted noexec (RT #72610)
 
-1.22 Tue Sep  6 23:39:54 CEST 2011
+1.22 2011-09-06 BOOK
     [TESTS]
     - made t/21-submodule.t pass with git > 1.7.6.0 (RT #70585)
     - made t/21-submodule.t pass with git < 1.5.4.4
 
-1.21 Mon Jul 11 23:34:47 CEST 2011
+1.21 2011-07-11 BOOK
     [ENHANCEMENTS]
     - fix a deep recursion caused by a change in System::Command 1.05
       (thanks to Thomas Klausner)
@@ -232,7 +232,7 @@ Revision history for Git-Repository
     - made t/21-submodule.t pass when git is not available or too old
       or no identity is configured
 
-1.20 Thu Jun  9 14:08:43 CEST 2011
+1.20 2011-06-09 BOOK
     [ENHANCEMENTS]
     - None. It's as good as 1.19, without the stupid test fail.
     [TESTS]
@@ -240,7 +240,7 @@ Revision history for Git-Repository
       so I didn't detect it, but all testers did :-(
       Kazuhiro Shibuya provided a patch!
 
-1.19 Wed Jun  8 23:39:22 CEST 2011
+1.19 2011-06-08 BOOK
     [ENHANCEMENTS]
     - new final_output() method to Git::Repository::Command,
       that does the git-specific error checking when collecting
@@ -254,14 +254,14 @@ Revision history for Git-Repository
     [DOCUMENTATION]
     - moved the HOWTO part of the doc to Git::Repository::Tutorial
 
-1.18 Sat Apr 16 13:47:26 CEST 2011
+1.18 2011-04-16 BOOK
     [ENHANCEMENTS]
     - the create() method was fragile (parsing the output of
       porcelain commands) and is now obsolete
     [DOCUMENTATION]
     - added an example for running git shortlog (RT #66783)
 
-1.17 Tue Feb  1 01:01:10 CET 2011
+1.17 2011-02-01 BOOK
     [ENHANCEMENTS]
     - Git::Repository::Command now uses System::Command internally
     [TESTS]
@@ -271,7 +271,7 @@ Revision history for Git-Repository
     - getting a working Win32 implementation is now delegated
       to System::Command
 
-1.16 Sun Jan 16 12:23:42 CET 2011
+1.16 2011-01-16 BOOK
     [ENHANCEMENTS]
     - the reaping of the child process is now delegated to a special
       Git::Repository::Command::Reaper object.
@@ -281,7 +281,7 @@ Revision history for Git-Repository
     - Test::Git::has_git() now accepts the usual options hash
     - fixed tests to pass again under Perl 5.6.2
 
-1.15 Tue Jan 11 22:42:35 CET 2011
+1.15 2011-01-11 BOOK
     [ENHANCEMENTS]
     - experimental MSWin32 full support using pipes
       (thanks to BinGOs for pointing me to a perlmonks post by ikegami,
@@ -298,7 +298,7 @@ Revision history for Git-Repository
     - bundle Test::Git, a module providing a few utility functions
       for testing code requiring a git repository
 
-1.14 Wed Oct 27 21:49:45 CEST 2010
+1.14 2010-10-27 BOOK
     [ENHANCEMENTS]
     - complete rewrite of _has_git, which was renamed to _is_git,
       with a much improved cache for the "is this git valid?" info
@@ -316,7 +316,7 @@ Revision history for Git-Repository
       fully support that platform, but the test suite safely skips
       the tests that hang under Win32. I hope to fix this over time.
 
-1.13 Mon Oct 18 22:36:17 CEST 2010
+1.13 2010-10-18 BOOK
     [ENHANCEMENTS]
     - using 'git' as an option of a Git::Repository object now works
       as expected
@@ -330,12 +330,12 @@ Revision history for Git-Repository
     - tested against 120+ versions of git, including all versions
       of the 1.6.* and 1.7.* branches up until 1.7.3.1
 
-1.12 Mon Oct  4 02:30:51 CEST 2010
+1.12 2010-10-04 BOOK
     [ENHANCEMENTS]
     - the input option can now be empty: it means "close stdin first"
     - if the input option is undef, it still means "don't touch stdin"
 
-1.11 Sat Oct  2 18:17:33 CEST 2010
+1.11 2010-10-02 BOOK
     [ENHANCEMENTS]
     - fixed a bug in version comparison
       (version 1.7.1.209.gd60ad81 is smaller than 1.7.1.1.1.g66bd8ab)
@@ -345,7 +345,7 @@ Revision history for Git-Repository
     - fix abs_path dying on Win32 with a path to a non-existent file
       (again)
 
-1.10 Fri Sep 24 18:04:05 CEST 2010
+1.10 2010-09-24 BOOK
     [ENHANCEMENTS]
     - Git::Repository::Command doesn't write to the command stdin
       if the input option is set to something empty
@@ -353,7 +353,7 @@ Revision history for Git-Repository
     [DOCUMENTATION]
     - minor copy editing by Aristotle Pagaltzis
 
-1.09 Thu Aug 19 00:34:47 CEST 2010
+1.09 2010-08-18 BOOK
     [ENHANCEMENTS]
     - now handle SIGPIPE when writing to git stdin
       (fixes RT bug #60482, reported by Todd Rinaldo (TODDR))
@@ -363,14 +363,14 @@ Revision history for Git-Repository
     - t/20-simple.t should stop failing with "Non-zero wait status: 13"
       as it has been doing since 1.05.
 
-1.08 Tue Aug 17 14:49:11 CEST 2010
+1.08 2010-08-17 BOOK
     [ENHANCEMENTS]
     - Git::Repository->new() now supports git versions older than 1.5.3
     [TESTS]
     - ensure we have some identity when committing
     - make tests require the lowest git version they support
 
-1.07 Sat Aug 14 16:52:21 CEST 2010
+1.07 2010-08-14 BOOK
     [ENHANCEMENTS]
     - support for option hash in create(), which is attached to the
       returned Git::Repository object
@@ -391,13 +391,13 @@ Revision history for Git-Repository
     - protect git log tests against format.pretty (Aristotle Pagaltzis)
     - tests for backward-compatibility with repository, working_copy, etc.
 
-1.06 Sat Jul  3 22:02:59 CEST 2010
+1.06 2010-07-03 BOOK
     [ENHANCEMENTS]
     - none
     [TESTS]
     - just make sure all tests fail gracefully when git is not installed
 
-1.05 Sat Jul  3 00:40:09 CEST 2010
+1.05 2010-07-02 BOOK
     [ENHANCEMENTS]
     - version() method returns the git binary version
     - version_eq(), version_gt(), etc allow simple version comparison
@@ -408,14 +408,14 @@ Revision history for Git-Repository
     [TESTS]
     - extensive version comparison tests
 
-1.04 Sun Jun 27 17:24:02 CEST 2010
+1.04 2010-06-27 BOOK
     [ENHANCEMENTS]
     - create() now supports "reinitializing existing Git repository"
       (thanks to Michael G. Schwern)
     [TESTS]
     - test a few extra cases
 
-1.03 Sat Jun 19 00:27:28 CEST 2010
+1.03 2010-06-18 BOOK
     [ENHANCEMENTS]
     - fix module to work with Perl 5.6.x
     - support GIT_DIR & GIT_WORK_TREE environment variables, when
@@ -426,7 +426,7 @@ Revision history for Git-Repository
     - fix the case where /tmp is a symlink to some other place
     - fix abs_path dying on Win32 with a path to a non-existent file
 
-1.02 Wed Jun 16 01:27:17 CEST 2010
+1.02 2010-06-15 BOOK
     [ENHANCEMENTS]
     - sensible defaults for Git::Repository->new() without parameters
     - correctly setup Git::Repository if working_copy points to a
@@ -435,13 +435,13 @@ Revision history for Git-Repository
     [TESTS]
     - skip tests that fail if /tmp is a git repository
 
-1.01 Mon Jun 14 08:17:38 CEST 2010
+1.01 2010-06-14 BOOK
     [ENHANCEMENTS]
     - consider git failing with a usage message as a fatal error
     [TESTS]
     - don't bother testing too much if git is older than v1.6.0
 
-1.00 Sat Jun 12 11:50:06 CEST 2010
+1.00 2010-06-12 BOOK
     [YET ANOTHER GIT WRAPPER]
     - Git::Repository provides context and a simple run() method
     - Git::Repository::Command is the actual workhorse
