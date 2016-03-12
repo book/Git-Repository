@@ -5,13 +5,16 @@ use Git::Repository;
 use Git::Version::Compare qw( cmp_git );
 use File::Spec;
 
-my $git_home = 'git-collection';
-
 plan skip_all => 'these tests are for extended testing'
   if !$ENV{EXTENDED_TESTING};
 
-plan skip_all => "set the $git_home directory/link to point at your local collection of Git builds"
-  if !-d 'git-collection';
+# look for the git-colleciton dir, including under ../.. (under `dzil test`)
+my $collection = 'gt-collection';
+my ($git_home) = grep -d, $collection,
+  File::Spec->catdir( File::Spec->updir, File::Spec->updir, $collection );
+
+plan skip_all => "set the $collection directory/link to point at your local collection of Git builds"
+  if !defined $git_home;
 
 my @versions;
 {
