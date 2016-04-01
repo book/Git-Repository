@@ -6,8 +6,6 @@ use Test::Git;
 use Scalar::Util qw( looks_like_number );
 use Git::Repository;
 
-test_requires_git;
-
 # get the git version
 my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
 diag "git version $version";

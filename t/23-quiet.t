@@ -5,7 +5,7 @@ use Test::Requires::Git;
 use Test::Git;
 use Git::Repository;
 
-test_requires_git version_ge => '1.5.0.rc4';
+test_requires_git '1.5.0.rc4';
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};

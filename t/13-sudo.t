@@ -5,8 +5,6 @@ use Test::Requires::Git;
 use Test::Git;
 use File::Spec;
 
-test_requires_git;
-
 plan tests => 3;
 
 # test using a wrapper

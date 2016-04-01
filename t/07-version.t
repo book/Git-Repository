@@ -7,8 +7,6 @@ use File::Temp qw( tempfile );
 use Git::Repository;
 use constant MSWin32 => $^O eq 'MSWin32';
 
-test_requires_git;
-
 # setup fake git
 my $W = my $V = my $version = Git::Repository->version;
 $V =~ s/\.(\d+)\./.@{[$1+1]}./;

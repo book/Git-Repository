@@ -8,7 +8,7 @@ use File::Spec;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
 
-test_requires_git version_ge => '1.5.5';
+test_requires_git '1.5.5';
 
 my $version = Git::Repository->version;
 

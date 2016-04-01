@@ -9,7 +9,7 @@ use File::Path;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-test_requires_git version_ge => '1.5.0.rc0';
+test_requires_git '1.5.0.rc0';
 
 my $version = Git::Repository->version;
 

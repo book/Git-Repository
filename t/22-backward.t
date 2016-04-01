@@ -8,7 +8,7 @@ use File::Spec;
 use Cwd qw( cwd realpath );
 use Git::Repository;
 
-test_requires_git version_ge => '1.5.0.rc1';
+test_requires_git '1.5.0.rc1';
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};

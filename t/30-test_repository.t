@@ -9,7 +9,7 @@ use Cwd qw( cwd abs_path );
 use Git::Repository;
 
 # git clone supports existing directories since then
-test_requires_git version_ge => '1.6.2.rc0';
+test_requires_git '1.6.2.rc0';
 
 plan tests => 6;
 

@@ -5,7 +5,7 @@ use Test::Requires::Git;
 use Test::Git;
 use Git::Repository;
 
-test_requires_git version_ge => '1.5.3.rc0'; # first git submodule appearance
+test_requires_git '1.5.3.rc0'; # first git submodule appearance
 
 plan skip_all => "git clone fails for git between 1.5.4.rc0 and 1.6.0.rc0"
     if Git::Repository->version_le('1.6.0.rc0')

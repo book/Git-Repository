@@ -9,8 +9,6 @@ use File::Spec;
 use File::Path;
 use Git::Repository;
 
-test_requires_git;
-
 plan tests => 12;
 
 # a place to put a git repository

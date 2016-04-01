@@ -8,7 +8,7 @@ use Test::Git;
 use File::Temp qw(tempdir);
 use Cwd qw(realpath);
 
-test_requires_git version_ge => '1.6.5';
+test_requires_git '1.6.5';
 
 plan tests => 3;
 
