@@ -3,11 +3,12 @@ use strict;
 use warnings;
 
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Temp qw(tempdir);
 use Cwd qw(realpath);
 
-has_git('1.6.5');
+test_requires_git '1.6.5';
 
 plan tests => 3;
 

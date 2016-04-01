@@ -1,13 +1,14 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Temp qw( tempdir );
 use File::Spec;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
 
-has_git( '1.5.5' );
+test_requires_git '1.5.5';
 
 my $version = Git::Repository->version;
 

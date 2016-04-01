@@ -1,12 +1,13 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use Git::Repository;
 use File::Temp qw( tempfile tempdir );
 use constant MSWin32 => $^O eq 'MSWin32';
 
-has_git('1.5.0.rc1');
+test_requires_git '1.5.0.rc1';
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};

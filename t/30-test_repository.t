@@ -1,13 +1,15 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use File::Temp qw( tempdir );
 use File::Spec::Functions;
 use Cwd qw( cwd abs_path );
 use Git::Repository;
 
-has_git('1.6.2.rc0');    # git clone supports existing directories since then
+# git clone supports existing directories since then
+test_requires_git '1.6.2.rc0';
 
 # clean up the environment
 delete @ENV{qw( GIT_DIR GIT_WORK_TREE )};

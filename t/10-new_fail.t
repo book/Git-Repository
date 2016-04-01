@@ -1,14 +1,13 @@
 use strict;
 use warnings;
 use Test::More;
+use Test::Requires::Git;
 use Test::Git;
 use Cwd qw( abs_path );
 use File::Temp qw( tempdir );
 use File::Spec;
 use File::Path;
 use Git::Repository;
-
-has_git;
 
 plan tests => 12;
 
