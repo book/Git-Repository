@@ -416,9 +416,9 @@ Sorting version numbers is therefore as simple as:
 Have a look at L<Git::Repository::Plugin> and L<Git::Repository::Plugin::Log>,
 to learn how to add your own methods to L<Git::Repository>.
 
-=head2 Run code on the output of a git command, and get the results
+=head2 Run code on the output of a git command through callback
 
-Sometimes you need to process the output of a command, by running a
+Sometimes you need to process the output of a command by running a
 callback on each line of the output.
 
     # code inspiration:
