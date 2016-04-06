@@ -402,14 +402,14 @@ variables from the environment.
 
 =head2 Sort git versions
 
-Basically, you need to recreate the C<cmp> operator for Git versions,
-using the I<private> C<_version_gt()> method (which accepts two parameters):
+Since version 1.318, Git::Repository lets L<Git::Version::Compare> handle
+all version comparisons.
 
-    @sorted_versions = sort {
-        Git::Repository::_version_gt( $a, $b )
-            || -Git::Repository::_version_gt( $b, $a )
-    } @versions;
+Sorting version numbers is therefore as simple as:
 
+    use Git::Version::Compare qw( cmp_git );
+
+    @sort_verson = sort cmp_git @versions;
 
 =head2 Add specialized methods to your Git::Repository objects
 
