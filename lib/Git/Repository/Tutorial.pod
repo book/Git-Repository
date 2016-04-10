@@ -433,6 +433,38 @@ callback on each line of the output.
 Note that the value returned by the callback will be returned as part of
 the C<run()> output, instead of the original line.
 
+=head2 Initialize a test repository with a bundle
+
+Instead of creating a test repository using a series of file editions
+and commits, one can simply import data into the test repository using
+a bundle. Bundles are created with the C<git bundle create> command
+(see the Git documentation for details).
+
+First create a temporary repository with the help of L<Test::Git>:
+
+    use Test::Git;
+    my $r = test_repository();
+
+then import the bundle data in your repository, and collect the references:
+
+    my @refs = $r->run( bundle => 'unbundle', $bundle_file );
+
+and finally update the references:
+
+    for my $line (@refs) {
+        my ( $sha1, $ref ) = split / /, $line;
+        $r->run( 'update-ref', $ref => $sha1 );
+    }
+
+It's also possible to clone directly from a bundle (this creates an
+C<origin> remote pointing to the bundle file):
+
+    my $r = test_repository( clone => [ $bundle_file ] );
+
+A bundle from a recipient repository's point of view is just like a
+regular remote repository. See the documentation of B<git bundle> for
+details of what's possible (e.g. incremental bundles).
+
 =head1 AUTHOR
 
 Philippe Bruhat (BooK) <book@cpan.org>
