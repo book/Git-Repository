@@ -33,7 +33,7 @@ my $file = 'hello.txt';
     print $fh "Hello, world!\n";
 }
 $r->run( add => $file );
-$r->run( commit => '-m' => 'hello' );
+$r->run( qw( commit --no-verify -m hello ) );
 my $sha1 = $r->run( 'rev-parse' => 'master' );
 
 # expect test_repository to fail

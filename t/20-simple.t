@@ -98,12 +98,12 @@ SKIP: {
     skip "this test does not work with msysgit on Win32", 4
         if $^O eq 'MSWin32';
 
-    ok( my $cmd = $r->command('commit'), 'git commit' );
+    ok( my $cmd = $r->command('commit', '--no-verify'), 'git commit' );
     isa_ok( $cmd, 'Git::Repository::Command' );
     local $/ = "\n";
     my $error = $cmd->stderr->getline;
     my $git = Git::Repository::Command::_is_git('git');
-    is_deeply( [ $cmd->cmdline ], [ $git, 'commit' ], 'command-line' );
+    is_deeply( [ $cmd->cmdline ], [ $git, 'commit', '--no-verify' ], 'command-line' );
     $cmd->close;
     like(
         $error,
