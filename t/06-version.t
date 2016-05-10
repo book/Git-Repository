@@ -3,7 +3,6 @@ use warnings;
 use Test::More;
 use Test::Requires::Git;
 use Test::Git;
-use Scalar::Util qw( looks_like_number );
 use Git::Repository;
 
 # get the git version
@@ -11,16 +10,18 @@ my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
 diag "git version $version";
 
 # other versions based on the current one
-my @version = split /\./, $version;
+($version) = split / /, $version;    # drop "comments"
 my ( @lesser, @greater );
-for ( 0 .. $#version ) {
-    local $" = '.';
-    my @v = @version;
-    next if !looks_like_number( $v[$_] );
-    $v[$_]++;
-    push @greater, "@v";
-    next if 0 > ( $v[$_] -= 2 );
-    push @lesser, "@v";
+if ( $version =~ /^[1-9]+(?:\.[0-9]+)*$/ ) {
+    my @version = split /\./, $version;
+    for ( 0 .. $#version ) {
+        local $" = '.';
+        my @v = @version;
+        $v[$_]++;
+        push @greater, "@v";
+        next if 0 > ( $v[$_] -= 2 );
+        push @lesser, "@v";
+    }
 }
 
 # more complex comparisons
