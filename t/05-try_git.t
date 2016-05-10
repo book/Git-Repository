@@ -47,7 +47,7 @@ for my $not_git (@not_git) {
 # more tests if git is available
 SKIP:
 {
-    skip 'Default git binary not found in PATH', 10
+    skip 'Default git binary not found in PATH', 2 + 2 * 8
         if !Git::Repository::Command::_is_git('git');
 
     my $abs_git = Git::Repository::Command::_which('git');
