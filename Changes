@@ -2,6 +2,19 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.319 2016-05-18 BOOK
+    [DEPRECATION]
+    - The has_git() test function from Test::Git is now obsoleted by
+      Test::Requires::Git. It will issue a warning for now, and will be
+      removed in a future version.
+    [DOCUMENTATION]
+    - Added tutorial entry "Initialize a test repository with a bundle"
+    - Updated the "Sort git versions" tutorial entry with Git::Version::Compare
+    [TESTS]
+    - Use Test::Requires::Git instead of has_git to check if git is available
+    - Fix a number of failing tests related to an incorrect plan (oops)
+      or local git commit hooks.
+
 1.318 2016-03-12 BOOK
     [ENHANCEMENTS]
     - Extend version support to all existing version
