@@ -19,6 +19,8 @@ my $Test = Test::Builder->new();
 
 sub has_git {
     my ( $version, @options ) = ( ( grep !ref, @_ )[0], grep ref, @_ );
+    carp sprintf 'has_git() is obsolete, write `use Test::Requires::Git; test_requires_git%s;` instead',
+        $version ? " '$version'" : '';
 
     # check some git is present
     $Test->skip_all('Default git binary not found in PATH')
@@ -136,9 +138,11 @@ accepted by L<Git::Repository> and L<Git::Repository::Command>.
 This function must be called before C<plan()>, as it performs a B<skip_all>
 if requirements are not met.
 
-Note that the C<test_requires_git> function provided by the
-L<Test::Requires::Git> module is much more flexible.
+C<has_git> is now B<obsolete> and will print a warning when used.
+The C<test_requires_git> function provided by the L<Test::Requires::Git>
+module is a much more flexible replacement.
 
+C<has_git> will be removed in a future release.
 
 =head2 test_repository
 
