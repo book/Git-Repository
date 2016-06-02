@@ -174,13 +174,12 @@ sub final_output {
     my ($self, @cb) = @_;
 
     # get output / errput
-    my ( $stdout, $stderr ) = @{$self}{qw(stdout stderr)};
     my ( @output, @errput );
-    {
-        local $/ = "\n";
-        chomp( @output = <$stdout> ) if $stdout->opened;
-        chomp( @errput = <$stderr> ) if $stderr->opened;
-    }
+    $self->loop_on(
+        input_record_separator => "\n",
+        stdout => sub { chomp( my $o = shift ); push @output, $o; },
+        stderr => sub { chomp( my $e = shift ); push @errput, $e; },
+    );
 
     # done with it
     $self->close;
