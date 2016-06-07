@@ -10,10 +10,9 @@ my ($version) = Git::Repository->run('--version') =~ /git version (.*)/g;
 diag "git version $version";
 
 # other versions based on the current one
-($version) = split / /, $version;    # drop "comments"
 my ( @lesser, @greater );
 if ( $version =~ /^[1-9]+(?:\.[0-9]+)*$/ ) {
-    my @version = split /\./, $version;
+    my @version = split /\./, ( split / /, $version )[0];
     for ( 0 .. $#version ) {
         local $" = '.';
         my @v = @version;
