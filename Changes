@@ -2,6 +2,13 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.320 2016-06-12 BOOK
+    [ENHANCEMENTS]
+    - Rewrite Git::Repository::Command's final_output() using
+      System::Command's loop_on()
+    [TESTS]
+    - Fix a test that failed with Git versions with "comments" (Samit Badle)
+
 1.319 2016-05-18 BOOK
     [DEPRECATION]
     - The has_git() test function from Test::Git is now obsoleted by
