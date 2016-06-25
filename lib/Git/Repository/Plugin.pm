@@ -7,7 +7,6 @@ use Carp;
 
 sub install {
     my ( $class, @keywords ) = @_;
-    no strict 'refs';
 
     # get the list of keywords to install
     my %keyword = map { $_ => 1 } my @all_keywords = $class->_keywords;
@@ -17,15 +16,16 @@ sub install {
     } @keywords;
     carp "No keywords installed from $class" if !@keywords;
 
-    # install keywords
-    *{"Git::Repository::$_"} = \&{"$class\::$_"} for @keywords;
+    for (@keywords) {
+        no strict 'refs';
+        *{"Git::Repository::$_"} = \&{"$class\::$_"};
+    }
 }
 
 sub _keywords {
     my ($class) = @_;
-    no strict 'refs';
     carp "Use of \@KEYWORDS by $class is deprecated";
-    return @{"$class\::KEYWORDS"};
+    return do { no strict 'refs'; @{"$class\::KEYWORDS"} };
 }
 
 1;
