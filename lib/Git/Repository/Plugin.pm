@@ -25,7 +25,8 @@ sub install {
 sub _keywords {
     my ($class) = @_;
     carp "Use of \@KEYWORDS by $class is deprecated";
-    return do { no strict 'refs'; @{"$class\::KEYWORDS"} };
+    no strict 'refs';
+    return @{"$class\::KEYWORDS"};
 }
 
 1;
