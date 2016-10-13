@@ -456,8 +456,8 @@ and finally update the references:
         $r->run( 'update-ref', $ref => $sha1 );
     }
 
-It's also possible to clone directly from a bundle (this creates an
-C<origin> remote pointing to the bundle file):
+Since Git version 1.6.5, it's also possible to clone directly from a
+bundle (this creates an C<origin> remote pointing to the bundle file):
 
     my $r = test_repository( clone => [ $bundle_file ] );
 
