@@ -11,8 +11,8 @@ diag "git version $version";
 
 # other versions based on the current one
 my ( @lesser, @greater );
-if ( $version =~ /^[1-9]+(?:\.[0-9]+)*$/ ) {
-    my @version = split /\./, ( split / /, $version )[0];
+if ( $version =~ /^([1-9]+(?:\.[0-9]+)*)/ ) {    # pick meaningful bits
+    my @version = split /\./, $1;
     for ( 0 .. $#version ) {
         local $" = '.';
         my @v = @version;
