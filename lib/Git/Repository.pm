@@ -246,6 +246,9 @@ Git::Repository - Perl interface to Git repositories
 
     # start from a repository reachable from the current directory
     $r = Git::Repository->new();
+    
+    # Use a specific git binary on an existing repository
+    $r = Git::Repository->new( git_dir => $gitdir, { git => './bin/git' } );
 
     # or init our own repository first
     Git::Repository->run( init => $dir, ... );
