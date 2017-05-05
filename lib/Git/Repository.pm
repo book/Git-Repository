@@ -560,6 +560,15 @@ or process the output of commands (but have a look at the plugins), etc.
 One the following modules may therefore be better suited for your needs,
 depending on what you're trying to achieve.
 
+=head2 Git::Raw
+
+L<Git::Raw>
+provides bindings to L<libgit2|http://libgit2.github.com>, a pure C
+implementation of the Git core methods. Most of the functions provided by
+libgit2 are available. If you have complex workflows, or even if speed is of
+the essence, this may be a more attractive solution than shelling out to git.
+
+
 =head2 Git.pm
 
 Git.pm was not on CPAN in 2010. It is packaged with Git, and installed
