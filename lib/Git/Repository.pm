@@ -384,7 +384,7 @@ pointing to it, simply do it in two steps:
     # run a clone or init command without an instance,
     # using options like cwd
     Git::Repository->run( ... );
-    
+
     # obtain a Git::Repository instance
     # on the resulting repository
     $r = Git::Repository->new( ... );
@@ -437,6 +437,19 @@ the C<fatal> option (see L<Git::Repository::Command> for details).
 
 The exit status of the command that was just run is accessible as usual
 using C<<< $? >> 8 >>>. See L<perlvar> for details about C<$?>.
+
+Note: Some command-line usages of git need to be slightly reformatted to
+make them suitable for C<run()>. These 2 commands have the same effect:
+
+	shell> git checkout -b fb686b
+	shell> git checkout -bfb686b
+
+However, in a call such as:
+
+	$command = $repo -> run(checkout => "-b$sha1_prefix", {quiet => 0});
+
+The space after '-b' must be removed, as otherwise the code attempts to
+create a branch called ' fb686b', which git rejects.
 
 =head2 git_dir
 
