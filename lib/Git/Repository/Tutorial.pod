@@ -121,28 +121,28 @@ make them suitable for C<run()>.
 
 For example, these two commands have the same effect when run from the shell:
 
-	shell> git checkout -b fb686b
-	shell> git checkout -bfb686b
+	shell> git checkout -b sometopic
+	shell> git checkout -bsometopic
 
 In the first case, B<git> receives three arguments in C<argv>: C<checkout>,
-C<-b> and C<fb686b>. In the second case, it receives two arguments:
-C<checkout> and C<-bfb686b>, and then B<git> recognizes the beginning
-of the I<-b> option and splits C<fb686b> out of the second argument.
+C<-b> and C<sometopic>. In the second case, it receives two arguments:
+C<checkout> and C<-bsometopic>, and then B<git> recognizes the beginning
+of the I<-b> option and splits C<sometopic> out of the second argument.
 
 So, in a call such as:
 
-    $command = $repo->run( checkout => "-b$sha1_prefix", { quiet => 0 } );
+    $command = $repo->run( checkout => "-b$branch_name", { quiet => 0 } );
 
-If C<$sha1_prefix> contains an initial space character, the call will be
+If C<$branch_name> contains an initial space character, the call will be
 equivalent the following shell command:
 
-	shell> git checkout -b\ fb686b
+	shell> git checkout -b\ sometopic
 
-and B<git> will receive two arguments: C<checkout> and C<-b fb686b>, from
-which it will split out C< fb686b> (note the initial space).
+and B<git> will receive two arguments: C<checkout> and C<-b sometopic>, from
+which it will split out C< sometopic> (note the initial space).
 
 The space after I<-b> must be removed, as otherwise the code attempts to
-create a branch called C< fb686b>, which git rejects.
+create a branch called C< sometopic>, which git rejects.
 
 =head2 Silence warnings for some Git commands
 
