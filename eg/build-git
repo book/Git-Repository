@@ -56,7 +56,7 @@ my @versions = sort cmp_git @ARGV ? @ARGV : keys %tag_for;
 {
     my %alias = (
         '1.0.1'   => '1.0.0a',
-        '1.0.2'   => '1.0.0a',
+        '1.0.2'   => '1.0.0b',
     );
     my %seen;
     @versions = grep !$seen{$_}++, map $alias{$_} || $_, @versions;
