@@ -2,6 +2,11 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.321 2017-10-01 BOOK
+    - Various small improvements to the Tutorial (with help from Ron Savage)
+    - Minor code changes (with help from E. Choroba)
+    - Minor fix to eg/build-git
+
 1.320 2016-06-12 BOOK
     [ENHANCEMENTS]
     - Rewrite Git::Repository::Command's final_output() using
