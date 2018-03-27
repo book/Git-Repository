@@ -50,7 +50,7 @@ SKIP: {
     );
     like(
         $@,
-        qr/^fatal: Not a git repository/,    # error from git itself
+        qr/^fatal: [nN]ot a git repository/,    # error from git itself
         '... expected error message'
     );
 }
