@@ -36,7 +36,7 @@ ok( !eval { Git::Repository->new( git_dir => $dir ) },
 );
 like(
     $@,
-    qr/^fatal: Not a git repository/,    # error from git itself
+    qr/^fatal: Not a git repository/i,    # error from git itself
     '... expected error message'
 );
 
@@ -50,7 +50,7 @@ SKIP: {
     );
     like(
         $@,
-        qr/^fatal: [nN]ot a git repository/,    # error from git itself
+        qr/^fatal: not a git repository/i,    # error from git itself
         '... expected error message'
     );
 }
