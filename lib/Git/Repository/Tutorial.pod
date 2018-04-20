@@ -218,7 +218,34 @@ Use the C<env> option:
         },
     );
 
-See L<Git::Repository::Command> for other available options.
+Note that L<Git::Repository::Command> does small changes to the
+environment a command before running it. Specifically, it:
+
+=over 4
+
+=item *
+
+deletes C<GIT_DIR> and C<GIT_WORK_TREE>, and sets them to the
+corresponding values from the current L<Git::Repository> object
+
+=item *
+
+deletes C<TERM>
+
+=item *
+
+replaces C<PATH> with the value of the C<< env->{PATH} >> option
+
+=back
+
+The easiest way to preserve en environment variable is to pass it with
+the C<env> option, for example:
+
+    $r->run( qw( config --get-colorbool githooks.color true ),
+        { env => { TERM => $ENV{TERM} } } );
+
+See L<Git::Repository::Command> and L<System::Command> for other
+available options.
 
 =head2 Ignore the system and global configuration files
 
