@@ -8,8 +8,8 @@ use File::Spec;
 plan skip_all => 'these tests are for extended testing'
   if !$ENV{EXTENDED_TESTING};
 
-# look for the git-colleciton dir, including under ../.. (under `dzil test`)
-my $collection = 'gt-collection';
+# look for the git-collection dir, including under ../.. (under `dzil test`)
+my $collection = 'git-collection';
 my ($git_home) = grep -d, $collection,
   File::Spec->catdir( File::Spec->updir, File::Spec->updir, $collection );
 
