@@ -154,7 +154,7 @@ sub new {
     my $gitdir
         = eval { _abs_path( $self->run(qw( rev-parse --git-dir )), $cwd ) }
         || '';
-    croak "fatal: Not a git repository: $self->{git_dir}"
+    croak "fatal: not a git repository: $self->{git_dir}"
         if $self->{git_dir} ne $gitdir;
 
     # put back the ignored option
