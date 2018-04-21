@@ -2,6 +2,13 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.322 2018-04-21 BOOK
+    [DOCUMENTATION]
+    - Detail what Git::Repository::Command does to the environment
+    [TESTS]
+    - Match new error message format in git 2.17. (HMBRAND and JANPAZ)
+    - Fixed the 'git-collection' link for extended ("all gits") tests
+
 1.321 2017-10-01 BOOK
     - Various small improvements to the Tutorial (with help from Ron Savage)
     - Minor code changes (with help from E. Choroba)
