@@ -89,7 +89,7 @@ my @tests = (
     {   cmd      => [ checkout => 'does-not-exist' ],
         exit     => 1,
         warnings => [
-            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git\.?/,
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git/,
         ],
     },
 
@@ -110,12 +110,12 @@ my @tests = (
     {   cmd  => [ checkout => 'does-not-exist', { fatal => [1] } ],
         exit => 1,
         dollar_at =>
-            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git\.?/,
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git/,
     },
     {   cmd  => [ checkout => 'does-not-exist', { fatal => 1 } ],
         exit => 1,
         dollar_at =>
-            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git\.?/,
+            qr/^error: pathspec 'does-not-exist' did not match any file\(s\) known to git/,
     },
     {   cmd      => [ rm => 'does-not-exist', { fatal => -128 } ],
         exit     => 128,
