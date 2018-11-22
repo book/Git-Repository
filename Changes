@@ -3,6 +3,8 @@ Revision history for Git-Repository
 {{$NEXT}}
 
 1.323 2018-11-22 BOOK
+    [TESTS]
+    - Match new error message format in git 2.19.0 (RT #127282 SREZIC)
 
 1.322 2018-04-21 BOOK
     [DOCUMENTATION]
