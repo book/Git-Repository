@@ -2,6 +2,8 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.323 2018-11-22 BOOK
+
 1.322 2018-04-21 BOOK
     [DOCUMENTATION]
     - Detail what Git::Repository::Command does to the environment
