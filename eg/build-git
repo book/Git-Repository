@@ -21,7 +21,7 @@ my %option = (
 );
 GetOptions(
     \%option,  'source=s', 'destination=s', 'verbose+', 'quiet',
-    'since=s', 'until=s',  'limit=i',
+    'since=s', 'until=s',  'limit=i',       'force',
     'list',    'missing',  'installed',     'rc!',
     'fetch',   'test',
     'help',    'manual',
@@ -96,7 +96,7 @@ chdir $option{source} or die "Can't chdir to $option{source}: $!";
 for my $version (@versions) {
 
     # skip if that git already exists (and runs)
-    if ( is_installed($version) ) {
+    if ( is_installed($version) && !$option{force} ) {
         print "*** GIT $version ALREADY INSTALLED ***\n" if !$option{quiet};
         next;
     }
@@ -145,6 +145,7 @@ for my $version (@versions) {
         # clean up environment (possibly set by local::lib)
         local $ENV{PERL_MB_OPT};
         local $ENV{PERL_MM_OPT};
+        remove_tree( $prefix ) if -e $prefix;
 
         # build
         run_cmd( @make => '-j3' );
