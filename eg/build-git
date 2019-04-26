@@ -23,7 +23,7 @@ GetOptions(
     \%option,  'source=s', 'destination=s', 'verbose+', 'quiet',
     'since=s', 'until=s',  'limit=i',       'force',
     'list',    'missing',  'installed',     'rc!',
-    'fetch',   'test',
+    'fetch',   'test',     'docs',
     'help',    'manual',
 ) or pod2usage( -verbose => 0 );
 
@@ -152,6 +152,7 @@ for my $version (@versions) {
 
         # install
         run_cmd( @make => 'install' );
+        run_cmd( @make => 'install-doc' ) if $option{docs};
 
         # test the installation and remove all
         if ( $option{test} ) {
