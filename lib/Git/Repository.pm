@@ -301,7 +301,7 @@ individual Git commands may need or use.
 However, the C<GIT_DIR> and C<GIT_WORK_TREE> environment variables are
 special: if the command is run in the context of a L<Git::Repository>
 object, they will be overridden by the object's C<git_dir> and
-C<work_tree> attributes, respectively. It is however still possible to
+C<work_tree> attributes, respectively. It is still possible to
 override them if necessary, using the C<env> option.
 
 L<Git::Repository> requires at least Git 1.5.0, and is expected to support
