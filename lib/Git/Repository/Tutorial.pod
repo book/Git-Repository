@@ -25,8 +25,13 @@ If the repository has a working copy (work tree):
 
     $r = Git::Repository->new( work_tree => $dir );
 
+In this case, the git dir is computed as the output of
+C<git rev-parse --git-dir>, and the the work tree is normalized using
+C<git rev-parse --show-cdup>. To force the use of a different work tree,
+set the C<GIT_WORK_TREE> environment variable in the option hash.
+
 If the repository is a bare repository, or you prefer to provide
-the F<.git> directory location:
+the location of the F<.git> directory:
 
     $r = Git::Repository->new( git_dir => $gitdir );
 
