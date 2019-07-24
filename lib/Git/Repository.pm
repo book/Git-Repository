@@ -157,7 +157,7 @@ sub new {
     croak "fatal: not a git repository: $self->{git_dir}"
         if $self->{git_dir} ne $gitdir;
 
-    # put back the ignored option
+    # put back the ignored options
     $options->{input} = $input if defined $input;
     $options->{fatal} = $fatal if defined $fatal;
 
