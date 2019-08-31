@@ -2,6 +2,12 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.324 2019-09-01 BOOK
+    [DOCUMENTATION]
+    - Minor documentation updates
+    [EXAMPLES]
+    - Add --force and --docs options to build-git
+
 1.323 2018-11-22 BOOK
     [TESTS]
     - Match new error message format in git 2.19.0 (RT #127282 SREZIC)
