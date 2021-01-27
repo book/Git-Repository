@@ -57,7 +57,7 @@ local $SIG{__WARN__} = sub { push @warnings, shift };
 my @tests = (
 
     # empty repository
-    {   test_repo => [],
+    {   test_repo => [ init => [ '-q' ] ],
         cmd       => [qw( log -1 )],
         exit      => 128,
         dollar_at => qr/^fatal: (?:bad default revision 'HEAD' |your current branch 'master' does not have any commits yet)/,
@@ -142,7 +142,7 @@ push @tests, (
 
     # setup a repo with some 'fatal' options
     # and override them in the call to run()
-    {   test_repo => [ git    => { fatal      => [ 1 .. 255 ] } ],
+    {   test_repo => [ init => [ '-q' ], git    => { fatal      => [ 1 .. 255 ] } ],
         cmd       => [ exit => 125, { git => $exit } ],
         exit      => 125,
         dollar_at => qr/^fatal: unknown git error/,
@@ -157,7 +157,7 @@ push @tests, (
 push @tests, (
 
     # FATALITY
-    {   test_repo => [ git => { fatal => [ 0 .. 255 ] } ],
+    {   test_repo => [ init => [ '-q' ], git => { fatal => [ 0 .. 255 ] } ],
         cmd       => ['version'],
         exit      => 0,
         dollar_at => qr/^fatal: unknown git error/,
@@ -172,12 +172,12 @@ push @tests, (
 push @tests, (
 
     # "!0" is a shortcut for 1..255
-    {   test_repo => [],
+    {   test_repo => [ init => [ '-q' ] ],
         cmd       => [ exit => 140, { git => $exit, fatal => '!0' } ],
         exit      => 140,
         dollar_at => qr/^fatal: unknown git error/,
     },
-    {   test_repo => [ git => { fatal => '!0' } ],
+    {   test_repo => [ init => [ '-q' ], git => { fatal => '!0' } ],
         cmd       => [ exit => 141, { git => $exit } ],
         exit      => 141,
         dollar_at => qr/^fatal: unknown git error/,
