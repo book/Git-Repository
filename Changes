@@ -2,6 +2,13 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.325 2021-06-01 BOOK
+    [ENHANCEMENTS]
+    - Prevent Test::Git from clobbering its arguments in some cases
+    [TESTS]
+    - Stop t/24-errors.t from failing with git >= 2.30.0-rc0
+      (Fix RT #133951, RT #134115, GH #20)
+
 1.324 2019-09-01 BOOK
     [DOCUMENTATION]
     - Minor documentation updates
