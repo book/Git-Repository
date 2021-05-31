@@ -69,9 +69,8 @@ sub test_repository {
     my $cwd = { cwd => $dir };    # option to chdir there
 
     # create the git repository there
-    unshift @$init,
-        Git::Repository->version_lt('1.5.0.rc1') ? 'init-db' : 'init';
-    my @cmd = $clone ? ( clone => @$clone, $dir ) : ( @$init, $cwd );
+    my $init_cmd = Git::Repository->version_lt('1.5.0.rc1') ? 'init-db' : 'init';
+    my @cmd = $clone ? ( clone => @$clone, $dir ) : ( $init_cmd => @$init, $cwd );
     Git::Repository->run( @cmd, $safe );
 
     # create the Git::Repository object
