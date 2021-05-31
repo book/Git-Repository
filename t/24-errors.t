@@ -193,12 +193,14 @@ push @tests, (
 
 plan tests => 3 * @tests + @warnings;
 
+my @quiet = Git::Repository->version_ge('1.5.2.3') ? ( init => ['-q'] ) : ();
+
 my $output = '';
 for my $t (@tests) {
     @warnings = ();
 
     # create a new test repository if needed
-    $r = test_repository( @{ $t->{test_repo} } )
+    $r = test_repository( @{ $t->{test_repo} }, @quiet )
         if $t->{test_repo};
 
     # check if the command threw errors

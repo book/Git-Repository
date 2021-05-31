@@ -19,7 +19,9 @@ delete $ENV{XDG_CONFIG_HOME};
 delete $ENV{HOME};
 
 # a place to put a git repository
-my $r = test_repository;
+my @init;
+push @init, init => [ '-q' ] if Git::Repository->version_ge('1.5.2.3');
+my $r = test_repository(@init);
 
 # PREV will be replaced by the result of the previous command
 my @tests = (

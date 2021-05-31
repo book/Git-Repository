@@ -31,7 +31,9 @@ $ENV{GIT_COMMITTER_NAME}  = 'Test Committer';
 $ENV{GIT_COMMITTER_EMAIL} = 'test.committer@example.com';
 
 # create a small repository
-my $s = test_repository;
+my @init;
+push @init, init => [ '-q' ] if Git::Repository->version_ge('1.5.2.3');
+my $s = test_repository(@init);
 my $blob =
   $s->run( qw( hash-object -t blob -w --stdin ), { input => 'hello' } );
 my $tree = $s->run( mktree => { input => "100644 blob $blob\thello" } );
@@ -40,7 +42,7 @@ $s->run( 'update-ref', 'refs/heads/master' => $commit );
 $s->run( checkout => 'master', { quiet => 1 } );
 
 # now test adding a submodule
-my $r = test_repository;
+my $r = test_repository(@init);
 $r->run(
     submodule => add => $s->work_tree => 'sub',
     { env => { GIT_WORK_TREE => undef } }

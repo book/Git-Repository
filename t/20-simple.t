@@ -39,10 +39,14 @@ sub update_file {
 # a place to put a git repository
 my $dir = abs_path( tempdir( CLEANUP => 1 ) );
 
+# a quiet git init:
+my @init = qw( init );
+push @init, '-q' if Git::Repository->version_ge('1.5.2.3');
+
 # PASS - non-existent directory
 BEGIN { $tests += 3 }
 chdir $dir;
-Git::Repository->run('init');
+Git::Repository->run( @init );
 my $r = Git::Repository->new();
 isa_ok( $r, 'Git::Repository' );
 chdir $home;

@@ -19,8 +19,10 @@ delete $ENV{HOME};
 my $home = cwd();
 
 # a place to put a git repository
+my @init;
+push @init, init => [ '-q' ] if Git::Repository->version_ge('1.5.2.3');
 my $fake   = realpath( tempdir( CLEANUP => 1 ) );
-my $r      = test_repository;
+my $r      = test_repository(@init);
 my $dir    = $r->work_tree;
 my $gitdir = $r->git_dir;
 

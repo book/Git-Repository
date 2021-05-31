@@ -21,7 +21,9 @@ delete $ENV{HOME};
 plan tests => my $tests;
 
 # first create a new empty repository
-my $r      = test_repository;
+my @init;
+push @init, init => [ '-q' ] if Git::Repository->version_ge('1.5.2.3');
+my $r      = test_repository( @init );
 my $dir    = $r->work_tree;
 my $gitdir = $r->git_dir;
 

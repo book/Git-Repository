@@ -33,9 +33,12 @@ delete $ENV{HOME};
     }
 }
 
+# a quiet git init:
+my @init = qw( init );
+push @init, '-q' if Git::Repository->version_ge('1.5.2.3');
 
 my $repo_dir = My::Dir->new( tempdir( CLEANUP => 1 ) );
-note( Git::Repository->run( init => $repo_dir ) );
+note( Git::Repository->run( @init, $repo_dir ) );
 ok -d "$repo_dir/.git", "git repo initialized";
 my $r = eval { Git::Repository->new( work_tree => $repo_dir ); };
 isa_ok $r, "Git::Repository";

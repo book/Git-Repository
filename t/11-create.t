@@ -48,13 +48,17 @@ sub test_repo {
 my ( $dir, $r );
 $dir = next_dir;
 
+# a quiet git init:
+my @init = qw( init );
+push @init, '-q' if Git::Repository->version_ge('1.5.2.3');
+
 # PASS - non-existent directory
 BEGIN { $tests += 5 }
 my $gitdir = File::Spec->catdir( $dir, '.git' );
 mkpath $dir;
 chdir $dir;
 ok( $r = eval {
-        $r = Git::Repository->run( 'init', { cwd => $dir } );
+        $r = Git::Repository->run( @init, { cwd => $dir } );
         Git::Repository->new( { cwd => $dir } );
     },
     "init => $i"
@@ -190,7 +194,7 @@ $dir = next_dir;
 mkpath $dir;
 chdir $dir;
 ok( $r = eval {
-        Git::Repository->run(qw( init --bare ));
+        Git::Repository->run( @init, '--bare' );
         Git::Repository->new();
     },
     "clone => @{[ $i - 1 ]} - $i"
@@ -216,7 +220,7 @@ $gitdir = File::Spec->catdir( $dir, '.notgit' );
 my $options
     = { cwd => $dir, env => { GIT_DIR => File::Spec->abs2rel($gitdir) } };
 ok( $r = eval {
-        Git::Repository->run( 'init', $options );
+        Git::Repository->run( @init, $options );
         Git::Repository->new($options);
     },
     "init - cwd => $i, GIT_DIR => '.notgit'"
@@ -240,7 +244,7 @@ chdir $dir;
 $gitdir = File::Spec->catdir( $dir, '.notgit' );
 $options = { cwd => $dir, env => { GIT_DIR => File::Spec->abs2rel($gitdir) } };
 ok( $r = eval {
-        Git::Repository->run( "--work-tree=$dir", 'init', $options );
+        Git::Repository->run( "--work-tree=$dir", @init, $options );
         Git::Repository->new( work_tree => $dir, $options );
     },
     "init - cwd => $i, GIT_DIR => '.notgit'"
@@ -266,7 +270,7 @@ $options = {
     }
 };
 ok( $r = eval {
-        Git::Repository->run( 'init', $options );
+        Git::Repository->run( @init, $options );
         Git::Repository->new($options);
     },
     "init - cwd => $i, GIT_DIR => '.notgit'"
@@ -285,7 +289,7 @@ SKIP: {
     $dir = next_dir;
     { open my $fh, '>', $dir; }    # creates an empty file
     ok( !(  $r = eval {
-                Git::Repository->run( init => $dir );
+                Git::Repository->run( @init, $dir );
                 Git::Repository->new( work_tree => $dir );
             }
         ),
@@ -299,7 +303,7 @@ SKIP: {
     $dir = next_dir;
     $gitdir = File::Spec->catdir( $dir, '.git' );
     ok( $r = eval {
-            Git::Repository->run( init => $dir );
+            Git::Repository->run( @init, $dir );
             Git::Repository->new( work_tree => $dir );
         },
         "init => $i"
@@ -308,7 +312,7 @@ SKIP: {
     test_repo( $r, $gitdir, $dir, {} );
 
     ok( $r = eval {
-            Git::Repository->run( init => $dir );
+            Git::Repository->run( @init, $dir );
             Git::Repository->new( work_tree => $dir );
         },
         "init => $i - again"

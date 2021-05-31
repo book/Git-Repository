@@ -23,7 +23,10 @@ delete $ENV{XDG_CONFIG_HOME};
 delete $ENV{HOME};
 my $home = cwd;
 
-my $r = test_repository;
+my @init;
+push @init, init => [ '-q' ] if Git::Repository->version_ge('1.5.2.3');
+
+my $r = test_repository(@init);
 
 # add a file
 my $file = 'hello.txt';
