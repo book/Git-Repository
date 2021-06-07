@@ -174,9 +174,13 @@ sub final_output {
     my ($self, @cb) = @_;
 
     # get output / errput
+    my $input_record_separator =
+        exists $self->options->{input_record_separator}
+        ? $self->options->{input_record_separator}
+        : "\n";
     my ( @output, @errput );
     $self->loop_on(
-        input_record_separator => "\n",
+        input_record_separator => $input_record_separator,
         stdout => sub { chomp( my $o = shift ); push @output, $o; },
         stderr => sub { chomp( my $e = shift ); push @errput, $e; },
     );
@@ -332,6 +336,20 @@ Boolean option to control the output of warnings.
 
 If true, methods such as C<final_output()> will not warn when Git outputs
 messages on C<STDERR>.
+
+=item C<input_record_separator>
+
+A string which the C<$/> special variable is set to during the command
+execution.
+
+This is mostly useful when passing the C<-z> option to a Git command so that it
+output lines separated by the NUL character and you want to get it line by line,
+like this:
+
+    my @files = $git->run(
+        qw/ls-tree -r --name-only -z HEAD/,
+        { input_record_separator => "\0" },
+    );
 
 =back
 
