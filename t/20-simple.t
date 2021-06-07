@@ -371,3 +371,10 @@ ok( $r = eval { Git::Repository->new( work_tree => $dir ) },
 $tree = $r->run( mktree => { input => '' } );
 is( $tree, '4b825dc642cb6eb9a060e54bf8d69288fbee4904', 'mktree empty tree' );
 
+# use ls-tree with input_record_separator option
+BEGIN { $tests += 1 }
+my @files = $r->run(
+    qw/ls-tree --name-only -z HEAD/,
+    { input_record_separator => "\0" },
+);
+ok( @files > 1, 'option input_record_separator in run() worked');
