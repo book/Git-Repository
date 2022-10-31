@@ -44,6 +44,7 @@ $s->run( checkout => 'master', { quiet => 1 } );
 # now test adding a submodule
 my $r = test_repository(@init);
 $r->run(
+    ( Git::Repository->version_ge('2.38.1') ? ('-c', 'protocol.file.allow=always') : ()),
     submodule => add => $s->work_tree => 'sub',
     { env => { GIT_WORK_TREE => undef } }
 );
