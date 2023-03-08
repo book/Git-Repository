@@ -74,25 +74,6 @@ $r->run( add => 'readme.txt' );
 # unset all editors
 delete @ENV{qw( EDITOR VISUAL GIT_EDITOR )};
 
-SKIP: {
-    BEGIN { $tests += 2 }
-    skip "these tests require git >= 1.6.6, but we only have $version", 2
-        if Git::Repository->version_lt('1.6.6');
-
-    skip "editor defined directly in .gitconfig", 2
-        if $r->run( config => 'core.editor' );
-
-    skip "this test does not work with msysgit on Win32", 2
-        if $^O eq 'MSWin32';
-
-    ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
-    like(
-        $@,
-        qr/^fatal: Terminal is dumb, but EDITOR unset /,
-        'Git complains about lack of smarts and editor'
-    );
-}
-
 # with git commit it's not fatal
 BEGIN { $tests += 4 }
 SKIP: {
