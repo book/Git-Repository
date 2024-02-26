@@ -67,7 +67,7 @@ SKIP:
             if !eval { symlink( '', '' ); 1 };
 
         # a place to experiment
-        my $dir = tempdir( DIR => 't', CLEANUP => 1 );
+        my $dir = tempdir( CLEANUP => 1 );
         my $target = File::Spec->catfile( $dir, 'target' );
         my $link   = File::Spec->catfile( $dir, 'link' );
         my $real   = File::Spec->catfile( $dir, 'real' );
