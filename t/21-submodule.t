@@ -43,8 +43,18 @@ $s->run( checkout => 'master', { quiet => 1 } );
 
 # now test adding a submodule
 my $r = test_repository(@init);
+
+# The "-c" option was introduced in 1.7.2,
+# but protocol.<name>.allow was added in 2.12.0,
+# and from that version protocol.file.allow defaulted to "always",
+# from 2.38.1 however, protocol.file.allow default behavior changed to "user"
+# For versions between 1.7.2 and 2.12.0, giving "-c protocol.file.allow=always" option
+# is simply a no-op
+# Thanks to @ap for the heads-up: Refer to:
+#   https://github.com/book/Git-Repository/pull/22#issuecomment-1404255657
+# for more information.
 $r->run(
-    ( Git::Repository->version_ge('2.38.1') ? ('-c', 'protocol.file.allow=always') : ()),
+    ( Git::Repository->version_ge('1.7.2') ? ('-c', 'protocol.file.allow=always') : ()),
     submodule => add => $s->work_tree => 'sub',
     { env => { GIT_WORK_TREE => undef } }
 );
