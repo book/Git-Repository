@@ -85,6 +85,12 @@ SKIP: {
     skip "this test does not work with msysgit on Win32", 2
         if $^O eq 'MSWin32';
 
+    # Thanks to @adelton and @gregora for the heads-up regarding change in behavior of git var GIT_EDITOR
+    # Refer to:  https://github.com/book/Git-Repository/pull/23
+    # for more information.
+    skip "'git var GIT_EDITOR' behaviour was changed in git 2.40.0, and we have $version", 2
+         if Git::Repository->version_ge('2.40.0');
+
     ok( !eval { $r->run( var => 'GIT_EDITOR' ); 1; }, 'git var GIT_EDITOR' );
     like(
         $@,
