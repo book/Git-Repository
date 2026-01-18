@@ -2,6 +2,17 @@ Revision history for Git-Repository
 
 {{$NEXT}}
 
+1.326 2026-01-18 BOOK
+    [ENHANCEMENTS]
+    - Add input_record_separator option to Git::Repository::Command::new (GNUSTAVO)
+      (Fix for RT #134239, GH #21)
+    - Use a proper temporary directory in t/05-try_git.t (PPISAR)
+      (Fix for GH #24)
+    - GIT_EDITOR fatal behaviour was likely never important (GREGOA, HAKONH)
+      (Fix for RT #155717, GH #23, GH #25)
+    - Workaround change of behaviour in git 2.38.1 (CVE-2022-39253) (JANPAZ)
+      (Fix for RT #144889, GH #22, GH #25)
+
 1.325 2021-06-01 BOOK
     [ENHANCEMENTS]
     - Prevent Test::Git from clobbering its arguments in some cases
